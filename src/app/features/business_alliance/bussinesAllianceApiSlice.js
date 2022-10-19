@@ -134,6 +134,20 @@ export const businessAllianceApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["BusinessAlliance"],
     }),
+    addMissionProcess: builder.mutation({
+      query: (member) => ({
+        url: "/mission_process",
+        method: "POST",
+        body: member,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        "BusinessAlliance",
+        {
+          type: "BusinessAlliance",
+          id: arg.id,
+        },
+      ],
+    }),
   }),
 });
 
@@ -155,7 +169,7 @@ export const {
   useUpdatePopMissionMutation,
   useDeletePopMissionMutation,
   useDeletePopMutation,
-
+  useAddMissionProcessMutation,
 
   useAddPopMissionMutation,
 } = businessAllianceApiSlice;

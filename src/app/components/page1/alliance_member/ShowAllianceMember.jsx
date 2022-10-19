@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 import MenuOrganization from "./MenuOrganization";
@@ -27,7 +27,11 @@ import {
   useDeleteAllianceMemberMutation,
 } from "../../../features/alliance_member/allianceMemberApiSlice";
 import { useGetCategoryQuery } from "../../../features/category/categoryApiSlice";
-export default function ShowAllianceMember({ openShowOrg, handleOpenShowOrg }) {
+export default function ShowAllianceMember({
+  openShowOrg,
+  handleOpenShowOrg,
+  allianceMembers,
+}) {
   // const user = useSelector(selectCurrentUser);
   const { isLoading, isSuccess, isError, error, data } =
     useGetAllianceMemberQuery();
