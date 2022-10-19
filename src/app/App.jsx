@@ -20,6 +20,8 @@ import Page2 from "./components/page2/page2";
 import ShowBusinessProcessModel from "./components/page2/show_busines_process_model/ShowBusinessProcessModel";
 import ShowConstituentProcess from "./components/page2/show_constituent_process/ShowConstituentProcess";
 import ShowPopMission from "./components/page2/show_pop_mission/ShowPopMission";
+import Page3 from "./components/page3/page3";
+import ReactBpmn from "./components/page3/ShowBpmn";
 import { useSelector } from "react-redux";
 import { selectCurrentUser, logOut } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
@@ -150,6 +152,18 @@ export default function App() {
     setValue(newValue);
   };
 
+  function onShown() {
+    console.log("diagram shown");
+  }
+
+  function onLoading() {
+    console.log("diagram loading");
+  }
+
+  function onError(err) {
+    console.log("failed to show diagram");
+  }
+
   return (
     <Router>
       <Routes>
@@ -188,7 +202,19 @@ export default function App() {
               />
             </Route>
 
-            {/* <Route path="/page3" element={<Page3></Page3>} /> */}
+            <Route path="/page3" element={<Page3></Page3>}>
+              <Route
+                path="showbpmn"
+                element={
+                  <ReactBpmn
+                    url="/diagram.bpmn"
+                    onShown={onShown}
+                    onLoading={onLoading}
+                    onError={onError}
+                  />
+                }
+              />
+            </Route>
           </Route>
         </Route>
         <Route path="/reset/:token" element={<ResetPassword></ResetPassword>} />

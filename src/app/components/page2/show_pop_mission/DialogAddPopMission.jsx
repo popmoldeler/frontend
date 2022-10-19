@@ -34,7 +34,7 @@ export default function DialogAddBusinessProcessModel({id}) {
 
       <Dialog open={open} onClose={handleClose} maxWidth="xl">
         <DialogTitle sx={{ alignSelf: "center" }}>
-          Add PoP Mission
+          Add PoP
         </DialogTitle>
         <DialogContent >
           <AddPopMission
