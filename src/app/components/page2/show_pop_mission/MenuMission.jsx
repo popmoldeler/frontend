@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-export default function MenuMission({ editando, deletando }) {
+export default function MenuMission({ editando, deletando,adicionandoConstituentProcessModel }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -37,6 +37,7 @@ export default function MenuMission({ editando, deletando }) {
           "aria-labelledby": "basic-button",
         }}
       >
+        <MenuItem onClick={adicionandoConstituentProcessModel} >Add Constituent Process</MenuItem>
         <MenuItem onClick={editando}>Update</MenuItem>
         <MenuItem onClick={deletando}>Delete</MenuItem>
       </Menu>

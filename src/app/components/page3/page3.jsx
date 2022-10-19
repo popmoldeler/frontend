@@ -3,6 +3,8 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { Box } from "@mui/material";
+// import ShowAllianceMember from "./ShowAllianceMember";
+// import ShowBusinessAlliance from "./showBusinessAlliance";
 
 import { useLocation, Outlet, Link, matchPath } from "react-router-dom";
 
@@ -10,7 +12,7 @@ function useRouteMatch(patterns) {
   const { pathname } = useLocation();
   const path = pathname.split("/");
   if (path[2] === "") {
-    path[2] = "page1";
+    path[2] = "page3";
   }
   const path1 = "/" + path[2];
 
@@ -26,12 +28,8 @@ function useRouteMatch(patterns) {
   return null;
 }
 
-export default function Page2() {
-  const routeMatch = useRouteMatch([
-    "/show-business-process-model",
-
-    "/show-pop-mission",
-  ]);
+export default function Page3() {
+  const routeMatch = useRouteMatch(["/showbpmn", "/showbusinessalliance"]);
   const currentTab = routeMatch?.pattern?.path;
 
   return (
@@ -66,35 +64,14 @@ export default function Page2() {
             sx={{ width: "max-content" }}
           >
             <Button
-              key="three"
-              value="/page2"
-              to="/page2/show-business-process-model"
+              key="one"
+              value="/page3"
+              to="/page3/showbpmn"
               component={Link}
-              variant={
-                currentTab == "/show-business-process-model" ? "contained" : "text"
-              }
+              variant={currentTab == "/showbpmn" ? "contained" : "text"}
             >
-              Show Business Process Model
+              Show Bpmn
             </Button>
-            <Button
-              key="four"
-              value="/page2"
-              to="/page2/show-pop-mission"
-              component={Link}
-              variant={
-                currentTab == "/show-pop-mission" ? "contained" : "text"
-              }
-            >
-              Show PoP 
-            </Button>
-            {/* <Button
-              key="five"
-              value="/page2"
-              to="/page2/show-constituent-process"
-              component={Link}
-            >
-              Show Constituent Process
-            </Button> */}
           </ButtonGroup>
         </Box>
 
