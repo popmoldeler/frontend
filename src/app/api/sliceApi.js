@@ -2,14 +2,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials, logOut } from "../features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8000/api/",
+  baseUrl: "http://popmodeler.ledes.net/api/",
   credentials: "include",
-  tagTypes: ["User","AllianceMember"],
+  tagTypes: ["User", "AllianceMember"],
   prepareHeaders: (headers, { getState }) => {
-   
-
     const token = getState().auth.access_token;
-   
+
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
     }
