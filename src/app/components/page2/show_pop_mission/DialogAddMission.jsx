@@ -7,6 +7,7 @@ export default function DialogAddMission({
   openDialogAdd,
   setOpenDialogAdd,
   BusinessAlliance,
+  
   id
 }) {
   const handleClickOpen = () => {

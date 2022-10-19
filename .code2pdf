@@ -1,0 +1,25 @@
+:directories:
+  - .git
+  - .vscode
+  - log
+  - public/system
+  - node_modules
+  - spec
+  - tmp
+  - vendor
+  - public/ConstituentProcess
+
+:files:
+  - .code2pdf
+  - .DS_Store
+  - .gitignore
+  - database.yml
+  - favicon.ico
+  - db.sql
+  - .styleci.yml
+  - insert.sql
+  - composer.lock
+  - .editorconfig
+  - pint.json
+  - package-lock.json
+  - README.md
