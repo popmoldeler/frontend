@@ -29,13 +29,11 @@ function useRouteMatch(patterns) {
 }
 
 export default function Page1() {
-  
   const routeMatch = useRouteMatch([
     "/showalliancemember",
     "/showbusinessalliance",
   ]);
   const currentTab = routeMatch?.pattern?.path;
-  
 
   return (
     <>
@@ -43,11 +41,12 @@ export default function Page1() {
         sx={{
           position: "fixed",
           marginTop: "49px",
-          height: "100%",
+          height: "100vh",
           width: "100%",
           display: "flex",
           flexDirection: "row",
           backgroundColor: "#fafafa",
+          // backgroundColor: "#000",
         }}
       >
         <Box

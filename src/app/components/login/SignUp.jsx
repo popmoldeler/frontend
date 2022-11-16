@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { useFormik } from "formik";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
@@ -43,6 +43,7 @@ export default function Register() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        height: "100vh",
       }}
     >
       <Typography component="h1" variant="h5">

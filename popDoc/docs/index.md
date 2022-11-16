@@ -159,3 +159,118 @@ For each mission you can add constituent Processes from the internal collaborati
 ## **PoP Modeling**
 
 #### Yet to come
+
+## **Especificação de Requisitos**
+
+### 1 Introdução
+
+<p style='text-align: justify;'> Este documento registra os requisitos gerais da ferramenta PoPModeler, na forma de requisitos textuais do produto.
+ </p>
+
+### 2 Visão Geral do Sistema
+
+<p style='text-align: justify;'> 
+A ferramenta PoPModeler trata do gerenciamento dos Processos-de-Processos (CAGNIN; NAKAGAWA, 2021) de alianças de organizações. Para facilitar a compreensão e o desenvolvimento da ferramenta, ela é dividida em módulos: Gerenciamento de Alianças de Negócio (Business Alliance Management), Gerenciamento do PoP (PoP Management) e Modelagem do PoP (PoP Modeling). O módulo Gerenciamento de Aliança de Negócio permite o gerenciamento e a visualização das organizações e das Alianças de Negócios cadastradas. O módulo Gerenciamento do PoP permite o gerenciamento dos modelos de processo de negócio das organizações e o gerenciamento do PoP das Alianças de Negócio O módulo Modelagem do PoP possibilita ... </p>
+
+
+### 3 Classes de usuários
+
+<p style='text-align: justify;'> Na presente seção devem ser descritas as várias classes de usuário relevantes para o sistema. </p>
+
+<p style='text-align: justify;'> Usuário – Tem a permissão para realizar a maior parte das funcionalidades do sistema.
+ </p>
+
+
+
+### 4 Definição de conceitos
+
+<p style='text-align: justify;'> 
+Nesta seção são descritos os principais conceitos relevantes para o domínio do sistema.
+Alliance Member – membro cadastrado pelo usuário, contendo os atributos CNPJ, nome, CEP, rua, número, bairro, cidade, estado, país, site, categoria.
+ </p>
+
+<p style='text-align: justify;'> Business Alliance – Aliança composta por um membro responsável, contendo seu nome, objetivo, data de criação, colaborações internas e colaboração externas. Cada colaboração interna contém seu nome, o tipo de relação com a organização responsável  e a data de entrada e saída da aliança. Cada colaboração externa contém seu nome, o tipo de relação com a organização responsável, visão do negócio  e a data de entrada e saída da aliança. </p>
+
+<p style='text-align: justify;'> Category - Categoria do membro que representa o seu papel na aliança podendo ser previamente cadastrado.
+ </p>
+
+<p style='text-align: justify;'> Relationship- Tipo de relacionamento que um membro tem com uma aliança, podendo ser: responsible, merge, acquisition, partnership.
+ </p>
+
+<p style='text-align: justify;'> Internal Collaboration - ???
+ </p>
+
+<p style='text-align: justify;'> External Collaboration  - ???
+ </p>
+
+### 5 Requisitos de Software
+
+<p style='text-align: justify;'> Nesta seção são descritos os requisitos textuais do produto. Na Seção 5.1 são descritos os requisitos funcionais. Na Seção 5.2 são descritos os requisitos não-funcionais.
+ </p>
+
+#### 5.1 Requisitos funcionais  
+**Gerenciamento de Alianças de Negócio:**
+
+<p style='text-align: justify;'>
+RF-1. O sistema deve permitir a inclusão, alteração e remoção de membros da aliança, com os seguintes atributos: nome, CNPJ, cep, rua, número, bairro, cidade, estado, país, site, categoria. Uma organização não poderá ser removida se fizer parte de uma aliança. </p>
+
+<p style='text-align: justify;'> 
+RF-2. O sistema deve permitir a inclusão e alteração de alianças de negócios, contendo os atributos: nome, objetivo, data, organização responsável e colaborações internas e externas, sendo que cada colaboração possui os atributos: nome, data de entrada, data de saída e tipo de relação (Merge, Partnership, Acquisition). Quando o atributo tipo de relação for alterado deve ser adicionada uma nova organização membro com o atributo tipo de relação anterior e a data de saída deve ser 1 dia a menos que a data de entrada da nova relação. Se existir o atributo data de saída, a organização membro não poderá ser removida e o atributo tipo de relação não poderá ser alterado. 
+</p>
+
+**Relatórios:**
+
+<p style='text-align: justify;'> 
+RF-3. O sistema deve permitir a visualização de uma lista contendo as organizações cadastrados com as seguintes informações:  nome, CNPJ, cep, rua, número, bairro, cidade, estado, país, site, categoria.</p>
+
+<p style='text-align: justify;'> RF-4. O sistema deve permitir a visualização de uma lista de alianças de negócios cadastradas, apresentando as seguintes informações: nome, objetivo, data, organização responsável e colaboração interna e externa, sendo que cada colaboração tem os atributos: nome, data de entrada, data de saída e tipo de relação. </p>
+
+**Gerenciamento do PoP:**
+
+<p style='text-align: justify;'> RF-5. O sistema deve permitir upload dos processos de negócio de uma organização, armazenando título e descrição..
+ </p>
+<p style='text-align: justify;'> RF-6. O sistema deve permitir a inclusão, alteração e remoção de um determinado PoP em uma aliança de negócio  com os seguintes atributos: identificador, nome e a aliança associada. </p>
+<p style='text-align: justify;'> 
+RF-7. O sistema deve permitir a inclusão, alteração e remoção de missões de um determinado PoP. Cada missão representa um objetivo estratégico da aliança no nível de processo de negócio. </p>
+<p style='text-align: justify;'> RF-8. O sistema deve permitir a inclusão de processos constituintes das organizações membro da aliança de negócio em uma determinada missão de um PoP da aliança de negócio. Para isso, o sistema deve listar as organizações (e seus respectivos processos de negócio) de uma determinada aliança. O sistema deve permitir selecionar os processos constituintes necessários para cumprir uma determinada missão. É necessário ter ao menos dois processos constituintes de organizações distintas para cumprir cada missão. </p>
+
+#### 5.2      Requisitos não-funcionais
+
+**Disponibilidade:**
+
+<p style='text-align: justify;'> RNF-1.        O sistema deve estar disponível 24hs por dia, 7 dias por semana.
+</p>
+
+**Usabilidade:**
+
+<p style='text-align: justify;'> RNF-2.        O sistema deve ser fácil de aprender e fácil de se usar. </p>
+
+**Portabilidade:**
+
+<p style='text-align: justify;'> RNF-3.        O sistema deve ser capaz de armazenar os dados na base de dados do sistema de gerenciamento de banco de dados Postgre. </p>
+
+#### 5.3   Pré-requisitos tecnológicos  
+nodeJS, PHP, Composer, Postgre
+
+#### 5.4   Configuração
+
+Front-end: npm install
+
+Back-end: composer install, você deve configurar o arquivo .env 
+
+### 6 Histórico de versões do documento
+
+Essa seção apresenta o histórico de versões desse documento.
+
+| Versão        | Publicação    | Autor(es)                                           | Ações realizadas                                           |
+| ------------- | ------------- | --------------------------------------------------- | ---------------------------------------------------------- |
+| 1.0           | 05/10/2021    | Wellington Gabriel de Mattia                        | ‐ Versão inicial do documento de requisitos.               |
+| 2.0           | 25/11/2021    | Maria Istela Cagnin e Murilo Costa                  | - Descrição dos requisitos do módulo Gerenciamento do PoP. |
+
+**Referências**
+
+<p style='text-align: justify;'> CAGNIN, Maria Istela; NAKAGAWA, Elisa Yumi. Towards dynamic processes-of-business processes: a new understanding. Business Process Management Journal, v. 27, n. 5, p. 1463-7154, 08 dez. 2021. </p>
+
+## **Modelo Conceitual**
+
+![](img/PoPManagement.png) 

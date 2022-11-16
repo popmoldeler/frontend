@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 import InputAdornment from "@mui/material/InputAdornment";
@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../features/auth/authSlice";
 import { useLoginMutation } from "../../features/auth/authApiSlice";
-
 
 export default function SignIn() {
   const [values, setValues] = React.useState(false);
@@ -49,7 +48,6 @@ export default function SignIn() {
         } else {
           console.log("Login Failed");
         }
-       
       }
     },
   });
@@ -72,6 +70,7 @@ export default function SignIn() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        height: "100vh",
       }}
     >
       <Typography component="h1" variant="h5">
@@ -138,12 +137,7 @@ export default function SignIn() {
             >
               Forgot Password?
             </Button>
-            <ForgotPassword
-              
-              open={open}
-              setOpen={setOpen}
-              
-            />
+            <ForgotPassword open={open} setOpen={setOpen} />
           </Box>
         </Box>
       </form>

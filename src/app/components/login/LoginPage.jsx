@@ -1,8 +1,9 @@
 import * as React from "react";
+import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
+import Typography from "@mui/material/Typography";
 import {
   BrowserRouter as Router,
   Link,
@@ -65,6 +66,14 @@ function LayoutsWithNavbar() {
 
       {/* This Outlet is the place in which react-router will render your components that you need with the navbar */}
       <Outlet />
+
+      <footer>
+        <Box sx={{ width: "100%", backgroundColor: "#fafafa" }}>
+          <Typography variant="body2" gutterBottom>
+            PoP Modeler
+          </Typography>
+        </Box>
+      </footer>
 
       {/* You can add a footer to get fancy in here :) */}
     </>
