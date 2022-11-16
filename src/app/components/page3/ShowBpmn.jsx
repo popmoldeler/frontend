@@ -1,5 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
+import { Button } from "@mui/material";
 import BpmnJS from "bpmn-js/lib/Modeler";
 import {
   BpmnPropertiesPanelModule,
@@ -7,6 +8,7 @@ import {
 } from "bpmn-js-properties-panel";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+import "./ShowBpmn.css";
 
 export default class ReactBpmn extends React.Component {
   constructor(props) {
@@ -125,6 +127,18 @@ export default class ReactBpmn extends React.Component {
           {/* <div ref={this.containerRef}></div> */}
         </Box>
         <div id="properties"></div>
+        <ul class="buttons">
+          <li>
+            <a id="js-download-diagram" href title="download BPMN diagram">
+              BPMN diagram
+            </a>
+          </li>
+          <li>
+            <a id="js-download-svg" href title="download as SVG image">
+              SVG image
+            </a>
+          </li>
+        </ul>
       </>
     );
   }

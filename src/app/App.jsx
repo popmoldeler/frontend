@@ -22,6 +22,8 @@ import ShowConstituentProcess from "./components/page2/show_constituent_process/
 import ShowPopMission from "./components/page2/show_pop_mission/ShowPopMission";
 import Page3 from "./components/page3/page3";
 import ReactBpmn from "./components/page3/ShowBpmn";
+import SelectPop from "./components/page3/select_pop/SelectPop";
+
 import { useSelector } from "react-redux";
 import { selectCurrentUser, logOut } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
@@ -86,7 +88,7 @@ function MyTabs() {
         sx={{
           borderBottom: 1,
           borderColor: "divider",
-          backgroundColor: "#fafafa",
+          // backgroundColor: "#fafafa",
           position: "fixed",
           width: "100%",
         }}
@@ -206,6 +208,7 @@ export default function App() {
               <Route
                 path="showbpmn"
                 element={
+                  // <SelectPop></SelectPop>
                   <ReactBpmn
                     url="/diagram.bpmn"
                     onShown={onShown}
