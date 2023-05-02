@@ -7,8 +7,8 @@ export default function DialogAddMission({
   openDialogAdd,
   setOpenDialogAdd,
   BusinessAlliance,
-  
-  id
+  pop,
+  id,
 }) {
   const handleClickOpen = () => {
     setOpen(true);
@@ -17,7 +17,7 @@ export default function DialogAddMission({
   const handleClose = () => {
     setOpenDialogAdd(false);
   };
-
+  
   return (
     <>
       <Dialog open={openDialogAdd} onClose={handleClose}>
@@ -29,6 +29,7 @@ export default function DialogAddMission({
             handleClose={handleClose}
             BusinessAlliance={BusinessAlliance}
             id={id}
+            pop={pop}
           ></AddMission>
         </DialogContent>
       </Dialog>

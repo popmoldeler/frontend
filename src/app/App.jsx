@@ -22,27 +22,237 @@ import ShowConstituentProcess from "./components/page2/show_constituent_process/
 import ShowPopMission from "./components/page2/show_pop_mission/ShowPopMission";
 import Page3 from "./components/page3/page3";
 import ReactBpmn from "./components/page3/ShowBpmn";
+import Testebpmn from "./components/page3/Testebpmn";
+import About from "./components/page4/About";
+import PopMissionViewBpmn from "./components/page3/popMissionView/PopMissionViewBpmn";
 import SelectPop from "./components/page3/select_pop/SelectPop";
 
 import { useSelector } from "react-redux";
+import {
+  selectCurrentToken,
+  selectCurrentUserId,
+} from "./features/auth/authSlice";
 import { selectCurrentUser, logOut } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
-
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
+  useAddOverallViewMutation,
+  useGetOverallViewQuery,
+  useUpdateOverallViewMutation,
+} from "./features/overall_view/overallViewApiSlice";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Form,
+  json,
   Link,
-  useLocation,
-  matchPath,
   Outlet,
+  Route,
+  RouterProvider,
+  unstable_useBlocker as useBlocker,
+  useLocation,
   Navigate,
+  matchPath,
   useNavigate,
 } from "react-router-dom";
+import {
+  useAddPopMissionModelMutation,
+  useUpdatePopMissionModelMutation,
+} from "./features/pop_mission_model/popMissionModel";
 
-Router.propTypes = {
-  children: PropTypes.node,
-};
+let router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route element={<LoginPage />}>
+        <Route path="/signin" element={<SignIn></SignIn>} />
+
+        <Route path="/signup" element={<SignUp></SignUp>} />
+        <Route path="/about" element={<About></About>} />
+      </Route>
+      <Route element={<PrivateRoutes />}>
+        <Route path="/" element={<LayoutsWithNavbar />}>
+          <Route index element={<Page1></Page1>} />
+
+          <Route path="page1" element={<Page1></Page1>}>
+            <Route
+              path="showalliancemember"
+              element={<ShowAllianceMember></ShowAllianceMember>}
+            />
+            <Route
+              path="showbusinessalliance"
+              element={<ShowBusinessAlliance></ShowBusinessAlliance>}
+            />
+          </Route>
+          <Route path="/page2" element={<Page2></Page2>}>
+            <Route
+              path="show-business-process-model"
+              element={<ShowBusinessProcessModel></ShowBusinessProcessModel>}
+            />
+            <Route
+              path="show-pop-mission"
+              element={<ShowPopMission></ShowPopMission>}
+            />
+            <Route
+              path="show-constituent-process"
+              element={<ShowConstituentProcess></ShowConstituentProcess>}
+            />
+          </Route>
+
+          <Route path="/page3" element={<Page3></Page3>}>
+            <Route path="showbpmn" element={<ShowOverallView />} />
+            <Route path="popmissionview" element={<PopMissionView />} />
+          </Route>
+          <Route path="/page4" element={<About></About>} />
+        </Route>
+      </Route>
+      <Route path="/reset/:token" element={<ResetPassword></ResetPassword>} />
+
+      <Route path="*" element={<Navigate to="/signin" replace></Navigate>} />
+    </Route>
+  )
+);
+
+function ShowOverallView() {
+  const [saveOrUpdataOverallView, setSaveOrUpdataOverallView] =
+    React.useState("save");
+  const [nameConstraintsButton, setNameConstraintsButton] =
+    React.useState("add");
+
+  const [popMissionId, setPopMissionId] = React.useState("");
+  const [popId, setPopId] = React.useState("");
+  const [overallViewId, setOverallViewId] = React.useState("");
+
+  const handleSetPopMissionId = (id) => setPopMissionId(id);
+
+  const [xmlString, setXmlString] = React.useState("");
+  function handleSetXmlString(xml) {
+    setXmlString(xml);
+  }
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  function onShown() {
+    console.log("diagram shown");
+  }
+
+  function onLoading() {
+    console.log("diagram loading");
+  }
+
+  function onError(err) {
+    console.log("failed to show diagram");
+  }
+  const token = useSelector(selectCurrentToken);
+  const user_id = useSelector(selectCurrentUserId);
+  const [addOverallView] = useAddOverallViewMutation();
+  const [updateOverallView] = useUpdateOverallViewMutation();
+  // const { isLoading, data: overallview } = useGetOverallViewQuery(popId);
+
+  // React.useEffect(() => {
+  //   isLoading
+  //     ? setOverallViewXmlString([])
+  //     : setOverallViewXmlString(overallview);
+  // }, [isLoading]);
+  const [openDialogOutOfDate, setOpenDialogOutOfDate] = React.useState(false);
+
+  return (
+    <ReactBpmn
+      url={xmlString}
+      token={token}
+      onShown={onShown}
+      onLoading={onLoading}
+      onError={onError}
+      handleSetXmlString={handleSetXmlString}
+      user_id={user_id}
+      addOverallView={addOverallView}
+      setPopMissionId={handleSetPopMissionId}
+      popMissionId={popMissionId}
+      setPopId={setPopId}
+      popId={popId}
+      setSaveOrUpdataOverallView={setSaveOrUpdataOverallView}
+      saveOrUpdataOverallView={saveOrUpdataOverallView}
+      updateOverallView={updateOverallView}
+      setOverallViewId={setOverallViewId}
+      overallViewId={overallViewId}
+      openDialogOutOfDate={openDialogOutOfDate}
+      setOpenDialogOutOfDate={setOpenDialogOutOfDate}
+      setNameConstraintsButton={setNameConstraintsButton}
+      nameConstraintsButton={nameConstraintsButton}
+      // overallViewXmlString={overallViewXmlString}
+    />
+  );
+}
+
+function PopMissionView() {
+  const token = useSelector(selectCurrentToken);
+  const user_id = useSelector(selectCurrentUserId);
+  const [popId, setPopId] = React.useState("");
+  const [nameConstraintsButton, setNameConstraintsButton] =
+    React.useState("add");
+
+  const [popMissionModelId, setPopMissionModelId] = React.useState("");
+  const [
+    openDialogPopMissionModelOutOfDate,
+    setOpenDialogPopMissionModelOutOfDate,
+  ] = React.useState(false);
+
+  const [saveOrUpdataPopMissionModel, setSaveOrUpdataPopMissionModel] =
+    React.useState("save");
+  const [xmlString, setXmlString] = React.useState("");
+  function handleSetXmlString(xml) {
+    setXmlString(xml);
+  }
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  function onShown() {
+    console.log("diagram shown");
+  }
+
+  function onLoading() {
+    console.log("diagram loading");
+  }
+
+  function onError(err) {
+    console.log("failed to show diagram");
+  }
+  const [addPopMissionModel] = useAddPopMissionModelMutation();
+  const [updatePopMissionModel] = useUpdatePopMissionModelMutation();
+
+  return (
+    <PopMissionViewBpmn
+      url={xmlString}
+      onShown={onShown}
+      onLoading={onLoading}
+      onError={onError}
+      handleChange={handleChange}
+      handleSetXmlString={handleSetXmlString}
+      token={token}
+      user_id={user_id}
+      addPopMissionModel={addPopMissionModel}
+      setSaveOrUpdataPopMissionModel={setSaveOrUpdataPopMissionModel}
+      saveOrUpdataPopMissionModel={saveOrUpdataPopMissionModel}
+      popMissionModelId={popMissionModelId}
+      setPopMissionModelId={setPopMissionModelId}
+      openDialogPopMissionModelOutOfDate={openDialogPopMissionModelOutOfDate}
+      setOpenDialogPopMissionModelOutOfDate={
+        setOpenDialogPopMissionModelOutOfDate
+      }
+      updatePopMissionModel={updatePopMissionModel}
+      setPopId={setPopId}
+      popId={popId}
+      nameConstraintsButton={nameConstraintsButton}
+      setNameConstraintsButton={setNameConstraintsButton}
+    />
+  );
+}
+
+export default function App() {
+  return <RouterProvider router={router} />;
+}
 
 function useRouteMatch(patterns) {
   const { pathname } = useLocation();
@@ -69,7 +279,7 @@ function MyTabs() {
   // This means that if you have nested routes like:
   // users, users/new, users/edit.
   // Then the order should be ['users/add', 'users/edit', 'users'].
-  const routeMatch = useRouteMatch(["/page2", "/page3", "/page1"]);
+  const routeMatch = useRouteMatch(["/page2", "/page3", "/page4", "/page1"]);
   const currentTab = routeMatch?.pattern?.path;
   const user = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
@@ -83,18 +293,20 @@ function MyTabs() {
   };
 
   return (
-    <>
-      <Tabs
-        sx={{
-          borderBottom: 1,
-          borderColor: "divider",
-          // backgroundColor: "#fafafa",
-          position: "fixed",
-          width: "100%",
-        }}
-        value={currentTab}
-        centered
-      >
+    <Box
+      sx={{
+        display: "flex",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        // position: 'fixed',
+        // minWidth: '40ch',
+        backgroundColor: "#fafafa",
+        borderBottom: 1,
+        borderColor: "divider",
+      }}
+    >
+      <Tabs value={currentTab} centered>
         <Tab
           label="Business Alliance Management"
           value="/page1"
@@ -104,31 +316,25 @@ function MyTabs() {
         <Tab
           label="PoP Management"
           value="/page2"
-          to="/page2"
           component={Link}
+          to="/page2"
         />
         <Tab label="PoP Modeling" value="/page3" to="/page3" component={Link} />
-        <Box sx={{ display: "flex" }}>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            component="div"
-            sx={{ marginTop: 1, paddingLeft: 25 }}
-          >
-            Welcome {user}
-          </Typography>
-
-          <IconButton
-            aria-label="Log Out"
-            style={{ left: 25 }}
-            component={Button}
-            onClick={logout}
-          >
-            <LogoutIcon titleAccess={"Log Out"} color={"primary"} />
-          </IconButton>
-        </Box>
+        <Tab label="About" value="/page4" to="/page4" component={Link} />
       </Tabs>
-    </>
+
+      <Typography variant="subtitle1" sx={{ paddingLeft: 25 }}>
+        Welcome {user}
+      </Typography>
+
+      <Tab
+        aria-label="Log Out"
+        value="/page1"
+        component={Button}
+        onClick={logout}
+        icon={<LogoutIcon color="primary" />}
+      />
+    </Box>
   );
 }
 function LayoutsWithNavbar() {
@@ -145,85 +351,5 @@ function LayoutsWithNavbar() {
 
       {/* You can add a footer to get fancy in here :) */}
     </>
-  );
-}
-export default function App() {
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  function onShown() {
-    console.log("diagram shown");
-  }
-
-  function onLoading() {
-    console.log("diagram loading");
-  }
-
-  function onError(err) {
-    console.log("failed to show diagram");
-  }
-
-  return (
-    <Router>
-      <Routes>
-        <Route element={<LoginPage />}>
-          <Route path="/signin" element={<SignIn></SignIn>} />
-
-          <Route path="/signup" element={<SignUp></SignUp>} />
-        </Route>
-
-        <Route element={<PrivateRoutes />}>
-          <Route path="/" element={<LayoutsWithNavbar />}>
-            <Route index element={<Page1></Page1>} />
-
-            <Route path="page1" element={<Page1></Page1>}>
-              <Route
-                path="showalliancemember"
-                element={<ShowAllianceMember></ShowAllianceMember>}
-              />
-              <Route
-                path="showbusinessalliance"
-                element={<ShowBusinessAlliance></ShowBusinessAlliance>}
-              />
-            </Route>
-            <Route path="/page2" element={<Page2></Page2>}>
-              <Route
-                path="show-business-process-model"
-                element={<ShowBusinessProcessModel></ShowBusinessProcessModel>}
-              />
-              <Route
-                path="show-pop-mission"
-                element={<ShowPopMission></ShowPopMission>}
-              />
-              <Route
-                path="show-constituent-process"
-                element={<ShowConstituentProcess></ShowConstituentProcess>}
-              />
-            </Route>
-
-            <Route path="/page3" element={<Page3></Page3>}>
-              <Route
-                path="showbpmn"
-                element={
-                  // <SelectPop></SelectPop>
-                  <ReactBpmn
-                    url="/diagram.bpmn"
-                    onShown={onShown}
-                    onLoading={onLoading}
-                    onError={onError}
-                  />
-                }
-              />
-            </Route>
-          </Route>
-        </Route>
-        <Route path="/reset/:token" element={<ResetPassword></ResetPassword>} />
-
-        <Route path="*" element={<Navigate to="/signin" replace></Navigate>} />
-      </Routes>
-    </Router>
   );
 }

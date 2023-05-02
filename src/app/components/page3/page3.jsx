@@ -29,15 +29,30 @@ function useRouteMatch(patterns) {
 }
 
 export default function Page3() {
-  const routeMatch = useRouteMatch(["/showbpmn", "/showbusinessalliance"]);
+  const routeMatch = useRouteMatch(["/showbpmn", "/showbusinessalliance", "/popmissionview"]);
   const currentTab = routeMatch?.pattern?.path;
+
+  React.useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      // Cancel the event
+      e.preventDefault();
+      // Chrome requires returnValue to be set
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <>
       <Box
         sx={{
           position: "fixed",
-          marginTop: "49px",
+
           height: "100%",
           width: "100%",
           display: "flex",
@@ -70,7 +85,16 @@ export default function Page3() {
               component={Link}
               variant={currentTab == "/showbpmn" ? "contained" : "text"}
             >
-              Show Bpmn
+              PoP Overall View
+            </Button>
+            <Button
+              key="two"
+              value="/page3"
+              to="/page3/popmissionview"
+              component={Link}
+              variant={currentTab == "/popmissionview" ? "contained" : "text"}
+            >
+              PoP Mission View
             </Button>
           </ButtonGroup>
         </Box>

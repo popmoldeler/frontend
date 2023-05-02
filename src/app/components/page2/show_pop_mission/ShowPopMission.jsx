@@ -13,16 +13,12 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-
-import {
-  useGetBusinessAlliancesQuery,
-} from "../../../features/business_alliance/bussinesAllianceApiSlice";
+import { useGetBusinessAlliancesQuery } from "../../../features/business_alliance/bussinesAllianceApiSlice";
 import { useSelector } from "react-redux";
 import { selectCurrentUserId } from "../../../features/auth/authSlice";
 
 import PopMission from "./PopMission";
 import DialogAddPopMission from "./DialogAddPopMission";
-
 
 export default function ShowPopMission() {
   const user_id = useSelector(selectCurrentUserId);
@@ -108,6 +104,7 @@ export default function ShowPopMission() {
     content = <p>{error}</p>;
   }
 
+
   return (
     <TableContainer
       sx={{ margin: 1, width: "100%", height: "91%" }}
@@ -143,7 +140,9 @@ export default function ShowPopMission() {
         </TableHead>
         <TableBody>
           {content.map((row) => (
-            
+
+
+
             <Row row={row} key={row.id} />
           ))}
         </TableBody>
@@ -152,9 +151,22 @@ export default function ShowPopMission() {
   );
 }
 
-function Row({ row }) {
+function Row({ row, }) {
   const [openShowPopMission, setOpenShowPopMission] = React.useState(false);
+
+  let popExternalCollaboration = [];
+
+ 
+
+  row.external_collaborations.map((pops) => {
+    if (pops.business_collaboration_partner.pops.length > 0) {
+      pops.business_collaboration_partner.pops.map((pop) => {
+        popExternalCollaboration.push(pop);
   
+      })
+    };
+  });
+
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -209,9 +221,17 @@ function Row({ row }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {row.pops.map((mission, ) => (
-                 
-                  <PopMission mission={mission} key={mission.id} allianceMembers={row.internal_collaborations}  />
+                {row.pops.map((mission) => (
+                  // console.log(row.external_collaborations.map((pop) => console.log(pop.business_collaboration_partner.pops))),
+
+                  < PopMission
+                    popExternalCollaboration={popExternalCollaboration}
+                    mission={mission}
+                    key={mission.id}
+                    pop={row.pops.filter((obj) => obj.id !== mission.id)}
+                    popOverall={mission}
+                    allianceMembers={row.internal_collaborations}
+                  />
                 ))}
               </TableBody>
             </Table>

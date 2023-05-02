@@ -40,7 +40,7 @@ export default function Page1() {
       <Box
         sx={{
           position: "fixed",
-          marginTop: "49px",
+
           height: "100vh",
           width: "100%",
           display: "flex",

@@ -39,7 +39,7 @@ export default function Page2() {
       <Box
         sx={{
           position: "fixed",
-          marginTop: "49px",
+
           height: "100%",
           width: "100%",
           display: "flex",
@@ -71,7 +71,9 @@ export default function Page2() {
               to="/page2/show-business-process-model"
               component={Link}
               variant={
-                currentTab == "/show-business-process-model" ? "contained" : "text"
+                currentTab == "/show-business-process-model"
+                  ? "contained"
+                  : "text"
               }
             >
               Show Business Process Model
@@ -81,20 +83,10 @@ export default function Page2() {
               value="/page2"
               to="/page2/show-pop-mission"
               component={Link}
-              variant={
-                currentTab == "/show-pop-mission" ? "contained" : "text"
-              }
+              variant={currentTab == "/show-pop-mission" ? "contained" : "text"}
             >
-              Show PoP 
+              Show PoP
             </Button>
-            {/* <Button
-              key="five"
-              value="/page2"
-              to="/page2/show-constituent-process"
-              component={Link}
-            >
-              Show Constituent Process
-            </Button> */}
           </ButtonGroup>
         </Box>
 

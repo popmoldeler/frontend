@@ -156,7 +156,7 @@ export default function ShowConstituintProcess({
               </Select>
             </FormControl>
             <FormControl variant="standard" sx={{ minWidth: 120 }}>
-              <InputLabel id="pops">PoPs</InputLabel>
+              <InputLabel id="pops">PoP</InputLabel>
               <Select
                 sx={{ width: "27ch" }}
                 labelId="demo-simple-select-standard-label"
@@ -180,7 +180,7 @@ export default function ShowConstituintProcess({
               </Select>
             </FormControl>
             <FormControl variant="standard" sx={{ minWidth: 120 }}>
-              <InputLabel id="pops">PoPs Missions</InputLabel>
+              <InputLabel id="pops">PoP Missions</InputLabel>
               <Select
                 sx={{ width: "27ch" }}
                 labelId="demo-simple-select-standard-label"
