@@ -1,5 +1,5 @@
 import React from "react";
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -18,7 +18,7 @@ export default function AddAllianceMember({ handleClose }) {
   const { data } = useGetCategoryQuery();
   const user_id = useSelector(selectCurrentUserId);
   const [addAllianceMember] = useAddAllianceMemberMutation();
-  
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -36,7 +36,7 @@ export default function AddAllianceMember({ handleClose }) {
     },
     onSubmit: async (values) => {
       addAllianceMember(values);
-      
+
       handleClose();
     },
   });

@@ -2,36 +2,39 @@ import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import AddConstituentProcessModel from "./AddConstituentProcessModel";
+import AddPopAsConstituentProcessModel from "./AddPopAsConstituentProcessModel";
 import SelectPoPControl from "../../selectPoPControl/";
-export default function DialogAddConstituentProcessModel({
-  openDialogAddConstientProcessModel,
-  setOpenDialogAddConstientProcessModel,
+
+export default function DialogAddPoPAsConstituentProcessModel({
+  openDialogAddPopAsConstientProcessModel,
+  setOpenDialogAddPopAsConstientProcessModel,
   allianceMembers,
   mission,
   pop_id,
   constituentProcessesJaCadastrados,
   adicionandoConstituentProcessModel,
-  popOverall,
   pop,
+  popExternalCollaboration,
+  popOverall,
 
+  missionProcesses,
 }) {
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-    setOpenDialogAddConstientProcessModel(false);
+    setOpenDialogAddPopAsConstientProcessModel(false);
   };
 
   return (
     <>
-      <Dialog open={openDialogAddConstientProcessModel} onClose={handleClose}>
+      <Dialog open={openDialogAddPopAsConstientProcessModel} onClose={handleClose}>
         <DialogTitle sx={{ alignSelf: "center", paddingBottom: "0px" }}>
-          Add Constituent Process Model
+          Add PoP as Constituent Process Model
         </DialogTitle>
         <DialogContent>
-          <AddConstituentProcessModel
+          <AddPopAsConstituentProcessModel
             handleClose={handleClose}
             allianceMembers={allianceMembers}
             mission={mission}
@@ -42,9 +45,12 @@ export default function DialogAddConstituentProcessModel({
             constituentProcessesJaCadastrados={
               constituentProcessesJaCadastrados
             }
-            popOverall={popOverall}
             pop={pop}
-          ></AddConstituentProcessModel>
+            popExternalCollaboration={popExternalCollaboration}
+            missionProcesses={missionProcesses}
+            popOverall={popOverall}
+
+          ></AddPopAsConstituentProcessModel>
         </DialogContent>
       </Dialog>
     </>

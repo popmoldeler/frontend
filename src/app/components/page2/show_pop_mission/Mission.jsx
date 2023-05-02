@@ -23,7 +23,8 @@ import { useFormik } from "formik";
 import DialogAddConstituentProcessModel from "./DialogAddConstituentProcessModel";
 import MenuMission from "./MenuMission";
 import ConstituentProcessModel from "./ConstituentProcessModel";
-export default function Mission({ mission, allianceMembers, pop_id }) {
+import DialogAddPoPAsConstituentProcessModel from "./DialogAddPoPAsConstituentProcessModel";
+export default function Mission({ mission, allianceMembers, pop_id, pop,popExternalCollaboration ,popOverall}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const [updatePopMission] = useUpdatePopMissionMutation();
@@ -37,10 +38,19 @@ export default function Mission({ mission, allianceMembers, pop_id }) {
     openDialogAddConstientProcessModel,
     setOpenDialogAddConstientProcessModel,
   ] = React.useState(false);
+  const [
+    openDialogAddPopAsConstientProcessModel,
+    setOpenDialogAddPopAsConstientProcessModel,
+  ] = React.useState(false);
 
   const adicionandoConstituentProcessModel = () => {
     setOpenDialogAddConstientProcessModel(!openDialogAddConstientProcessModel);
   };
+
+  const adicionandoPopAsConstituentProcessModel = () => {
+    setOpenDialogAddPopAsConstientProcessModel(!openDialogAddPopAsConstientProcessModel);
+  };
+
   const deletando = () => {
     setDelet(!delet);
     setEdit(false);
@@ -75,7 +85,8 @@ export default function Mission({ mission, allianceMembers, pop_id }) {
     //  console.log(formik.values.id)
     deletePopMission(formik.values);
   }
-
+  
+ 
   return (
     <React.Fragment>
       <DialogAddConstituentProcessModel
@@ -88,7 +99,26 @@ export default function Mission({ mission, allianceMembers, pop_id }) {
         pop_id={pop_id}
         adicionandoConstituentProcessModel={adicionandoConstituentProcessModel}
         constituentProcessesJaCadastrados={mission?.mission_processes}
+        popOverall={popOverall}
+        pop={pop}
       />
+       <DialogAddPoPAsConstituentProcessModel
+        openDialogAddPopAsConstientProcessModel={openDialogAddPopAsConstientProcessModel}
+        setOpenDialogAddPopAsConstientProcessModel={
+          setOpenDialogAddPopAsConstientProcessModel
+        }
+        mission={mission.id}
+        popExternalCollaboration={popExternalCollaboration}
+        missionProcesses={mission.mission_processes}
+        // allianceMembers={allianceMembers}
+        // pop_id={pop_id}
+        // adicionandoConstituentProcessModel={adicionandoConstituentProcessModel}
+        // constituentProcessesJaCadastrados={mission?.mission_processes}
+        popOverall={popOverall}
+        pop={pop}
+
+      />
+     
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
@@ -178,6 +208,9 @@ export default function Mission({ mission, allianceMembers, pop_id }) {
               deletando={deletando}
               adicionandoConstituentProcessModel={
                 adicionandoConstituentProcessModel
+              }
+              adicionandoPopAsConstituentProcessModel={
+                adicionandoPopAsConstituentProcessModel
               }
             ></MenuMission>
           )}

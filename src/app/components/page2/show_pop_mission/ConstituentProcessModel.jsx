@@ -24,20 +24,20 @@ import DialogAddConstituentProcessModel from "./DialogAddConstituentProcessModel
 import MenuMission from "./MenuMission";
 
 export default function ConstituentProcessModel({ constituent }) {
+  const content = constituent.constituent_process ? constituent.constituent_process : constituent.pop;
 
-  
   return (
     <React.Fragment>
       {/* ConstituenProcessModel*/}
 
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell align="left">
-          {constituent.constituent_process.name}
+          {content.name}
         </TableCell>
         <TableCell align="left">
-          {constituent.constituent_process.description}
+          {content.description}
         </TableCell>
-        
+
       </TableRow>
     </React.Fragment>
   );

@@ -70,17 +70,24 @@ export default function SignIn() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        height: "100vh",
+        // height: "100vh",
+        // paddingTop: 2,
+        position: "fixed",
+
+        height: "90vh",
+        width: "100vw",
+
+        // backgroundColor: "bisque",
       }}
     >
-      <Typography component="h1" variant="h5">
+      {/* <Typography component="h1" variant="h5">
         Sign In
-      </Typography>
+      </Typography> */}
       <form onSubmit={formik.handleSubmit}>
         <Box
           sx={{
             mt: 1,
-            marginTop: 3,
+
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

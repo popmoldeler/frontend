@@ -22,12 +22,12 @@ import { useFormik } from "formik";
 
 import DialogAddMission from "./DialogAddMission";
 import MenuPop from "./MenuPop";
-import MenuMission from "./MenuMission";
+// import MenuMission from "./MenuMission";
 import Mission from "./Mission";
 
 export default function PopMission(props) {
-  const { mission } = props;
-
+  const { mission, pop, popExternalCollaboration, popOverall } = props;
+ 
   const { allianceMembers } = props;
   const [openPopMission, setOpenPopMission] = React.useState(false);
 
@@ -82,6 +82,7 @@ export default function PopMission(props) {
         openDialogAdd={openDialogAdd}
         setOpenDialogAdd={setOpenDialogAdd}
         id={mission.id}
+        pop={popOverall}
       />
 
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -210,10 +211,13 @@ export default function PopMission(props) {
               <TableBody>
                 {mission?.pop_missions.map((mission) => (
                   <Mission
+                    popExternalCollaboration={popExternalCollaboration}
                     mission={mission}
                     key={mission.id}
                     allianceMembers={allianceMembers}
                     pop_id={mission.pop_id}
+                    pop={pop}
+                    popOverall={popOverall}
                   />
                 ))}
               </TableBody>

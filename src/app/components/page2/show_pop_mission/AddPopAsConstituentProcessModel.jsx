@@ -7,45 +7,42 @@ import { useFormik } from "formik";
 
 import { useAddMissionProcessMutation } from "../../../features/business_alliance/bussinesAllianceApiSlice";
 
-import SelectPoPControl from "../../selectPoPControl";
-import SelectConstituentProcessControl from "../../selectPoPControl/SelectConstituentProcessControl";
 import SelectPopControl from "../../selectPoPControl/SelectPopControl";
 import { useUpdateOverallViewMutation } from "../../../features/overall_view/overallViewApiSlice";
-import { useUpdatePopMissionModelMutation } from "../../../features/pop_mission_model/popMissionModel";
-function AddConstituentProcessModel({
+function AddPopAsConstituentProcessModel({
   openRegisterPopMission,
   setOpenRegisterPopMission,
   mission,
   handleClose,
   allianceMembers,
-  pop,
+  popExternalCollaboration,
   adicionandoConstituentProcessModel,
   constituentProcessesJaCadastrados,
+  missionProcesses,
   popOverall,
+  pop,
 }) {
   const [membro, setMembro] = React.useState([]);
   const [addMissionProcess] = useAddMissionProcessMutation();
   const [pop_id, setPop_id] = React.useState(null);
-
   const [updateOverallView] = useUpdateOverallViewMutation();
+
   const formik = useFormik({
     initialValues: {
       pop_mission_id: mission,
-      constituent_process_id: "",
+ 
+      pop_id: pop_id,
       entry_date: new Date(),
       exit_date: new Date(),
     },
     onSubmit: async (values) => {
       addMissionProcess(values);
-
-      // console.log("mission", values);
+     
       adicionandoConstituentProcessModel();
       if (popOverall.overall_view != null) {
-        console.log(popOverall.overall_view);
-        const overallView = {
-          id: popOverall.overall_view.id,
-          updated: "false",
-        };
+        // console.log(popOverall);
+
+        const overallView = { id: popOverall.overall_view.id, updated: 'false' }
         updateOverallView(overallView);
       }
       formik.resetForm();
@@ -71,18 +68,8 @@ function AddConstituentProcessModel({
             m: 1,
           }}
         >
-          <SelectPoPControl
-            allianceMembers={allianceMembers}
-            setMembro={setMembro}
-          />
-          <SelectConstituentProcessControl
-            constituentProcess={membro}
-            constituent_process_id={handleConstituentId}
-            hide={true}
-            constituentProcessesJaCadastrados={
-              constituentProcessesJaCadastrados
-            }
-          />
+         
+          <SelectPopControl pop={pop} handlePopId={handlePopId} popExternalCollaboration={popExternalCollaboration} missionProcesses={missionProcesses}/> 
 
           <Box
             sx={{
@@ -116,4 +103,4 @@ function AddConstituentProcessModel({
   );
 }
 
-export default AddConstituentProcessModel;
+export default AddPopAsConstituentProcessModel;

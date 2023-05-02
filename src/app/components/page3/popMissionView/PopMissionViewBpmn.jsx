@@ -11,14 +11,11 @@ import {
 } from "bpmn-js-properties-panel";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-import "./ShowBpmn.css";
-import api from "../../api";
-import DialogShowBpmn from "./DialogShowBpmn";
-import { useGetOverallViewQuery } from "../../features/overall_view/overallViewApiSlice";
-import DialogAddConstituentProcessesConstraintsModel from "./DialogAddConstituentProcessesConstraintsModel";
-import DialogOverallVIewOutOfDate from "./DialogOverallVIewOutOfDate";
-import DialogShowIsBlocked from "./DialogShowIsBlocked";
-
+import "./PopMissionViewBpmn.css";
+import DialogShowBusinessAlliances from "./DialogShowBusinessAlliances";
+import DialogPopMissionModelOutOfDate from "./DialogPopMissionModelOutOfDate";
+import DialogAddConstituentProcessesConstraintsModel from "../DialogAddConstituentProcessesConstraintsModel";
+import DialogAddConstituentProcessesConstraintsMissionModel from "./DialogAddConstituenProcessesConstraintsMissionModel";
 function withMyHook(Component) {
   return function WrappedComponent(props) {
     // const history = useHistory();
@@ -50,7 +47,7 @@ function withMyHook(Component) {
   };
 }
 
-export class ReactBpmn extends React.Component {
+export class PopMissionViewBpmn extends React.Component {
   xmlBase =
     '<? xml version = "1.0" encoding = "UTF-8" ?>' +
     '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1bhm0pw" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="12.0.0">' +
@@ -75,16 +72,7 @@ export class ReactBpmn extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      url,
-      diagramXML,
-      addOverallView,
-      user_id,
-      popMissionId,
-      setPopId,
-      updateOverallView,
-      overallViewXmlString,
-    } = this.props;
+    const { url, overallViewXmlString } = this.props;
 
     const container = this.containerRef.current;
 
@@ -153,25 +141,6 @@ export class ReactBpmn extends React.Component {
     this.bpmnViewer.importXML(diagramXML);
   }
 
-  // fetchDiagram(url) {
-  //   this.handleLoading();
-  //   // console.log(this.props.token);
-  //   api
-  //     .get(`/pop/1678924046diagram`, {
-  //       headers: {
-  //         Accept: "aplication/json",
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${this.props.token}`,
-  //       },
-  //     })
-
-  //     .then((response) => {
-  //       // console.log("ola", response.data);
-  //       this.setState({ diagramXML: response.data });
-  //     })
-  //     .catch((err) => this.handleError(err));
-  // }
-
   handleLoading() {
     const { onLoading } = this.props;
 
@@ -213,31 +182,16 @@ export class ReactBpmn extends React.Component {
     try {
       const { xml } = await this.bpmnViewer.saveXML({ format: true });
 
-      const overallview = {
+      const newPopMissionModel = {
         name: "overallview",
         file_text: xml,
         user_id: this.props.user_id,
         pop_id: this.props.popId,
+        id: this.props.popMissionModelId,
+        updated: true,
       };
-      if (this.props.saveOrUpdataOverallView == "save") {
-        // console.log('s', this.props.saveOrUpdataOverallView);
-        this.props.addOverallView(overallview);
-      } else {
-        const { xml } = await this.bpmnViewer.saveXML({ format: true });
 
-        const newoverallview = {
-          name: "overallview",
-          file_text: xml,
-          user_id: this.props.user_id,
-          pop_id: this.props.popId,
-          id: this.props.overallViewId,
-          updated: true,
-        };
-        // console.log('update', this.props.saveOrUpdataOverallView, this.props.overallViewId, newoverallview);
-        this.props.updateOverallView(newoverallview);
-      }
-      // this.props.addOverallView(overallview);
-      // console.log('herre',overallview);
+      this.props.updatePopMissionModel(newPopMissionModel);
     } catch (err) {
       console.error("Error happened saving XML: ", err);
     }
@@ -268,20 +222,21 @@ export class ReactBpmn extends React.Component {
           }}
           variant="contained"
         >
-          <DialogShowBpmn
+          <DialogShowBusinessAlliances
+            user_id={this.props.user_id}
             handleSetXmlString={this.props.handleSetXmlString}
-            setPopMissionId={this.props.setPopMissionId}
+            saveFile={this.props.addPopMissionModel}
+            setSaveOrUpdataPopMissionModel={
+              this.props.setSaveOrUpdataPopMissionModel
+            }
+            saveOrUpdataPopMissionModel={this.props.saveOrUpdataPopMissionModel}
+            popMissionModelId={this.props.popMissionModelId}
+            setPopMissionModelId={this.props.setPopMissionModelId}
+            setOpenDialogPopMissionModelOutOfDate={
+              this.props.setOpenDialogPopMissionModelOutOfDate
+            }
+            updateFile={this.props.updatePopMissionModel}
             setPopId={this.props.setPopId}
-            sx={{
-              position: "static",
-              bottom: "20px",
-            }}
-            setSaveOrUpdataOverallView={this.props.setSaveOrUpdataOverallView}
-            setOverallViewId={this.props.setOverallViewId}
-            openDialogOutOfDate={this.props.openDialogOutOfDate}
-            setOpenDialogOutOfDate={this.props.setOpenDialogOutOfDate}
-            saveFile={this.props.addOverallView}
-            updateFile={this.props.updateOverallView}
             setNameConstraintsButton={this.props.setNameConstraintsButton}
           />
 
@@ -301,27 +256,33 @@ export class ReactBpmn extends React.Component {
           >
             Download PoP Overall Model
           </Button>
-          <DialogAddConstituentProcessesConstraintsModel
-            setNameConstraintsButton={this.props.setNameConstraintsButton}
-            overallViewId={this.props.overallViewId}
-            updateFile={this.props.updateOverallView}
-            nameConstraintsButton={this.props.nameConstraintsButton}
+          <DialogPopMissionModelOutOfDate
+            openDialogPopMissionModelOutOfDate={
+              this.props.openDialogPopMissionModelOutOfDate
+            }
+            setOpenDialogPopMissionModelOutOfDate={
+              this.props.setOpenDialogPopMissionModelOutOfDate
+            }
           />
 
-          <DialogOverallVIewOutOfDate
-            setOpenDialogOutOfDate={this.props.setOpenDialogOutOfDate}
-            openDialogOutOfDate={this.props.openDialogOutOfDate}
+          <DialogAddConstituentProcessesConstraintsMissionModel
+            nameConstraintsButton={this.props.nameConstraintsButton}
+            setNameConstraintsButton={this.props.setNameConstraintsButton}
+           popMissionModelId={this.props.popMissionModelId}
+            updateFile={this.props.updatePopMissionModel}
+           
+            
           />
         </Box>
-        {this.props.blocker ? (
+        {/* {this.props.blocker ? (
           <DialogShowIsBlocked
             blocker={this.props.blocker}
             openIsBlocked={this.props.openIsBlocked}
             setOpenIsBlocked={this.props.setOpenIsBlocked}
           />
-        ) : null}
+        ) : null} */}
       </>
     );
   }
 }
-export default withMyHook(ReactBpmn);
+export default withMyHook(PopMissionViewBpmn);

@@ -124,7 +124,7 @@ export default function SelectPop() {
             marginTop: "16px",
           }}
         >
-          Business Alliances
+          TESTE
         </Typography>
       </Box>
       <Table aria-label="collapsible table">

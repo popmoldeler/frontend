@@ -16,24 +16,51 @@ import MenuItem from "@mui/material/MenuItem";
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
-export default function SelectConstituentProcess({
+export default function SelectPopAsConstituentControl({
   handleClose,
-  constituent_process_id,
   onSuccess,
-  constituentProcess,
-  constituentProcessesJaCadastrados,
+  allianceMembers,
+  pop_mission_id,
+  pop,
+  popExternalCollaboration,
+  missionProcesses,
 }) {
-  let filtered = [...constituentProcess];
 
-  function compare(a, b) {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  }
+  let content = []
+
+  popExternalCollaboration.map((pop) => {
+    content.push(pop)
+  })
+  pop.map((pop) => {
+    content.push(pop)
+  })
+  // console.log(content)
+  // console.log(missionProcesses)
+
+  // .filter(
+  //   ({ name: id1 }) =>
+  //     !constituentProcessesJaCadastrados.some(
+  //       ({ constituent_process: id2 }) => id2.name === id1
+  //     )
+  // )
+
+
+  const filteredContent= content.filter(obj1 => !missionProcesses.some(obj2 =>  obj2.pop ? obj1.name === obj2.pop.name : null));
+
+
+  
+  // content.filter(
+  //   ({ name: id1 }) =>
+  //     !missionProcesses.some(
+  //       ({ pop: id2 }) => {
+  //         // id2?.name === id1
+  //         id2 ? id2.name === id1 : null
+  //         // console.log( id2)
+
+  //       }
+  //     )
+  // ).map((constituent) => console.log(constituent))
+
   return (
     <>
       <Paper sx={{ margin: 1, width: "90%", height: "91%" }}>
@@ -54,7 +81,7 @@ export default function SelectConstituentProcess({
                 marginTop: "16px",
               }}
             >
-              Constituent Process
+              PoP
             </Typography>
           </Box>
           <Table stickyHeader aria-label="sticky table">
@@ -66,35 +93,17 @@ export default function SelectConstituentProcess({
               </TableRow>
             </TableHead>
             <TableBody>
-              {filtered
-                .sort(compare)
-                .filter(
-                  ({ name: id1 }) =>
-                    !constituentProcessesJaCadastrados.some(
-                      (constituent) => {
-                        if (constituent.constituent_process == null) {
-                          return constituent.pop.name === id1;
-                    
-                        } else {
-                          return constituent.constituent_process.name === id1;
-                         
+              {filteredContent.map((row) => (
+                <Row
+                  handleClose={handleClose}
+                  onSuccess={onSuccess}
+                  key={row.id}
+                  row={row}
 
-                        }
-                      }
-                    )
-                )
-                .map((row) => (
-                  <Row
-                    handleClose={handleClose}
-                    onSuccess={onSuccess}
-                    key={row.id}
-                    row={row}
-                    constituent_process_id={constituent_process_id}
-                  // ={}
-                  // handleOrgDelete={handleOrgDelete}
-                  />
-                ))
-              }
+                // ={}
+                // handleOrgDelete={handleOrgDelete}
+                />
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -103,26 +112,26 @@ export default function SelectConstituentProcess({
   );
 }
 
-function Row({ row, onSuccess, handleClose, constituent_process_id }) {
+function Row({ row, onSuccess, handleClose }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleSelectAlliance = () => {
-    constituent_process_id(row.id);
-    handleClose();
     onSuccess(row);
+
+    handleClose();
   };
   return (
     <>
-      <TableRow key={row.cnpj}>
+      <TableRow key={row.id}>
         <TableCell align="center">{row.name}</TableCell>
 
         <TableCell align="center">
           <IconButton
-            aria-label="Select Constituent Process"
+            aria-label="Select Alliance Member"
             onClick={handleSelectAlliance}
           >
             <AddCircleIcon
-              titleAccess={"Select Constituent Process"}
+              titleAccess={"Select Alliance Member"}
               color={"primary"}
             />
           </IconButton>

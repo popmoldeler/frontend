@@ -20,19 +20,20 @@ import DialogActions from "@mui/material/DialogActions";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { Button } from "@mui/material";
 
-import SelectConstituentProcess from "./SelectConstituentProcess";
+import SelectPopAsConstituentControl from "./SelectPopAsConstituentControl";
 
-const SelectConstituentProcessControl = ({
+const SelectPopControl = ({
   constituent_process_id,
   required,
   constituentProcess,
   constituentProcessesJaCadastrados,
+  pop,
+  handlePopId,
+  popExternalCollaboration,
+  missionProcesses,
 }) => {
   const [open, setOpen] = useState(false);
   const [constituent, setConstituent] = useState({});
-
-
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -68,7 +69,7 @@ const SelectConstituentProcessControl = ({
           e.stopPropagation();
         }}
         onClick={handleClickOpen}
-        label={"Constituent Process"}
+        label={"Pop"}
         InputLabelProps={{
           readOnly: true,
         }}
@@ -95,15 +96,21 @@ const SelectConstituentProcessControl = ({
             // alignItens: "center",
           }}
         >
-          <SelectConstituentProcess
+          <SelectPopAsConstituentControl
             handleClose={handleClose}
             onSuccess={(constituent) => {
+              handlePopId(constituent.id);
               setConstituent(constituent);
             }}
-            constituentProcess={constituentProcess}
-            constituent_process_id={constituent_process_id}
-            constituentProcessesJaCadastrados={constituentProcessesJaCadastrados}
-          ></SelectConstituentProcess>
+            popExternalCollaboration={popExternalCollaboration}
+            missionProcesses={missionProcesses}
+            // constituentProcess={constituentProcess}
+            // constituent_process_id={constituent_process_id}
+            // constituentProcessesJaCadastrados={
+            //   constituentProcessesJaCadastrados
+            // }
+            pop={pop}
+          ></SelectPopAsConstituentControl>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button onClick={handleClose} variant="outlined" color="primary">
@@ -115,4 +122,4 @@ const SelectConstituentProcessControl = ({
   );
 };
 
-export default SelectConstituentProcessControl;
+export default SelectPopControl;
