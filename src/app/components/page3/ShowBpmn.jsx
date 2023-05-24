@@ -261,7 +261,7 @@ export class ReactBpmn extends React.Component {
           sx={{
             position: "fixed",
             bottom: "20px",
-            left: "170px",
+            left: "200px",
             display: "flex",
             padding: 0,
             margin: 0,

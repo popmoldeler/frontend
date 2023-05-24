@@ -29,7 +29,7 @@ function useRouteMatch(patterns) {
 }
 
 export default function Page3() {
-  const routeMatch = useRouteMatch(["/showbpmn", "/showbusinessalliance", "/popmissionview"]);
+  const routeMatch = useRouteMatch(["/showbpmn", "/showbusinessalliance", "/popmissionview","/popdetailedview"]);
   const currentTab = routeMatch?.pattern?.path;
 
   React.useEffect(() => {
@@ -95,6 +95,15 @@ export default function Page3() {
               variant={currentTab == "/popmissionview" ? "contained" : "text"}
             >
               PoP Mission View
+            </Button>
+            <Button
+              key="three"
+              value="/page3"
+              to="/page3/popdetailedview"
+              component={Link}
+              variant={currentTab == "/popdetailedview" ? "contained" : "text"}
+            >
+              PoP Mission Detailed View
             </Button>
           </ButtonGroup>
         </Box>

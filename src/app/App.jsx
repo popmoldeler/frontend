@@ -25,6 +25,7 @@ import ReactBpmn from "./components/page3/ShowBpmn";
 import Testebpmn from "./components/page3/Testebpmn";
 import About from "./components/page4/About";
 import PopMissionViewBpmn from "./components/page3/popMissionView/PopMissionViewBpmn";
+import PopDetailedViewBpmn from "./components/page3/popDetailedView/PopDetailedViewBpmn";
 import SelectPop from "./components/page3/select_pop/SelectPop";
 
 import { useSelector } from "react-redux";
@@ -58,6 +59,7 @@ import {
   useAddPopMissionModelMutation,
   useUpdatePopMissionModelMutation,
 } from "./features/pop_mission_model/popMissionModel";
+import { useGetPoPConstituentProcessQuery } from "./features/constituent_process/constituenProcessApiSlice";
 
 let router = createBrowserRouter(
   createRoutesFromElements(
@@ -100,6 +102,7 @@ let router = createBrowserRouter(
           <Route path="/page3" element={<Page3></Page3>}>
             <Route path="showbpmn" element={<ShowOverallView />} />
             <Route path="popmissionview" element={<PopMissionView />} />
+            <Route path="popdetailedview" element={<PopDetailedView />} />
           </Route>
           <Route path="/page4" element={<About></About>} />
         </Route>
@@ -246,6 +249,58 @@ function PopMissionView() {
       popId={popId}
       nameConstraintsButton={nameConstraintsButton}
       setNameConstraintsButton={setNameConstraintsButton}
+    />
+  );
+}
+
+function PopDetailedView() {
+  const token = useSelector(selectCurrentToken);
+  const user_id = useSelector(selectCurrentUserId);
+  const [popId, setPopId] = React.useState("");
+  const [nameConstraintsButton, setNameConstraintsButton] =
+    React.useState("add");
+
+  const [popMissionModelId, setPopMissionModelId] = React.useState("");
+  const [
+    openDialogPopMissionModelOutOfDate,
+    setOpenDialogPopMissionModelOutOfDate,
+  ] = React.useState(false);
+
+  const [saveOrUpdataPopMissionModel, setSaveOrUpdataPopMissionModel] =
+    React.useState("save");
+  const [xmlString, setXmlString] = React.useState("");
+  function handleSetXmlString(xml) {
+    setXmlString(xml);
+  }
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  function onShown() {
+    console.log("diagram shown");
+  }
+
+  function onLoading() {
+    console.log("diagram loading");
+  }
+
+  function onError(err) {
+    console.log("failed to show diagram");
+  }
+  const [addPopMissionModel] = useAddPopMissionModelMutation();
+  const [updatePopMissionModel] = useUpdatePopMissionModelMutation();
+
+
+
+  return (
+    <PopDetailedViewBpmn
+      url={xmlString}
+      onShown={onShown}
+      onLoading={onLoading}
+      onError={onError}
+      token={token}
+      user_id={user_id}
+      handleSetXmlString={handleSetXmlString}
     />
   );
 }
