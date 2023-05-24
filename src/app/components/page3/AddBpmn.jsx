@@ -151,7 +151,7 @@ export default function AddBpmn({
 
   React.useEffect(() => {
     if (suc) {
-
+      console.log(constituent)
       createXml(constituent, popID, saveOrUpdate, overallviewID);
       handleClose();
     }
@@ -211,7 +211,7 @@ export default function AddBpmn({
     var diagram = moddle.create("bpmndi:BPMNDiagram", {
       id: `Diagram_${Math.floor(Math.random() * 999)}`,
     });
-
+    console.log(content_constituent)
     content_constituent?.map((mission) => {
       const participant = moddle.create("bpmn:Participant", {
         id: `Participant_${Math.floor(Math.random() * 999)}`,

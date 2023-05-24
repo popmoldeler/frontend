@@ -98,20 +98,20 @@ function LayoutsWithNavbar() {
           <Link to="https://ufms.br">
             <img src={UfmsLogo} alt="UFMS logo" height="40" />
           </Link>
+          <Link to="https://www.facom.ufms.br">
+            <img src={FacomLogo} alt="Facom UFMS logo" height="40" />
+          </Link>
+          <Link to="http://portal.ledes.net/">
+            <img src={LedesLogo} alt="Ledes logo" height="40" />
+          </Link>
           <Link to="http://portal.cnpq.br">
             <img src={CnpqLogo} alt="CNPq logo" height="40" />
           </Link>
           <Link to="https://www.gov.br/capes/pt-br">
             <img src={CapesLogo} alt="Capes logo" height="40" />
           </Link>
-          <Link to="https://www.facom.ufms.br">
-            <img src={FacomLogo} alt="Facom UFMS logo" height="40" />
-          </Link>
           <Link to="https://www.fundect.ms.gov.br">
             <img src={FundectLogo} alt="Fundect logo" height="40" />
-          </Link>
-          <Link to="http://portal.ledes.net/">
-            <img src={LedesLogo} alt="Ledes logo" height="40" />
           </Link>
         </Box>
       </footer>

@@ -3,6 +3,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 export default function About() {
   return (
     <Box
@@ -31,7 +32,12 @@ export default function About() {
           Igor Cassio Toledo Franco
         </Typography>
         <Typography variant="h6" gutterBottom>
-          For the Documentation acess:
+          For the Documentation acess:{" "}
+          {
+            <Link to="http://popmodelerdoc.ledes.net/">
+              http://popmodelerdoc.ledes.net/
+            </Link>
+          }
         </Typography>
         <Typography variant="h6" gutterBottom>
           Made with:

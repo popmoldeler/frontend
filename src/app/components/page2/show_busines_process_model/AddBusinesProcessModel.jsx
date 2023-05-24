@@ -10,7 +10,10 @@ import { Button } from "@mui/material";
 import { Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
-import { useGetAllianceMemberQuery ,useAddBusinessProcessModelMutation} from "../../../features/alliance_member/allianceMemberApiSlice";
+import {
+  useGetAllianceMemberQuery,
+  useAddBusinessProcessModelMutation,
+} from "../../../features/alliance_member/allianceMemberApiSlice";
 // import { useAddBusinessProcessModelMutation } from "../../../features/constituent_process/constituenProcessApiSlice";
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
@@ -43,25 +46,28 @@ function AddBusinesProcessModel({
 }) {
   const user_id = useSelector(selectCurrentUserId);
   const [files, setFiles] = React.useState([]);
+  const [fileText, setFileText] = React.useState();
+
   const formik = useFormik({
     initialValues: {
       alliance_member_id: id,
       user_id: user_id,
       name: "",
       description: "",
-      file_name:'',
-      file_type:files[0]?.fileExtension,
-      location:"ConstituentProcess",
+      file_name: "",
+      file_text: "",
+      file_type: files[0]?.fileExtension,
+      location: "ConstituentProcess",
     },
     onSubmit: async (values) => {
-      values.file_type=files[0]?.fileExtension;
-      
-      values.file_name=files[0]?.serverId;
-      addBusinessProcessModel(values);
-     
-      handleClose();
-     
+      values.file_type = files[0]?.fileExtension;
 
+      values.file_name = files[0]?.serverId;
+      values.file_text = fileText;
+    
+      addBusinessProcessModel(values);
+
+      handleClose();
     },
   });
 
@@ -90,7 +96,6 @@ function AddBusinesProcessModel({
             files={files}
             allowReorder={false}
             allowMultiple={false}
-            onupdatefiles={setFiles}
             instantUpload={false}
             server={{
               url: "http://localhost:8000/api/store",
@@ -100,7 +105,36 @@ function AddBusinesProcessModel({
             }}
             name="files"
             labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+            onupdatefiles={(fileItems) => {
+              // retrieve the text from the file
+              setFiles(fileItems);
+              const file = fileItems[0].file;
+              const reader = new FileReader();
+              reader.readAsText(file);
+              reader.onload = (e) => {
+                const text = e.target.result;
+
+                const sanitizedText = text.replace(/\n/g, ""); // Remove all '\n' characters
+
+                setFileText(sanitizedText);
+              };
+            }}
           />
+          {/* <FilePond
+            files={files}
+            allowReorder={false}
+            allowMultiple={false}
+            instantUpload={false}
+            onupdatefiles={setFiles}
+            server={{
+              url: "http://localhost:8000/api/store",
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }}
+            name="files"
+            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+          /> */}
           <TextField
             sx={{ width: "320px", marginBottom: 1 }}
             id="description"

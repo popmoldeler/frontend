@@ -48,13 +48,13 @@ export default function DialogAddConstituentProcessesConstraintsMissionModel({
       <Box>
         <Button variant="outlined" onClick={handleClickOpen}>
           {nameConstraintsButton === "add"
-            ? "Add PoP Missions Constraints Model"
-            : "Update PoP Missions Constraints Model"}
+            ? "Add Constituent Processes Constraints Model"
+            : "Update Constituent Processes Constraints Model"}
         </Button>
       </Box>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle sx={{ alignSelf: "center" }}>
-        PoP Missions Constraints Model
+          Constituent Processes Constraints Model
         </DialogTitle>
         <DialogContent>
           <form onSubmit={formik.handleSubmit}>
@@ -68,7 +68,7 @@ export default function DialogAddConstituentProcessesConstraintsMissionModel({
               }}
             >
               <TextField
-                label=" Add PoP Missions Constraints Model"
+                label=" Add Constituent Processes Constraints Model"
                 variant="standard"
                 multiline
                 rows={6}

@@ -11,7 +11,7 @@ import {
 } from "bpmn-js-properties-panel";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-import "./PopMissionViewBpmn.css";
+import "./PopDetailedViewBpmn.css";
 import DialogShowBusinessAlliances from "./DialogShowBusinessAlliances";
 import DialogPopMissionModelOutOfDate from "./DialogPopMissionModelOutOfDate";
 import DialogAddConstituentProcessesConstraintsMissionModel from "./DialogAddConstituenProcessesConstraintsMissionModel";
@@ -47,7 +47,7 @@ function withMyHook(Component) {
   };
 }
 
-export class PopMissionViewBpmn extends React.Component {
+export class PopDetailedViewBpmn extends React.Component {
   xmlBase =
     '<? xml version = "1.0" encoding = "UTF-8" ?>' +
     '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1bhm0pw" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="12.0.0">' +
@@ -215,7 +215,7 @@ export class PopMissionViewBpmn extends React.Component {
           sx={{
             position: "fixed",
             bottom: "20px",
-            left: "200px",
+            left: "220px",
             display: "flex",
             padding: 0,
             margin: 0,
@@ -225,19 +225,6 @@ export class PopMissionViewBpmn extends React.Component {
           <DialogShowBusinessAlliances
             user_id={this.props.user_id}
             handleSetXmlString={this.props.handleSetXmlString}
-            saveFile={this.props.addPopMissionModel}
-            setSaveOrUpdataPopMissionModel={
-              this.props.setSaveOrUpdataPopMissionModel
-            }
-            saveOrUpdataPopMissionModel={this.props.saveOrUpdataPopMissionModel}
-            popMissionModelId={this.props.popMissionModelId}
-            setPopMissionModelId={this.props.setPopMissionModelId}
-            setOpenDialogPopMissionModelOutOfDate={
-              this.props.setOpenDialogPopMissionModelOutOfDate
-            }
-            updateFile={this.props.updatePopMissionModel}
-            setPopId={this.props.setPopId}
-            setNameConstraintsButton={this.props.setNameConstraintsButton}
           />
 
           <Button
@@ -283,4 +270,4 @@ export class PopMissionViewBpmn extends React.Component {
     );
   }
 }
-export default withMyHook(PopMissionViewBpmn);
+export default withMyHook(PopDetailedViewBpmn);

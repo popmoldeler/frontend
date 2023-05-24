@@ -26,7 +26,7 @@ export const constituentProcessApiSlice = apiSlice.injectEndpoints({
     }),
     getPoPConstituentProcess: builder.query({
       query: (id) => ({
-        url: `/pop/${id}`,
+        url: `/constituent_process/${id}`,
         method: "GET",
 
       }),
