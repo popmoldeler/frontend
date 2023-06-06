@@ -1,10 +1,13 @@
 import React from 'react';
 
-function criarTextoAcao(constituinteOrigem, constituinteDestino, rotuloElementoBpmnMensagem) {
-    return `${constituinteOrigem} deve interoperar com ${constituinteDestino} para ${rotuloElementoBpmnMensagem}`;
+function criarTextoAcao(constituinteOrigem, constituinteDestino, rotuloConstituinteOrigem) {
+    return `${constituinteOrigem} deve interoperar com ${constituinteDestino} para ${rotuloConstituinteOrigem}`;
 }
 
 function criarTextoCondicaoInteroperabilidade(rotuloObjetoDados) {
+    if (rotuloObjetoDados === "") {
+        return rotuloObjetoDados;
+    }
     return `Existe um acordo para formalização da mensagem definido em: ${rotuloObjetoDados}`;
 }
 
@@ -17,6 +20,9 @@ function criarTextoRestricaoTempoEnvioMensagem(rotuloEventoTempoEnvio) {
 }
 
 function criarTextoOrigemDadosDuranteEnvio(rotuloNomeRepositorioLeitura) {
+    if (rotuloNomeRepositorioLeitura === "-") {
+        return rotuloNomeRepositorioLeitura;
+    }
     return `Os dados são obtidos a partir de um repositório de dados: ${rotuloNomeRepositorioLeitura}`;
 }
 
@@ -37,6 +43,9 @@ function criarTextoRestricaoTempoRecebimentoMensagem(rotuloEventoTempoRecebiment
 }
 
 function criarTextoDestinoDadosDuranteRecebimento(rotuloNomeRepesitorioArmazenamento) {
+    if (rotuloNomeRepesitorioArmazenamento === "-") {
+        return rotuloNomeRepesitorioArmazenamento;
+    }
     return `Os dados são armazenados em um repositório de dados: ${rotuloNomeRepesitorioArmazenamento}`;
 }
 
@@ -49,7 +58,7 @@ function criarTextoFluxoRecebimentoMensagemPrivado() {
 }
 
 function criarTextoRastreabilidade(tipoElementoOrigem, rotuloConstituinteOrigem, tipoElementoDestino, rotuloConstituinteDestinho) {
-    return `${tipoElementoOrigem}(${constituinteOrigem})/${tipoElementoDestino}(${rotuloConstituinteDestinho})`;
+    return `${tipoElementoOrigem}(${rotuloConstituinteOrigem})/${tipoElementoDestino}(${rotuloConstituinteDestinho})`;
 }
 
 function criarTextoCondicoesEnvio() {

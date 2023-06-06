@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -14,14 +14,17 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import ExtractInteroperabilityRequirements from "./extractInteroperabilityRequirements";
+import { CSVLink, CSVDownload } from "react-csv";
 
 export default function ExtractRequirementsDialog({
   openRequirementsDialog,
   setOpenRequirementsDialog,
   mission
 }) {
+    const [csvData, setCsvData] = useState(undefined);
     const handleClose = () => {
         setOpenRequirementsDialog(false);
+        setCsvData(undefined);
     };
 
     const formik = useFormik({
@@ -30,7 +33,7 @@ export default function ExtractRequirementsDialog({
             mission: mission
         },
         onSubmit: async (values) => {
-            ExtractInteroperabilityRequirements({ mission: values.mission });
+            setCsvData(ExtractInteroperabilityRequirements({ mission: values.mission }));
             formik.resetForm();
         },
     });
@@ -67,24 +70,39 @@ export default function ExtractRequirementsDialog({
                             }}
                         >
                             <Button
-                            sx={{ m: 1, width: "20ch" }}
-                            color="error"
-                            variant="outlined"
-                            fullWidth
-                            onClick={handleClose}
-                            >
-                            Close
+                                sx={{ m: 1, width: "20ch" }}
+                                color="error"
+                                variant="outlined"
+                                fullWidth
+                                onClick={handleClose}
+                                >
+                                Close
                             </Button>
                             <Button
-                            sx={{ m: 1, width: "20ch" }}
-                            color="success"
-                            variant="outlined"
-                            fullWidth
-                            type="submit"
-                            >
-                            Extract Requirements
+                                sx={{ m: 1, width: "20ch" }}
+                                color="success"
+                                variant="outlined"
+                                fullWidth
+                                type="submit"
+                                >
+                                Extract Requirements
                             </Button>
                         </Box>
+                            {csvData ?<CSVLink
+                                data={csvData}
+                                separator={";"}
+                                filename={`${mission.tittle}_interoperability_requirements`}
+                                headers={['Campo', 'Descricao']}
+                                style={{
+                                    "backgroundColor": "blue",
+                                    "color": "white",
+                                    "border": "2px solid blue",
+                                    "padding": "10px 20px",
+                                    "textAlign": "center",
+                                    "textDecoration": "none",
+                                    "display": "inline-block"
+                                }}
+                            >Download CSV File</CSVLink> : ''}
                     </Grid>
                 </form> 
             </DialogContent>
