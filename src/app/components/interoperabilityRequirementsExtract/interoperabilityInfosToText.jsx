@@ -16,6 +16,9 @@ function criarTextoQuantidadeMensagensEnviadas(constituinteOrigem, constituinteD
 }
 
 function criarTextoRestricaoTempoEnvioMensagem(rotuloEventoTempoEnvio) {
+     if (rotuloEventoTempoEnvio === "-") {
+        return rotuloEventoTempoEnvio;
+    }
     return `O envio de mensagem será realizado durante ${rotuloEventoTempoEnvio}`;
 }
 
@@ -39,6 +42,9 @@ function criarTextoQuantidadeMensagensRecebidas(constituinteOrigem, constituinte
 }
 
 function criarTextoRestricaoTempoRecebimentoMensagem(rotuloEventoTempoRecebimento) {
+     if (rotuloEventoTempoRecebimento === "-") {
+        return rotuloEventoTempoRecebimento;
+    }
     return `O recebimento de mensagem será realizado durante ${rotuloEventoTempoRecebimento}`;
 }
 
