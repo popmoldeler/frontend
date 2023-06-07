@@ -6,7 +6,13 @@ import Paper from "@mui/material/Paper";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import { Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
@@ -37,6 +43,30 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+function DialogConstituentWithoutCollaboration({
+  openDialogwithouCollaboration,
+  setOpenDialogwithouCollaboration,
+}) {
+  const handleClose = () => {
+    setOpenDialogwithouCollaboration(false);
+  };
+
+  return (
+    <div>
+      <Dialog open={openDialogwithouCollaboration} onClose={handleClose}>
+        <DialogContent>
+          <DialogTitle>
+            Your Constituent does not have a pool, please add it to a pool
+            first.
+          </DialogTitle>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>OK</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
 
 function AddBusinesProcessModel({
   id,
@@ -47,6 +77,9 @@ function AddBusinesProcessModel({
   const user_id = useSelector(selectCurrentUserId);
   const [files, setFiles] = React.useState([]);
   const [fileText, setFileText] = React.useState();
+
+  const [openDialogwithouCollaboration, setOpenDialogwithouCollaboration] =
+    React.useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -64,10 +97,17 @@ function AddBusinesProcessModel({
 
       values.file_name = files[0]?.serverId;
       values.file_text = fileText;
-    
-      addBusinessProcessModel(values);
 
-      handleClose();
+      const source = new DOMParser().parseFromString(fileText, "text/xml");
+      console.log(source.getElementsByTagName("collaboration").length);
+      console.log(source.getElementsByTagName("bpmn:collaboration").length);
+
+      if (source.getElementsByTagName("bpmn:collaboration").length == 0 && source.getElementsByTagName("collaboration").length == 0) {
+        setOpenDialogwithouCollaboration(true);
+      } else {
+        addBusinessProcessModel(values);
+        handleClose();
+      }
     },
   });
 
@@ -120,21 +160,6 @@ function AddBusinesProcessModel({
               };
             }}
           />
-          {/* <FilePond
-            files={files}
-            allowReorder={false}
-            allowMultiple={false}
-            instantUpload={false}
-            onupdatefiles={setFiles}
-            server={{
-              url: "http://localhost:8000/api/store",
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            }}
-            name="files"
-            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-          /> */}
           <TextField
             sx={{ width: "320px", marginBottom: 1 }}
             id="description"
@@ -176,6 +201,10 @@ function AddBusinesProcessModel({
           {/* </form> */}
         </Box>
       </form>
+      <DialogConstituentWithoutCollaboration
+        openDialogwithouCollaboration={openDialogwithouCollaboration}
+        setOpenDialogwithouCollaboration={setOpenDialogwithouCollaboration}
+      />
     </>
   );
 }

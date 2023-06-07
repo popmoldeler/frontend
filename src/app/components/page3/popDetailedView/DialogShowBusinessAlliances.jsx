@@ -8,6 +8,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import BpmnModdle from "bpmn-moddle";
 import BpmnJS from "bpmn-js";
+import { MuiFileInput } from "mui-file-input";
 import {
   Box,
   Collapse,
@@ -39,6 +40,11 @@ var xmlStr =
 export default function DialogShowBusinessAlliances({
   user_id,
   handleSetXmlString,
+  setPopMissionId,
+  saveFile,
+  updateFile,
+  setpopDetailedModelId,
+  setNameVariabilityButton,
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -54,15 +60,22 @@ export default function DialogShowBusinessAlliances({
     <Box>
       <Box>
         <Button variant="outlined" onClick={handleClickOpen}>
-          PoP Mission
+          PoP Mission Detailed Model
         </Button>
       </Box>
       <Dialog open={open} onClose={handleCloseDialog}>
-        <DialogTitle sx={{ alignSelf: "center" }}>PoP Mission</DialogTitle>
+        <DialogTitle sx={{ alignSelf: "center" }}>
+          PoP Mission Detailed Model
+        </DialogTitle>
         <DialogContent>
           <ShowBusinessAlliace
             user_id={user_id}
             handleSetXmlString={handleSetXmlString}
+            setPopMissionId={setPopMissionId}
+            saveFile={saveFile}
+            updateFile={updateFile}
+            setpopDetailedModelId={setpopDetailedModelId}
+            setNameVariabilityButton={setNameVariabilityButton}
           />
         </DialogContent>
       </Dialog>
@@ -70,7 +83,15 @@ export default function DialogShowBusinessAlliances({
   );
 }
 
-function ShowBusinessAlliace({ user_id, handleSetXmlString }) {
+function ShowBusinessAlliace({
+  user_id,
+  handleSetXmlString,
+  setPopMissionId,
+  saveFile,
+  updateFile,
+  setpopDetailedModelId,
+  setNameVariabilityButton,
+}) {
   const [popConstiuentId, setPopConstiuentId] = React.useState(false);
   const [skip, setSkip] = React.useState(true);
   const { data: constituentFileText } = useGetPoPConstituentProcessQuery(
@@ -201,6 +222,12 @@ function ShowBusinessAlliace({ user_id, handleSetXmlString }) {
               setSkip={setSkip}
               skip={skip}
               handleSetXmlString={handleSetXmlString}
+              setPopMissionId={setPopMissionId}
+              saveFile={saveFile}
+              updateFile={updateFile}
+              setpopDetailedModelId={setpopDetailedModelId}
+              user_id={user_id}
+              setNameVariabilityButton={setNameVariabilityButton}
             />
           ))}
         </TableBody>
@@ -215,6 +242,12 @@ function Row({
   setSkip,
   skip,
   handleSetXmlString,
+  setPopMissionId,
+  saveFile,
+  updateFile,
+  setpopDetailedModelId,
+  user_id,
+  setNameVariabilityButton,
 }) {
   const [openShowPopMission, setOpenShowPopMission] = React.useState(false);
 
@@ -291,6 +324,12 @@ function Row({
                     setSkip={setSkip}
                     skip={skip}
                     handleSetXmlString={handleSetXmlString}
+                    setPopMissionId={setPopMissionId}
+                    saveFile={saveFile}
+                    updateFile={updateFile}
+                    setpopDetailedModelId={setpopDetailedModelId}
+                    user_id={user_id}
+                    setNameVariabilityButton={setNameVariabilityButton}
                   />
                 ))}
               </TableBody>
@@ -312,6 +351,12 @@ function Pop(props) {
     skip,
     allianceMembers,
     handleSetXmlString,
+    setPopMissionId,
+    saveFile,
+    updateFile,
+    setpopDetailedModelId,
+    user_id,
+    setNameVariabilityButton,
   } = props;
   const [openPopMission, setOpenPopMission] = React.useState(false);
 
@@ -381,6 +426,12 @@ function Pop(props) {
                     setSkip={setSkip}
                     skip={skip}
                     handleSetXmlString={handleSetXmlString}
+                    setPopMissionId={setPopMissionId}
+                    saveFile={saveFile}
+                    updateFile={updateFile}
+                    setpopDetailedModelId={setpopDetailedModelId}
+                    user_id={user_id}
+                    setNameVariabilityButton={setNameVariabilityButton}
                   />
                 ))}
               </TableBody>
@@ -399,6 +450,12 @@ function PopMission({
   setSkip,
   skip,
   handleSetXmlString,
+  setPopMissionId,
+  saveFile,
+  updateFile,
+  setpopDetailedModelId,
+  user_id,
+  setNameVariabilityButton,
 }) {
   return (
     <React.Fragment>
@@ -416,6 +473,12 @@ function PopMission({
             setSkip={setSkip}
             skip={skip}
             handleSetXmlString={handleSetXmlString}
+            setPopMissionId={setPopMissionId}
+            saveFile={saveFile}
+            updateFile={updateFile}
+            setpopDetailedModelId={setpopDetailedModelId}
+            user_id={user_id}
+            setNameVariabilityButton={setNameVariabilityButton}
           />
         </TableCell>
       </TableRow>
@@ -430,6 +493,12 @@ function MenuSelectMission({
   setSkip,
   skip,
   handleSetXmlString,
+  setPopMissionId,
+  saveFile,
+  updateFile,
+  setpopDetailedModelId,
+  user_id,
+  setNameVariabilityButton,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   // const [xml, setXml] = React.useState(null);
@@ -449,160 +518,558 @@ function MenuSelectMission({
 
   async function handleClickCreatePopMissionModel(params) {
     const { rootElement: definitions } = await moddle.fromXML(xmlStr);
-    const xmlStrings = [];
-    const sources = [];
+    setPopMissionId(mission.id);
+    // console.log(mission.id)
+    const sources = []; //doms dos constituents
+
+    let bigger = [];
+    let maior = 0;
 
     for (let i = 0; i < mission.mission_processes.length; i++) {
-      const xmlString =
-        mission.mission_processes[i].constituent_process.file_text;
-      xmlStrings.push(xmlString);
-
-      const source = new DOMParser().parseFromString(xmlString, "text/xml");
+      const source = new DOMParser().parseFromString(
+        mission.mission_processes[i].constituent_process.file_text,
+        "text/xml"
+      );
       sources.push(source);
 
-      console.log(xmlStrings);
-    }
-
-    //Pega todas as collaborations
-    const collaborations = [];
-
-    for (let i = 0; i < mission.mission_processes.length; i++) {
-      const collaboration =
-        sources[i].getElementsByTagName("bpmn:collaboration");
-      if (collaboration.length > 0) {
-        collaborations.push(collaboration);
-      }
-    }
-
-    console.log(collaborations);
-
-    //Pega todos os id's de processo no collaborations
-    const collaboration_process_ids = [];
-    for (let i = 0; i < collaborations[0].length; i++) {
-      for (let j = 0; j < collaborations[i][i].children.length; j++) {
-        console.log(
-          collaborations[i][j].children[j].attributes.processRef.value
-        );
-        const collaboration_process_id =
-          collaborations[i][j].children[j].attributes.processRef.value;
-        //console.log(collaboration_process_id);
-        collaboration_process_ids.push(collaboration_process_id);
-      }
-    }
-
-    console.log(collaboration_process_ids);
-
-    //Pega todos os process e poe no groups
-    const groups = [];
-    const outside_groups = [];
-
-    for (let i = 0; i < sources.length; i++) {
-      const source = sources[i];
-
-      const group = source.getElementsByTagName("bpmn:process");
-      console.log(group[0].id);
-
-      if (collaboration_process_ids.includes(group[0].id) == false) {
-        groups.push(group);
-      } else {
-        console.log("Ta no collaboration" + group);
-        outside_groups.push(group);
-      }
-    }
-
-    console.log(groups);
-    console.log(outside_groups);
-
-    const grupoZero = groups[0];
-    //o for começa no 1 porque ele vai pegar todos da frente e jogar no primeiro
-    for (let i = 1; i < groups.length; i++) {
-      const group = groups[i];
-      console.log(group[0].children);
-      console.log(grupoZero[0].children);
-
-      while (group[0].children[0] !== undefined) {
-        grupoZero[0].append(group[0].children[0]);
-      }
-
-      console.log(grupoZero[0]);
-    }
-
-    const group_planes = [];
-
-    for (let i = 0; i < sources.length; i++) {
-      const source = sources[i];
-      const group_plane = source.getElementsByTagName("bpmndi:BPMNPlane");
-      group_planes.push(group_plane);
-    }
-
-    let valor = 200;
-    for (let i = 1; i < group_planes.length; i++) {
-      const group_plane = group_planes[i];
-      // group_plane[0].children acessa todas as lista dos shapes e edge dentro do plane
-      // o [0] nao precisa mudar
-      //vamos iterar sobre todos os children
-
-      console.log(group_plane[0].children[i].children);
-      for (let j = 0; j < group_plane[0].children.length; j++) {
-        for (let k = 0; k < group_plane[0].children[j].children.length; k++) {
-          console.log(
-            group_plane[0].children[j].children[k].attributes.y.value
-          );
-          group_plane[0].children[j].children[k].attributes.y.value =
-            Number(group_plane[0].children[j].children[k].attributes.y.value) +
-            Number(valor);
-          console.log(
-            group_plane[0].children[j].children[k].attributes.y.value
+      for (
+        let j = 0;
+        j < sources[i].getElementsByTagName("dc:Bounds").length;
+        j++
+      ) {
+        if (
+          Number(
+            sources[i].getElementsByTagName("dc:Bounds")[j].attributes.y.value
+          ) > maior
+        ) {
+          maior = Number(
+            sources[i].getElementsByTagName("dc:Bounds")[j].attributes.y.value
           );
         }
       }
-      valor = Number(valor) + Number(200);
-      console.log(valor);
+      bigger.push(maior);
+      maior = 0;
     }
 
-    const group_plane_zero = group_planes[0];
-    for (let i = 1; i < group_planes.length; i++) {
-      const group_plane = group_planes[i];
+    //começa aqui
 
-      while (group_plane[0].children[0] !== undefined) {
-        group_plane_zero[0].appendChild(group_plane[0].children[0]);
+    const sourceBase = [];
+    let baseNumber;
+
+    for (let i = 0; i < sources.length; i++) {
+      if (sources[i].getElementsByTagName("collaboration").length != 0) {
+        sourceBase.push(sources[i].getElementsByTagName("definitions"));
+        baseNumber = i;
+      }
+    }
+    console.log(sources[0]);
+    console.log(baseNumber);
+
+    if (sourceBase.length == 0) {
+      sourceBase.push(sources[0].getElementsByTagName("bpmn:definitions"));
+    }
+
+    if (baseNumber >= 0) {
+      // console.log("baseNumber");
+      // Pega a collaboration
+      const collaborations = [];
+      const collaborationBase = [];
+      collaborationBase.push(
+        sources[baseNumber].getElementsByTagName("collaboration")
+      );
+
+      // console.log(collaborationBase[0][0]);
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        if (i != baseNumber) {
+          const collaboration =
+            sources[i].getElementsByTagName("collaboration");
+          if (collaboration.length == 0) {
+            const collaboration =
+              sources[i].getElementsByTagName("bpmn:collaboration");
+
+            while (collaboration[0].children[0] != undefined) {
+              const collaborationChild = collaboration[0].children[0];
+
+              collaborationBase[0][0].appendChild(collaborationChild);
+            }
+          } else {
+            while (collaboration[0].children[0] != undefined) {
+              const collaborationChild = collaboration[0].children[0];
+
+              collaborationBase[0][0].appendChild(collaborationChild);
+            }
+            sourceBase[0][0]
+              .getElementsByTagName("collaboration")
+              .item(0)
+              .remove();
+            sourceBase[0][0].append(collaborationBase[0][0]);
+          }
+        }
+      }
+      // console.log(collaborationBase[0][0]);
+      // console.log(sourceBase[0][0]);
+
+      // sourceBase[0][0].getElementsByTagName("collaboration").item(0).remove();
+      // sourceBase[0][0].append(collaborationBase[0][0]);
+
+      //bpmn:process
+
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        if (i != baseNumber) {
+          const process = sources[i].getElementsByTagName("bpmn:process");
+          if (process.length != 0) {
+            sourceBase[0][0].appendChild(process[0]);
+          }
+        }
       }
 
-      console.log(group_plane_zero[0]);
+      //process
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        const process = sources[i].getElementsByTagName("process");
+
+        if (process.length != 0) {
+          sourceBase[0][0].appendChild(process[0]);
+        }
+      }
+
+      //get bigger Y
+      // let biggerY = 0;
+      const bounds = [];
+
+      //diagram and plane
+      const planeBase = [];
+      planeBase.push(sources[baseNumber].getElementsByTagName("BPMNPlane"));
+
+      //get plane for each constituent, minus the planeBase
+      let valorY = 0;
+      let reverse = bigger.length;
+      let biggerY = 0;
+
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        biggerY += bigger[i] + bigger[reverse - 1];
+
+        if (i != baseNumber) {
+          const plane = sources[i].getElementsByTagName("BPMNPlane");
+
+          for (let k = 0; k < bounds.length; k++) {
+            planeChild.children.item(k).attributes.y.value =
+              Number(planeChild.children.item(k).attributes.y.value) +
+              Number(valorY) +
+              Number(biggerY);
+          }
+
+          if (plane.length != 0) {
+            for (let j = 0; j < plane.length; j++) {
+              while (plane[0].children[0] != undefined) {
+                const planeChild = plane[j].children[0];
+
+                if (planeChild.tagName == "BPMNEdge") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                    }
+                  }
+                }
+                if (planeChild.tagName == "BPMNShape") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                      // console.log("filho de filho");
+                    }
+                  }
+                }
+                planeBase[0][0].appendChild(planeChild);
+              }
+            }
+            sourceBase[0][0]
+              .getElementsByTagName("BPMNDiagram")[0]
+              .children.item(0)
+              .remove();
+            sourceBase[0][0]
+              .getElementsByTagName("BPMNDiagram")[0]
+              .appendChild(planeBase[0][0]);
+          }
+        }
+        if (i != baseNumber) {
+          const plane = sources[i].getElementsByTagName("bpmndi:BPMNPlane");
+
+          for (let k = 0; k < bounds.length; k++) {
+            planeChild.children.item(k).attributes.y.value =
+              Number(planeChild.children.item(k).attributes.y.value) +
+              Number(valorY) +
+              Number(biggerY);
+          }
+
+          if (plane.length != 0) {
+            for (let j = 0; j < plane.length; j++) {
+              while (plane[0].children[0] != undefined) {
+                const planeChild = plane[j].children[0];
+
+                if (planeChild.tagName == "bpmndi:BPMNEdge") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                    }
+                  }
+                }
+                if (planeChild.tagName == "bpmndi:BPMNShape") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                      // console.log("filho de filho");
+                    }
+                  }
+                }
+                planeBase[0][0].appendChild(planeChild);
+              }
+              valorY += 400;
+            }
+          }
+        }
+      }
+
+      // sourceBase[0][0]
+      //   .getElementsByTagName("BPMNDiagram")[0]
+      //   .children.item(0)
+      //   .remove();
+      // sourceBase[0][0]
+      //   .getElementsByTagName("BPMNDiagram")[0]
+      //   .appendChild(planeBase[0][0]);
+
+      // console.log(sourceBase[0][0]);
+
+      const serializer = new XMLSerializer();
+      const xmlFinal = serializer.serializeToString(sourceBase[0][0]);
+
+      const newPopDetailedModel = {
+        name: "PoP Detailed Model",
+        file_text: xmlFinal,
+        user_id: user_id,
+        pop_mission_id: mission.id,
+        updated: true,
+      };
+      if (mission.detailed_view == null) {
+        // saveFile(newPopDetailedModel).then(({ data }) => {
+        //   setpopDetailedModelId(data.id);
+        // });
+        console.log(newPopDetailedModel);
+        handleSetXmlString(xmlFinal);
+      } else {
+        const updatePopDetailedModel = {
+          name: "PoP Detailed Model",
+          file_text: xmlFinal,
+          user_id: user_id,
+          pop_mission_id: mission.id,
+          updated: true,
+          id: mission.detailed_view.id,
+        };
+        // updateFile(updatePopDetailedModel).then(({ data }) => {
+        //   setpopDetailedModelId(data.id);
+        // });
+      }
+      handleSetXmlString(xmlFinal);
+    } else {
+      // Pega a collaboration
+      const collaborations = [];
+      const collaborationBase = [];
+      baseNumber = baseNumber == undefined && 0;
+
+      collaborationBase.push(
+        sources[baseNumber].getElementsByTagName("bpmn:collaboration")
+      );
+
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        if (i != baseNumber) {
+          const collaboration =
+            sources[i].getElementsByTagName("bpmn:collaboration");
+
+          while (collaboration[0].children[0] != undefined) {
+            const collaborationChild = collaboration[0].children[0];
+
+            collaborationBase[0][0].appendChild(collaborationChild);
+          }
+        }
+      }
+
+      //bpmn:process
+
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        if (i != baseNumber) {
+          const process = sources[i].getElementsByTagName("bpmn:process");
+          if (process.length != 0) {
+            sourceBase[0][0].appendChild(process[0]);
+          }
+        }
+      }
+
+      //process
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        const process = sources[i].getElementsByTagName("bpmn:process");
+
+        if (process.length != 0) {
+          sourceBase[0][0].appendChild(process[0]);
+        }
+      }
+
+      //get bigger Y
+      // let biggerY = 0;
+      const bounds = [];
+
+      //diagram and plane
+      const planeBase = [];
+      planeBase.push(
+        sources[baseNumber].getElementsByTagName("bpmndi:BPMNPlane")
+      );
+
+      //get plane for each constituent, minus the planeBase
+      let valorY = 0;
+      let reverse = bigger.length;
+      let biggerY = bigger[reverse - 1];
+
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        // console.log("biggerY", biggerY);
+        reverse = reverse - 1;
+        biggerY = biggerY + bigger[reverse];
+
+        if (i != baseNumber) {
+          const plane = sources[i].getElementsByTagName("bpmndi:BPMNPlane");
+
+          for (let k = 0; k < bounds.length; k++) {
+            planeChild.children.item(k).attributes.y.value =
+              Number(planeChild.children.item(k).attributes.y.value) +
+              Number(valorY) +
+              Number(biggerY);
+          }
+
+          if (plane.length != 0) {
+            for (let j = 0; j < plane.length; j++) {
+              while (plane[0].children[0] != undefined) {
+                const planeChild = plane[j].children[0];
+
+                if (planeChild.tagName == "bpmndi:BPMNEdge") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                    }
+                  }
+                }
+                if (planeChild.tagName == "bpmndi:BPMNShape") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                      // console.log("filho de filho");
+                    }
+                  }
+                }
+                planeBase[0][0].appendChild(planeChild);
+              }
+              valorY += 400;
+            }
+          }
+        }
+      }
+
+      const serializer = new XMLSerializer();
+      const xmlFinal = serializer.serializeToString(sourceBase[0][0]);
+
+      const newPopDetailedModel = {
+        name: "PoP Detailed Model",
+        file_text: xmlFinal,
+        user_id: user_id,
+        pop_mission_id: mission.id,
+        updated: true,
+      };
+      if (mission.detailed_view == null) {
+        // saveFile(newPopDetailedModel).then(({ data }) => {
+        //   setpopDetailedModelId(data.id);
+        // });
+        console.log(newPopDetailedModel);
+      } else {
+        const updatePopDetailedModel = {
+          name: "PoP Detailed Model",
+          file_text: xmlFinal,
+          user_id: user_id,
+          pop_mission_id: mission.id,
+          updated: true,
+          id: mission.detailed_view.id,
+        };
+        // updateFile(updatePopDetailedModel).then(({ data }) => {
+        //   setpopDetailedModelId(data.id);
+        // });
+        handleSetXmlString(xmlFinal);
+      }
     }
-
-    const finalGroup = sources[0].getElementsByTagName("bpmn:definitions");
-
-    finalGroup[0].appendChild(grupoZero[0]);
-    console.log(outside_groups[0][0]);
-    finalGroup[0].appendChild(outside_groups[0][0]);
-
-    finalGroup[0].childNodes[2].appendChild(group_plane_zero[0]);
-
-    finalGroup[0].appendChild(collaborations[0][0]);
-
-    var newDocument = document.implementation.createDocument(null, null, null);
-
-    newDocument.appendChild(finalGroup[0]);
-    console.log(newDocument);
-
-    const serializer = new XMLSerializer();
-    const xmlFinal = serializer.serializeToString(newDocument);
-
-    console.log(xmlFinal);
-    // var xmlStr =
-    //   '<?xml version="1.0" encoding="UTF-8"?>' +
-    //   '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_0z7m68t" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="11.5.0">' +
-    //   "</bpmn:definitions>";
-    // const teste = new BpmnModdle();
-
-    // const { rootElement: definitions } = await teste.fromXML(xmlStr);
-    // const { xml } = await teste.toXML(xmlFinal);
-    handleSetXmlString(xmlFinal)
   }
 
-  async function handleClickLoadPopMissionModel(params) {}
+  async function handleClickLoadPopMissionModel() {
+    console.log(mission);
+    setPopMissionId(mission.id);
+    setpopDetailedModelId(mission.detailed_view.id);
+    handleSetXmlString(mission.detailed_view.file_text);
 
+    if (mission.detailed_view.variability_constraints_model != null) {
+      setNameVariabilityButton(
+        mission.detailed_view.variability_constraints_model
+      );
+    } else {
+      setNameVariabilityButton("add");
+    }
+  }
+
+  async function handleClickUploadPopMissionModel() {
+    setMissao(mission);
+
+    console.log("mission", mission.id);
+  }
+
+  const [missao, setMissao] = React.useState(null);
+
+  const handleChange = (newFile) => {
+    const reader = new FileReader();
+    reader.readAsText(newFile);
+    reader.onload = function () {
+      // console.log(reader.result);
+      setPopMissionId(missao.id);
+      setpopDetailedModelId(missao.detailed_view.id);
+      handleSetXmlString(reader.result);
+
+      if (missao.detailed_view.variability_constraints_model != null) {
+        setNameVariabilityButton(
+          missao.detailed_view.variability_constraints_model
+        );
+      } else {
+        setNameVariabilityButton("add");
+      }
+      handleClose();
+    };
+
+    // console.log(reader.readAsText(newFile));
+  };
+
+  // console.log(file);
   return (
     <div>
       <IconButton
@@ -621,7 +1088,7 @@ function MenuSelectMission({
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClick={handleClose}
+        onClose={handleClose}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
@@ -635,140 +1102,17 @@ function MenuSelectMission({
         >
           Load PoP Detailed Model
         </MenuItem>
+        <MenuItem
+          component="label"
+          onClick={() => handleClickUploadPopMissionModel(mission)}
+        >
+          <MuiFileInput
+            sx={{ display: { xs: "none", md: "none" } }}
+            onChange={handleChange}
+          />
+          Upload PoP Detailed Model
+        </MenuItem>
       </Menu>
     </div>
   );
-}
-
-async function createXml(
-  pop,
-  user_id,
-  setPopMissionModelId,
-  saveFile,
-  updateFile
-) {
-  var xmlStr =
-    '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_0z7m68t" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="11.5.0">' +
-    "</bpmn:definitions>";
-
-  const moddle = new BpmnModdle();
-
-  const { rootElement: definitions } = await moddle.fromXML(xmlStr);
-  let x = 0;
-  let y = 0;
-
-  const bpmnCollaboration = moddle.create("bpmn:Collaboration", {
-    id: `Collaboration_${Math.floor(Math.random() * 999)}`,
-    participants: [],
-  });
-
-  var process = moddle.create("bpmn:Process", {
-    id: `Process_${Math.floor(Math.random() * 999)}`,
-    laneSets: [],
-  });
-  const participant = moddle.create("bpmn:Participant", {
-    id: `Participant_${Math.floor(Math.random() * 999)}`,
-    processRef: process,
-  });
-  bpmnCollaboration.participants.push(participant);
-
-  var plane = moddle.create("bpmndi:BPMNPlane", {
-    id: `Plane_${Math.floor(Math.random() * 999)}`,
-    bpmnElement: bpmnCollaboration,
-    planeElement: [],
-  });
-
-  var diagram = moddle.create("bpmndi:BPMNDiagram", {
-    id: `Diagram_${Math.floor(Math.random() * 999)}`,
-  });
-
-  pop.pop_missions.map((missao) => {
-    var subProcess = moddle.create("bpmn:SubProcess", {
-      id: `Activity_${Math.floor(Math.random() * 999)}`,
-      name: `${missao.tittle}`,
-    });
-    process.laneSets.push(subProcess);
-
-    const bpmnActivity = moddle.create("bpmndi:BPMNShape", {
-      id: `Shape_${Math.floor(Math.random() * 999)}`,
-      bpmnElement: subProcess,
-
-      bounds: moddle.create("dc:Bounds", {
-        x: `${x + 220}`,
-        y: `${y + 90}`,
-        width: "100",
-        height: "80",
-      }),
-      label: moddle.create("bpmndi:BPMNLabel"),
-    });
-    plane.planeElement.push(bpmnActivity);
-    y = y + 100;
-  });
-
-  const bpmnPool = moddle.create("bpmndi:BPMNShape", {
-    id: `Shape_${Math.floor(Math.random() * 999)}`,
-    bpmnElement: participant,
-    isHorizontal: true,
-    bounds: moddle.create("dc:Bounds", {
-      x: "160",
-      y: "80",
-      width: "600",
-      height: `${(pop.pop_missions.length + 1) * 90}`,
-    }),
-    label: moddle.create("bpmndi:BPMNLabel"),
-  });
-
-  plane.planeElement.push(bpmnPool);
-
-  diagram.plane = plane;
-
-  definitions.get("rootElements").push(bpmnCollaboration);
-  definitions.get("rootElements").push(process);
-
-  diagram.plane = plane;
-
-  definitions.get("rootElements").push(diagram);
-  process.laneSets.map((activity) => {
-    var diagram1 = moddle.create("bpmndi:BPMNDiagram", {
-      id: `Diagram_${Math.floor(Math.random() * 999)}`,
-      plane: moddle.create("bpmndi:BPMNPlane", {
-        id: `Plane_${Math.floor(Math.random() * 999)}`,
-        bpmnElement: activity,
-      }),
-    });
-
-    definitions.get("rootElements").push(diagram1);
-  });
-  const { xml } = await moddle.toXML(definitions);
-
-  const popMissionModel = {
-    name: "PoP Mission Model",
-    file_text: xml,
-    user_id: user_id,
-    pop_id: pop.id,
-  };
-  console.log(popMissionModel);
-  if (pop.pop_mission_model == null) {
-    // this.props.addOverallView(overallview);
-    console.log("save");
-    saveFile(popMissionModel).then(({ data }) => {
-      setPopMissionModelId(data.id);
-    });
-  } else {
-    const newPopMissionModel = {
-      name: "PoP Mission Model",
-      file_text: xml,
-      user_id: user_id,
-      pop_id: pop.id,
-      id: pop.pop_mission_model.id,
-      updated: true,
-    };
-    console.log("update", newPopMissionModel);
-    updateFile(newPopMissionModel).then(({ data }) => {
-      setPopMissionModelId(data.id);
-    });
-    // this.props.updateOverallView(newoverallview)
-  }
-  return xml;
 }

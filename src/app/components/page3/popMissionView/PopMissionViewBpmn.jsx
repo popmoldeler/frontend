@@ -1,7 +1,14 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import BpmnJS from "bpmn-js/lib/Modeler";
+import BpmnModdle from "bpmn-moddle";
 import FileSaver from "file-saver";
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import { unstable_useBlocker as useBlocker } from "react-router-dom";
@@ -20,9 +27,7 @@ function withMyHook(Component) {
   return function WrappedComponent(props) {
     // const history = useHistory();
     const [openIsBlocked, setOpenIsBlocked] = React.useState("");
-
     let blocker = useBlocker(openIsBlocked);
-
     // Reset the blocker if the user cleans the form
     React.useEffect(() => {
       if (blocker.state === "blocked" && !openIsBlocked) {
@@ -30,11 +35,13 @@ function withMyHook(Component) {
       }
     }, [blocker, openIsBlocked]);
 
-    // useEffect(() => {
+    const [saveAnyway, setsaveAnyway] = React.useState(false);
+    const [xmlToSaveAgain, setXxmlToSaveAgain] = React.useState(false);
 
-    //   props.setRouteChange(location.pathname);
-
-    // }, [location.pathname]);
+    const [
+      openDialogWithMoreCollaboration,
+      setOpenDialogWithMoreCollaboration,
+    ] = React.useState(false);
 
     return (
       <Component
@@ -42,9 +49,46 @@ function withMyHook(Component) {
         setOpenIsBlocked={setOpenIsBlocked}
         blocker={blocker}
         openIsBlocked={openIsBlocked}
+        openDialogWithMoreCollaboration={openDialogWithMoreCollaboration}
+        setOpenDialogWithMoreCollaboration={setOpenDialogWithMoreCollaboration}
+        saveAnyway={saveAnyway}
+        setsaveAnyway={setsaveAnyway}
+        xmlToSaveAgain={xmlToSaveAgain}
+        setXxmlToSaveAgain={setXxmlToSaveAgain}
       />
     );
   };
+}
+function DialogPopMissionsModelWithMoreCollaboration({
+  openDialogWithMoreCollaboration,
+  setOpenDialogWithMoreCollaboration,
+  setsaveAnyway,
+  save,
+}) {
+  const handleClose = () => {
+    setOpenDialogWithMoreCollaboration(false);
+  };
+  const handleSave = () => {
+    setsaveAnyway(true);
+    save();
+    handleClose();
+  };
+
+  return (
+    <div>
+      <Dialog open={openDialogWithMoreCollaboration} onClose={handleClose}>
+        <DialogContent>
+          <DialogTitle>
+            Your PoP Missions Model have more than one pool and/or more sub process than missions!
+          </DialogTitle>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
 }
 
 export class PopMissionViewBpmn extends React.Component {
@@ -172,16 +216,17 @@ export class PopMissionViewBpmn extends React.Component {
       const blob = new Blob([xml], {
         type: "text;charset=utf-8",
       });
-      FileSaver.saveAs(blob, "overallview.bpmn");
+      FileSaver.saveAs(blob, "popMissionsModel.bpmn");
     } catch (err) {
       console.error("Error happened saving XML: ", err);
     }
   }
 
-  async saveFile(xmlArg) {
+  async saveFile() {
+    console.log("save");
     try {
       const { xml } = await this.bpmnViewer.saveXML({ format: true });
-
+      console.log(xml);
       const newPopMissionModel = {
         name: "overallview",
         file_text: xml,
@@ -191,7 +236,27 @@ export class PopMissionViewBpmn extends React.Component {
         updated: true,
       };
 
-      this.props.updatePopMissionModel(newPopMissionModel);
+      const source = new DOMParser().parseFromString(xml, "text/xml");
+
+      const collaboration = source.getElementsByTagName("bpmn:collaboration");
+      const process = source.getElementsByTagName("bpmn:process");
+
+
+      
+
+      if (
+        collaboration[0].children.length > 1 &&
+        this.props.saveAnyway == false
+      ) {
+        this.props.setXxmlToSaveAgain(xml);
+        this.props.setOpenDialogWithMoreCollaboration(true);
+      } else {
+        if (process[0].children.length > this.props.popMissionNumber) {
+          this.props.setOpenDialogWithMoreCollaboration(true);
+        }
+
+        this.props.updatePopMissionModel(newPopMissionModel);
+      }
     } catch (err) {
       console.error("Error happened saving XML: ", err);
     }
@@ -225,7 +290,6 @@ export class PopMissionViewBpmn extends React.Component {
           <DialogShowBusinessAlliances
             user_id={this.props.user_id}
             handleSetXmlString={this.props.handleSetXmlString}
-            saveFile={this.props.addPopMissionModel}
             setSaveOrUpdataPopMissionModel={
               this.props.setSaveOrUpdataPopMissionModel
             }
@@ -235,9 +299,11 @@ export class PopMissionViewBpmn extends React.Component {
             setOpenDialogPopMissionModelOutOfDate={
               this.props.setOpenDialogPopMissionModelOutOfDate
             }
+            saveFile={this.props.addPopMissionModel}
             updateFile={this.props.updatePopMissionModel}
             setPopId={this.props.setPopId}
             setNameConstraintsButton={this.props.setNameConstraintsButton}
+            setPopMissionNumber={this.props.setPopMissionNumber}
           />
 
           <Button
@@ -246,7 +312,7 @@ export class PopMissionViewBpmn extends React.Component {
               this.saveFile();
             }}
           >
-            Save PoP Mission Model
+            Save PoP Missions Model
           </Button>
           <Button
             variant="outlined"
@@ -254,7 +320,7 @@ export class PopMissionViewBpmn extends React.Component {
               this.downloadFile();
             }}
           >
-            Download PoP Mission Model
+            Download PoP Missions Model
           </Button>
           <DialogPopMissionModelOutOfDate
             openDialogPopMissionModelOutOfDate={
@@ -277,6 +343,18 @@ export class PopMissionViewBpmn extends React.Component {
             blocker={this.props.blocker}
             openIsBlocked={this.props.openIsBlocked}
             setOpenIsBlocked={this.props.setOpenIsBlocked}
+          />
+        ) : null}
+        {this.props.openDialogWithMoreCollaboration ? (
+          <DialogPopMissionsModelWithMoreCollaboration
+            openDialogWithMoreCollaboration={
+              this.props.openDialogWithMoreCollaboration
+            }
+            setOpenDialogWithMoreCollaboration={
+              this.props.setOpenDialogWithMoreCollaboration
+            }
+            setsaveAnyway={this.props.setsaveAnyway}
+            save={() => this.saveFile()}
           />
         ) : null}
       </>
