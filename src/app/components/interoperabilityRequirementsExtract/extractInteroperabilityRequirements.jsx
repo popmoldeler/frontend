@@ -131,8 +131,8 @@ export default function ExtractInteroperabilityRequirements({
         for (var i = 0; i < boundaryEvents.length; i++) {
             const boundaryEvent = boundaryEvents.item(i);
             if (boundaryEvent.attributes.attachedToRef.value === item.attributes.id.value) {
-                const getTimerEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
-                if (getTimerEventDefinition.length === 1) {
+                const getErrorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
+                if (getErrorEventDefinition.length === 1) {
                     return true;
                 }
             }
