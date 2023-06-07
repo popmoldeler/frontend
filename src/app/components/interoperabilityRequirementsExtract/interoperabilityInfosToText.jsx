@@ -1,10 +1,13 @@
 import React from 'react';
 
-function criarTextoAcao(constituinteOrigem, constituinteDestino, rotuloElementoBpmnMensagem) {
-    return `${constituinteOrigem} deve interoperar com ${constituinteDestino} para ${rotuloElementoBpmnMensagem}`;
+function criarTextoAcao(constituinteOrigem, constituinteDestino, rotuloConstituinteOrigem) {
+    return `${constituinteOrigem} deve interoperar com ${constituinteDestino} para ${rotuloConstituinteOrigem}`;
 }
 
 function criarTextoCondicaoInteroperabilidade(rotuloObjetoDados) {
+    if (rotuloObjetoDados === "") {
+        return rotuloObjetoDados;
+    }
     return `Existe um acordo para formalização da mensagem definido em: ${rotuloObjetoDados}`;
 }
 
@@ -13,10 +16,16 @@ function criarTextoQuantidadeMensagensEnviadas(constituinteOrigem, constituinteD
 }
 
 function criarTextoRestricaoTempoEnvioMensagem(rotuloEventoTempoEnvio) {
+     if (rotuloEventoTempoEnvio === "-") {
+        return rotuloEventoTempoEnvio;
+    }
     return `O envio de mensagem será realizado durante ${rotuloEventoTempoEnvio}`;
 }
 
 function criarTextoOrigemDadosDuranteEnvio(rotuloNomeRepositorioLeitura) {
+    if (rotuloNomeRepositorioLeitura === "-") {
+        return rotuloNomeRepositorioLeitura;
+    }
     return `Os dados são obtidos a partir de um repositório de dados: ${rotuloNomeRepositorioLeitura}`;
 }
 
@@ -33,10 +42,16 @@ function criarTextoQuantidadeMensagensRecebidas(constituinteOrigem, constituinte
 }
 
 function criarTextoRestricaoTempoRecebimentoMensagem(rotuloEventoTempoRecebimento) {
+     if (rotuloEventoTempoRecebimento === "-") {
+        return rotuloEventoTempoRecebimento;
+    }
     return `O recebimento de mensagem será realizado durante ${rotuloEventoTempoRecebimento}`;
 }
 
 function criarTextoDestinoDadosDuranteRecebimento(rotuloNomeRepesitorioArmazenamento) {
+    if (rotuloNomeRepesitorioArmazenamento === "-") {
+        return rotuloNomeRepesitorioArmazenamento;
+    }
     return `Os dados são armazenados em um repositório de dados: ${rotuloNomeRepesitorioArmazenamento}`;
 }
 
@@ -49,7 +64,7 @@ function criarTextoFluxoRecebimentoMensagemPrivado() {
 }
 
 function criarTextoRastreabilidade(tipoElementoOrigem, rotuloConstituinteOrigem, tipoElementoDestino, rotuloConstituinteDestinho) {
-    return `${tipoElementoOrigem}(${constituinteOrigem})/${tipoElementoDestino}(${rotuloConstituinteDestinho})`;
+    return `${tipoElementoOrigem}(${rotuloConstituinteOrigem})/${tipoElementoDestino}(${rotuloConstituinteDestinho})`;
 }
 
 function criarTextoCondicoesEnvio() {
