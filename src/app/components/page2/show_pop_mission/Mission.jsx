@@ -25,6 +25,8 @@ import MenuMission from "./MenuMission";
 import ConstituentProcessModel from "./ConstituentProcessModel";
 import DialogAddPoPAsConstituentProcessModel from "./DialogAddPoPAsConstituentProcessModel";
 import ExtractRequirementsDialog from "../../interoperabilityRequirementsExtract/extractRequirementsDialog";
+import ExtractReliabilityDialog from "../../reliabilityRequirementsExtract/extractReliabilityDialog";
+
 export default function Mission({ mission, allianceMembers, pop_id, pop,popExternalCollaboration ,popOverall}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
@@ -48,6 +50,11 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
     setOpenRequirementsDialog,
   ] = React.useState(false);
 
+  const [
+    openReliabilityDialog,
+    setOpenReliabilityDialog,
+  ] = React.useState(false);
+
   const adicionandoConstituentProcessModel = () => {
     setOpenDialogAddConstientProcessModel(!openDialogAddConstientProcessModel);
   };
@@ -58,6 +65,10 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
 
   const extractInteroperabilityRequirements = () => {
     setOpenRequirementsDialog(true);
+  };
+
+  const extractReliabilityRequirements = () => {
+    setOpenReliabilityDialog(true);
   };
 
   const deletando = () => {
@@ -129,9 +140,17 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
       />
      
       <ExtractRequirementsDialog
-          openRequirementsDialog={openRequirementsDialog}
+        openRequirementsDialog={openRequirementsDialog}
         setOpenRequirementsDialog={
           setOpenRequirementsDialog
+        }
+        mission={mission}
+      />
+
+      <ExtractReliabilityDialog
+        openReliabilityDialog={openReliabilityDialog}
+        setOpenReliabilityDialog={
+          setOpenReliabilityDialog
         }
         mission={mission}
       />
@@ -231,6 +250,9 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
               }
               extractInteroperabilityRequirements={
                 extractInteroperabilityRequirements
+              }
+              extractReliabilityRequirements={
+                extractReliabilityRequirements
               }
             ></MenuMission>
           )}

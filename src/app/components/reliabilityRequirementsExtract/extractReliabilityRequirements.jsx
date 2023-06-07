@@ -1,6 +1,5 @@
 import * as React from "react";
-import { criarTextoAcaoEnvio } from "./reabilityInfosToText";
-import { criarTextoAcaoRecebimento } from "./reabilityInfosToText";
+import { criarTextoAcaoEnvio } from "./reliabilityInfosToText";
 
 //import React from 'react';
 //import { useEffect, useState } from 'react';
@@ -11,10 +10,15 @@ export default function ExtractReabilityRequirements({
     mission,
     options
 }) {
-    console.log('missão', mission.mission_processes[2]);
+
+  const requirements = [];
+
+  requirements.push(["ID", "TESTE"]);
+
+    console.log('missão', mission.mission_processes[0]);
     
     const xmlString =
-        mission.mission_processes[2].constituent_process.file_text;
+        mission.mission_processes[0].constituent_process.file_text;
 
     const source = new DOMParser().parseFromString(xmlString, "text/xml");
 
@@ -240,5 +244,5 @@ export default function ExtractReabilityRequirements({
         return '';
       }    
 
-   
+  return requirements;
 };

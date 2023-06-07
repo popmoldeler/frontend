@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import ExtractInteroperabilityRequirements from "./extractInteroperabilityRequirements";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 
 export default function ExtractRequirementsDialog({
   openRequirementsDialog,
