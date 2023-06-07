@@ -2,6 +2,10 @@ import * as React from "react";
 import { criarTextoAcaoEnvio } from "./reabilityInfosToText";
 import { criarTextoAcaoRecebimento } from "./reabilityInfosToText";
 
+//import React from 'react';
+//import { useEffect, useState } from 'react';
+//import { parseString } from 'xml2js';
+
 
 export default function ExtractReabilityRequirements({
     mission,
@@ -126,8 +130,8 @@ export default function ExtractReabilityRequirements({
 
     //boundaryEvent SOURCE 
     const itemIdboundary = source.getElementById(idboundaryEvent);
-    console.log('itemIdboundary', itemIdboundary.attributes);
     const itemAttachedToRefboundary = source.getElementById(attachedToRefboundaryEvent);
+    console.log('itemIdboundary', itemIdboundary.attributes);
     console.log('itemAttachedToRefboundary',itemAttachedToRefboundary.attributes);
 
     // ========================================================================== errorEventDefinition
@@ -140,5 +144,101 @@ export default function ExtractReabilityRequirements({
     //errorEventDefinition SOURCE
     const itemIdErro = source.getElementById(idErrorEvent);
     console.log('itemIdErro', itemIdErro.attributes);
+
+    // ========================================================================== sequenceFlow
+
+    // sequenceFlow BPMN
+    const itemsequenceFlow = sequenceFlowDefinition.item(0);
+    const idsequenceFlow = itemsequenceFlow.attributes.id.value;
+    const namesequenceFlow = namesequenceFlow.attributes.name.value;
+    const sourceRefsequenceFlow = sourceRefsequenceFlow.attributes.sourceRef.value;
+    const targetRefsequenceFlow = targetRefsequenceFlow.attributes.targetRef.value;
+    console.log('idsequenceFlow', idsequenceFlow);
+    console.log('namesequenceFlow', namesequenceFlow);
+    console.log('sourceRefsequenceFlow', sourceRefsequenceFlow);
+    console.log('targetRefsequenceFlow', targetRefsequenceFlow);
+
+    // sequenceFlow SOURCE
+    const itemidsequenceFlow = source.getElementById(idsequenceFlow);
+    const itemnamesequenceFlow = source.getElementById(namesequenceFlow);
+    const itemsourceRefsequenceFlow  = source.getElementById(sourceRefsequenceFlow);
+    const itemtargetRefsequenceFlow  = source.getElementById(targetRefsequenceFlow);
+    console.log('itemidsequenceFlow', itemidsequenceFlow.attributes);
+    console.log('itemnamesequenceFlow', itemnamesequenceFlow.attributes);
+    console.log('itemsourceRefsequenceFlow', itemsourceRefsequenceFlow.attributes);
+    console.log('itemtargetRefsequenceFlow', itemtargetRefsequenceFlow.attributes);
+
+    // ========================================================================== subProcess
+
+    // subProcess BPMN
+    const itemsubProcess = subProcess.item(0);
+    const idsubProcess = itemsubProcess.attributes.id.value;
+    const namesubProcess = itemsubProcess.attributes.name.value;
+    const incomingsubProcess = itemsubProcess.attributes.incoming.value;
+    const outgoingsubProcessk = itemsubProcess.attributes.outgoing.value;
+    console.log('idsubProcess', idsubProcess);
+    console.log('namesubProcess', namesubProcess);
+    console.log('incomingsubProcess', incomingsubProcess);
+    console.log('outgoingsubProcessk', outgoingsubProcessk);
+
+    // subProcess SOURCE
+    const itemidsubProcess = source.getElementById(idsubProcess);
+    const itemnamesubProcess = source.getElementById(namesubProcess);
+    const itemincomingsubProcess  = source.getElementById(incomingsubProcess);
+    const itemoutgoingsubProcessk  = source.getElementById(outgoingsubProcessk);
+
+    console.log('itemidsubProcess', itemidsubProcess.attributes);
+    console.log('itemnamesubProcess', itemnamesubProcess.attributes);
+    console.log('itemincomingsubProcess', itemincomingsubProcess.attributes);
+    console.log('itemoutgoingsubProcessk', itemoutgoingsubProcessk.attributes);
+
+    // ================================================== carregar informações de dentro do subProces
+
+    const extractSequenceFlowInformation = () => {
+        // Vá até o SubProcess desejado (exemplo: ID do SubProcess = 'subProcessId')
+        const subProcess = bpmnData.definitions.process[0].subProcess.find(sub => sub.$.id === 'subProcessId');
+    
+        if (subProcess) {
+          // Vá até o Exclusive Gateway desejado (exemplo: ID do Exclusive Gateway = 'exclusiveGatewayId')
+          const exclusiveGateway = subProcess.exclusiveGateway.find(gateway => gateway.$.id === 'exclusiveGatewayId');
+    
+          if (exclusiveGateway) {
+            // Filtra os SequenceFlows conectados ao Exclusive Gateway
+            const sequenceFlows = subProcess.sequenceFlow.filter(flow => flow.$.sourceRef === exclusiveGateway.$.id);
+    
+            sequenceFlows.forEach(sequenceFlow => {
+              // Verifica o tipo do elemento de destino
+              const destinationType = getElementType(sequenceFlow.$.targetRef);
+    
+              if (destinationType === 'SendTask' || destinationType === 'ManualTask' || destinationType === 'IntermediateCatchEvent') {
+                // Extrai as informações desejadas do SequenceFlow
+                const source = sequenceFlow.$.sourceRef;
+                const target = sequenceFlow.$.targetRef;
+                const name = sequenceFlow.$.name;
+    
+                console.log('SequenceFlow encontrado:');
+                console.log('Source:', source);
+                console.log('Target:', target);
+                console.log('Name:', name);
+              }
+            });
+          }
+        }
+      };
+
+      const getElementType = (elementId) => {
+        // Obtém o tipo do elemento com base no seu ID (você pode adaptar essa função para mapear seus IDs)
+        // Exemplo: Obtém o tipo com base no prefixo do ID (SendTask_, ManualTask_, IntermediateCatchEvent_)
+        if (elementId.startsWith('SendTask_')) {
+          return 'SendTask';
+        } else if (elementId.startsWith('ManualTask_')) {
+          return 'ManualTask';
+        } else if (elementId.startsWith('IntermediateCatchEvent_')) {
+          return 'IntermediateCatchEvent';
+        }
+    
+        return '';
+      }    
+
    
 };
