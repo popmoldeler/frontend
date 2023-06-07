@@ -138,9 +138,9 @@ function AddBusinesProcessModel({
             allowMultiple={false}
             instantUpload={false}
             server={{
-              url: "http://localhost:80/api/store",
+              url: "http://localhost:8000/api/store",
               headers: {
-                Authorization: "Bearer" + token
+                Authorization: "Bearer " + token,
               },
             }}
             name="files"
