@@ -187,7 +187,7 @@ function RegisterAlliance({
       const m = {
         alliance_member_id: org.toString(),
         relationship: relation,
-        entry_date: date.toLocaleString("en-US", options),
+        entry_date: date.toLocaleString("pt-BR", options),
         business_alliance_id: "",
       };
       setMember([...member, m]);
@@ -209,11 +209,7 @@ function RegisterAlliance({
 
           const alianca = {
             name: nome,
-<<<<<<< HEAD
             creation_date: date.toLocaleString("pt-BR", options).toString(),
-=======
-            creation_date: date.toLocaleString("en-US", options),
->>>>>>> 36de723860bda071dedf71fc32d5c44d47b820f0
             business_goal: goal,
             responsable_member_id: responsableOrganization.id,
             user_id: user_id,
@@ -227,11 +223,7 @@ function RegisterAlliance({
             const m = {
               alliance_member_id: responsableOrganization.id,
               relationship: "Responsible",
-<<<<<<< HEAD
               entry_date: date.toLocaleString("pt-BR", options).toString(),
-=======
-              entry_date: date.toLocaleString("en-US", options),
->>>>>>> 36de723860bda071dedf71fc32d5c44d47b820f0
               business_alliance_id: res.data.id,
               is_public: isPublic,
             };
