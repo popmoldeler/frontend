@@ -38,8 +38,10 @@ export default function ExtractInteroperabilityRequirements({
                 const participants = origin.getElementsByTagName("bpmn:participant");
                 for (var k = 0; k < participants.length; k++) {
                     const participant = participants.item(k);
-                    if (participant.attributes.processRef.value === poolId) {
-                        return participant.attributes.name.value;
+                    if (participant.attributes.processRef) {
+                        if (participant.attributes.processRef.value === poolId) {
+                            return participant.attributes.name.value;
+                        }
                     }
                 }
             }
