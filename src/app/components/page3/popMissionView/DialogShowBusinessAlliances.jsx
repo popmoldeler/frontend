@@ -30,14 +30,16 @@ import { useGetBusinessAlliancesQuery } from "../../../features/business_allianc
 export default function DialogShowBusinessAlliances({
   handleSetXmlString,
   saveFile,
+  updateFile,
   user_id,
   setSaveOrUpdataPopMissionModel,
   saveOrUpdataPopMissionModel,
   setPopMissionModelId,
   setOpenDialogPopMissionModelOutOfDate,
-  updateFile,
   setPopId,
   setNameConstraintsButton,
+
+  setPopMissionNumber,
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -53,26 +55,29 @@ export default function DialogShowBusinessAlliances({
     <Box>
       <Box>
         <Button variant="outlined" onClick={handleClickOpen}>
-          PoP Mission
+          PoP Missions Model
         </Button>
       </Box>
       <Dialog open={open} onClose={handleCloseDialog}>
-        <DialogTitle sx={{ alignSelf: "center" }}>PoP Mission</DialogTitle>
+        <DialogTitle sx={{ alignSelf: "center" }}>
+          PoP Missions Model
+        </DialogTitle>
         <DialogContent>
           <ShowBusinessAlliace
             user_id={user_id}
             handleSetXmlString={handleSetXmlString}
             handleCloseDialog={handleCloseDialog}
-            saveFile={saveFile}
             setSaveOrUpdataPopMissionModel={setSaveOrUpdataPopMissionModel}
             saveOrUpdataPopMissionModel={saveOrUpdataPopMissionModel}
             setPopMissionModelId={setPopMissionModelId}
             setOpenDialogPopMissionModelOutOfDate={
               setOpenDialogPopMissionModelOutOfDate
             }
-            updateFile={updateFile}
             setPopId={setPopId}
             setNameConstraintsButton={setNameConstraintsButton}
+            saveFile={saveFile}
+            setPopMissionNumber={setPopMissionNumber}
+            updateFile={updateFile}
           />
         </DialogContent>
       </Dialog>
@@ -90,6 +95,8 @@ function ShowBusinessAlliace({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+
+  setPopMissionNumber,
 }) {
   const { isLoading, isSuccess, isError, error, data } =
     useGetBusinessAlliancesQuery(user_id);
@@ -221,6 +228,7 @@ function ShowBusinessAlliace({
               updateFile={updateFile}
               setPopId={setPopId}
               setNameConstraintsButton={setNameConstraintsButton}
+              setPopMissionNumber={setPopMissionNumber}
             />
           ))}
         </TableBody>
@@ -240,6 +248,8 @@ function Row({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+
+  setPopMissionNumber,
 }) {
   const [openShowPopMission, setOpenShowPopMission] = React.useState(false);
 
@@ -312,6 +322,7 @@ function Row({
                     updateFile={updateFile}
                     setPopId={setPopId}
                     setNameConstraintsButton={setNameConstraintsButton}
+                    setPopMissionNumber={setPopMissionNumber}
                   />
                 ))}
               </TableBody>
@@ -334,6 +345,7 @@ function PopMission({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+  setPopMissionNumber,
 }) {
   return (
     <React.Fragment>
@@ -357,6 +369,7 @@ function PopMission({
             updateFile={updateFile}
             setPopId={setPopId}
             setNameConstraintsButton={setNameConstraintsButton}
+            setPopMissionNumber={setPopMissionNumber}
           />
         </TableCell>
       </TableRow>
@@ -376,6 +389,7 @@ function MenuSelectMission({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+  setPopMissionNumber,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -387,6 +401,7 @@ function MenuSelectMission({
     setAnchorEl(null);
   };
   async function handleClickCreatePopMissionModel(params) {
+    setPopMissionNumber(pop.pop_missions.length);
     createXml(pop, user_id, setPopMissionModelId, saveFile, updateFile).then(
       (res) => {
         handleSetXmlString(res);
@@ -406,6 +421,8 @@ function MenuSelectMission({
   }
 
   async function handleClickLoadPopMissionModel(params) {
+    setPopMissionNumber(pop.pop_missions.length);
+
     if (pop.pop_mission_model.updated == false) {
       setOpenDialogPopMissionModelOutOfDate(true);
     } else {
@@ -458,7 +475,7 @@ function MenuSelectMission({
             //     setSaveOrUpdate("update"))
           }
         >
-          Create new PoP Mission Model
+          Create new PoP Missions Model
         </MenuItem>
         <MenuItem
           onClick={
@@ -472,7 +489,7 @@ function MenuSelectMission({
           }
           disabled={pop.pop_mission_model != null ? false : true}
         >
-          Load PoP Mission
+          Load PoP Missions Model
         </MenuItem>
       </Menu>
     </div>
@@ -507,6 +524,7 @@ async function createXml(
   });
   const participant = moddle.create("bpmn:Participant", {
     id: `Participant_${Math.floor(Math.random() * 999)}`,
+    name: `${pop.name}`,
     processRef: process,
   });
   bpmnCollaboration.participants.push(participant);

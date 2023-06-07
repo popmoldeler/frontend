@@ -1,7 +1,7 @@
 import { apiSlice } from "../../api/sliceApi";
 
 export const allianceMemberApiSlice = apiSlice.injectEndpoints({
-  tagTypes: ["AllianceMember"],
+  tagTypes: ["AllianceMember","BusinessAlliance"],
   endpoints: (builder) => ({
     getAllianceMember: builder.query({
       query: () => "/alliance_member",
