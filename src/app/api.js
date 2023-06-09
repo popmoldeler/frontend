@@ -1,6 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api/',
+  baseURL: "http://popmodeler.ledes.net/api/",
+  timeout: 300000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export default api;
