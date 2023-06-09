@@ -21,7 +21,7 @@ export default function ExtractReliabilityDialog({
   setOpenReliabilityDialog,
   mission
 }) {
-    console.log("tetete", openReliabilityDialog);
+   
     const handleClose = () => {
         setOpenReliabilityDialog(false);
         setCsvData(undefined);
