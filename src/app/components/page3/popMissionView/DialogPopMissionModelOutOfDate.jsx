@@ -24,7 +24,7 @@ export default function DialogPopMissionModelOutOfDate({ openDialogPopMissionMod
 
         <DialogContent>
           <DialogTitle>
-            Your PoP Mission Model is out of date
+            Your PoP Missions Model is out of date
           </DialogTitle>
 
         </DialogContent>

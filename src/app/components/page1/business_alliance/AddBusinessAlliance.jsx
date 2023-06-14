@@ -209,7 +209,7 @@ function RegisterAlliance({
 
           const alianca = {
             name: nome,
-            creation_date: date.toLocaleString("en-US", options),
+            creation_date: date.toLocaleString("en-US", options).toString(),
             business_goal: goal,
             responsable_member_id: responsableOrganization.id,
             user_id: user_id,
@@ -223,7 +223,7 @@ function RegisterAlliance({
             const m = {
               alliance_member_id: responsableOrganization.id,
               relationship: "Responsible",
-              entry_date: date.toLocaleString("en-US", options),
+              entry_date: date.toLocaleString("en-US", options).toString(),
               business_alliance_id: res.data.id,
               is_public: isPublic,
             };
