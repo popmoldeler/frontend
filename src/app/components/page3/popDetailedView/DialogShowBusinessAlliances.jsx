@@ -1054,8 +1054,36 @@ function MenuSelectMission({
     reader.onload = function () {
       // console.log(reader.result);
       setPopMissionId(missao.id);
-      setpopDetailedModelId(missao.detailed_view.id);
-      handleSetXmlString(reader.result);
+      console.log("missao", missao);
+
+      // setpopDetailedModelId(missao.detailed_view.id);
+
+      const newPopDetailedModel = {
+        name: "PoP Detailed Model",
+        file_text: reader.result,
+        user_id: user_id,
+        pop_mission_id: missao.id,
+        updated: true,
+      };
+      if (missao.detailed_view == null) {
+        saveFile(newPopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
+        handleSetXmlString(reader.result);
+      } else {
+        const updatePopDetailedModel = {
+          name: "PoP Detailed Model",
+          file_text: reader.result,
+          user_id: user_id,
+          pop_mission_id: missao.id,
+          updated: true,
+          id: missao.detailed_view.id,
+        };
+        updateFile(updatePopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
+        handleSetXmlString(reader.result);
+      }
 
       if (missao.detailed_view.variability_constraints_model != null) {
         setNameVariabilityButton(
