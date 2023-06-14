@@ -831,9 +831,9 @@ function MenuSelectMission({
         updated: true,
       };
       if (mission.detailed_view == null) {
-        // saveFile(newPopDetailedModel).then(({ data }) => {
-        //   setpopDetailedModelId(data.id);
-        // });
+        saveFile(newPopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
         console.log(newPopDetailedModel);
         handleSetXmlString(xmlFinal);
       } else {
@@ -845,9 +845,9 @@ function MenuSelectMission({
           updated: true,
           id: mission.detailed_view.id,
         };
-        // updateFile(updatePopDetailedModel).then(({ data }) => {
-        //   setpopDetailedModelId(data.id);
-        // });
+        updateFile(updatePopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
       }
       handleSetXmlString(xmlFinal);
     } else {
@@ -1003,10 +1003,11 @@ function MenuSelectMission({
         updated: true,
       };
       if (mission.detailed_view == null) {
-        // saveFile(newPopDetailedModel).then(({ data }) => {
-        //   setpopDetailedModelId(data.id);
-        // });
+        saveFile(newPopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
         console.log(newPopDetailedModel);
+        handleSetXmlString(xmlFinal);
       } else {
         const updatePopDetailedModel = {
           name: "PoP Detailed Model",
@@ -1016,9 +1017,9 @@ function MenuSelectMission({
           updated: true,
           id: mission.detailed_view.id,
         };
-        // updateFile(updatePopDetailedModel).then(({ data }) => {
-        //   setpopDetailedModelId(data.id);
-        // });
+        updateFile(updatePopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
         handleSetXmlString(xmlFinal);
       }
     }
