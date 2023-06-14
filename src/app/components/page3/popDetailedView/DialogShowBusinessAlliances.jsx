@@ -1066,9 +1066,9 @@ function MenuSelectMission({
         updated: true,
       };
       if (missao.detailed_view == null) {
-        saveFile(newPopDetailedModel).then(({ data }) => {
-          setpopDetailedModelId(data.id);
-        });
+        // saveFile(newPopDetailedModel).then(({ data }) => {
+        //   setpopDetailedModelId(data.id);
+        // });
         handleSetXmlString(reader.result);
       } else {
         const updatePopDetailedModel = {
@@ -1079,9 +1079,9 @@ function MenuSelectMission({
           updated: true,
           id: missao.detailed_view.id,
         };
-        updateFile(updatePopDetailedModel).then(({ data }) => {
-          setpopDetailedModelId(data.id);
-        });
+        // updateFile(updatePopDetailedModel).then(({ data }) => {
+        //   setpopDetailedModelId(data.id);
+        // });
         handleSetXmlString(reader.result);
       }
 
