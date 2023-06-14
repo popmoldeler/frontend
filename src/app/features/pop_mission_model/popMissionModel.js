@@ -1,7 +1,7 @@
 import { apiSlice } from "../../api/sliceApi";
 
 export const PopMissionModelApiSlice = apiSlice.injectEndpoints({
-  tagTypes: ["PopMissionModel", "AllianceMember"],
+  tagTypes: ["PopMissionModel", "BusinessAlliance","AllianceMember"],
   endpoints: (builder) => ({
     addPopMissionModel: builder.mutation({
       query: (overall_view) => ({
@@ -10,7 +10,7 @@ export const PopMissionModelApiSlice = apiSlice.injectEndpoints({
         body: overall_view,
       }),
 
-      invalidatesTags: ["PopMissionModel", "AllianceMember"],
+      invalidatesTags: ["PopMissionModel", "BusinessAlliance","AllianceMember"],
     }),
     getPopMissionModel: builder.query({
       query: (id) => ({
@@ -27,7 +27,7 @@ export const PopMissionModelApiSlice = apiSlice.injectEndpoints({
         body: PopMissionModel,
       }),
       invalidatesTags: (result, error, arg) => [
-        "PopConstituentProcess",
+        "PopConstituentProcess", "BusinessAlliance","AllianceMember",
         { type: "PopConstituentProcess", id: arg.id },
       ],
     }),

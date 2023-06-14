@@ -155,10 +155,98 @@ After you click on "**Submit**" you will have created a PoP
 ##### PoP Mission
 For each mission you can add constituent Processes from the internal collaboration in the business alliance.
 
-
 ## **PoP Modeling**
 
-#### Yet to come
+#### PoP Overall View 
+
+This session is used to visualize and manage PoP Overall models.
+
+In order to generate a PoP overall model you have to start clicking on the PoP Overall Model Button
+
+
+![](img/ButtonPopOverallModel.png) 
+
+After that you can visualize a list of Business Alliances and their PoPs, then you can choose which PoP you want to generate a model and click on the Create new PoP Overall Model button. (If you have a previous saved Overall Model you can load it on the Load PoP Overall Model button)
+
+![](img/createPopOverallModelButton.png) 
+
+Then you will have the Overall model generated
+
+![](img/OverallViewGenerated.png) 
+
+You can also save and download the generated Overall Model on the following buttons
+
+![](img/SavePopOverallModelButton.png) 
+
+![](img/DownloadPopOverallModelButton.png) 
+
+And to finish the Overall view you can add the constraints model
+
+![](img/ButtonOverallViewConstraintsModel.png) 
+
+![](img/DialogueBoxOverallViewConstraintsModel.png) 
+
+
+
+#### PoP Missions View 
+
+This session is used to visualize and manage the PoP Missions Model.
+
+To generate a PoP Mission Model it's very similar to PoP Overall models, you will click on the button PoP Mission Model
+
+![](img/PopMissionButton.png) 
+
+After that you can visualize a list of Business Alliances and their PoPs, then you can choose which PoP you want to generate a model and click on the Create new PoP Missions Model button. (If you have a previous saved Missions Model you can load it on the Load PoP Missions Model button)
+
+![](img/CreateNewPopMissionsModel.png) 
+
+Then you will have the Missions Model generated
+
+![](img/PopMissionsModelGenerated.png) 
+
+You can also save and download the generated model on the following buttons
+
+![](img/SavePopMissionsModel.png) 
+
+
+![](img/DownloadPopMissionsModel.png) 
+
+Then you also have the option of adding constraints
+
+![](img/PopMissionConstraintsButton.png) 
+
+![](img/DialogMissionsConstraintsModel.png) 
+
+
+
+#### PoP Mission Detailed View 
+
+This session is used to visualize and manage the PoP Mission Detailed Models.
+
+To generate a PoP Mission Detailed Model it's very similar to PoP Overall models, you will click on the button PoP Mission Detailed Model
+
+![](img/PopMissionDetailedView.png) 
+
+After that you can visualize a list of Business Alliances and their PoPs, then you can choose which PoP Mission you want to generate a model and click on the Create new PoP Detailed Model button. (If you have a previous saved Mission Detailed Model you can load it on the Load PoP Detailed Model button and if you have a Model on your local machine you can Upload it on the Upload PoP Detailed Model Button)
+
+![](img/DialogPopDetailedMissionModel.png) 
+
+Then you will have the Mission Detailed Model generated
+
+![](img/GeneratedMissionDetailedModel.png) 
+
+You can also save and download the generated model on the following buttons
+
+![](img/SavePopMissionDetailedModel.png) 
+
+
+![](img/DownloadPopMissionDetailedModel.png) 
+
+Then you also have the option of adding variability constraints
+
+![](img/VariabilityConstraintsModel.png) 
+
+![](img/DialogVariabilityModel.png) 
 
 ## **Especificação de Requisitos**
 

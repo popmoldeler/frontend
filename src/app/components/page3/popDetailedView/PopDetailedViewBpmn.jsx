@@ -14,8 +14,8 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "./PopDetailedViewBpmn.css";
 import DialogShowBusinessAlliances from "./DialogShowBusinessAlliances";
 import DialogPopMissionModelOutOfDate from "./DialogPopMissionModelOutOfDate";
-import DialogAddConstituentProcessesConstraintsMissionModel from "./DialogAddConstituenProcessesConstraintsMissionModel";
 import DialogShowIsBlocked from "../DialogShowIsBlocked";
+import DialogAddVariabilityConstraintsMissionModel from "./DialogAddVariabilityConstraintsMissionModel";
 function withMyHook(Component) {
   return function WrappedComponent(props) {
     // const history = useHistory();
@@ -172,7 +172,7 @@ export class PopDetailedViewBpmn extends React.Component {
       const blob = new Blob([xml], {
         type: "text;charset=utf-8",
       });
-      FileSaver.saveAs(blob, "overallview.bpmn");
+      FileSaver.saveAs(blob, "PoPDetailedModel.bpmn");
     } catch (err) {
       console.error("Error happened saving XML: ", err);
     }
@@ -182,16 +182,16 @@ export class PopDetailedViewBpmn extends React.Component {
     try {
       const { xml } = await this.bpmnViewer.saveXML({ format: true });
 
-      const newPopMissionModel = {
-        name: "overallview",
+      const newPopDetailedModel = {
+        name: "PoP Detailed Model",
         file_text: xml,
         user_id: this.props.user_id,
-        pop_id: this.props.popId,
-        id: this.props.popMissionModelId,
+        pop_mission_id: this.props.popMissionId,
+        id: this.props.popDetailedModelId,
         updated: true,
       };
-
-      this.props.updatePopMissionModel(newPopMissionModel);
+      // console.log(newPopDetailedModel);
+      this.props.updatePopMissionDetailedModel(newPopDetailedModel);
     } catch (err) {
       console.error("Error happened saving XML: ", err);
     }
@@ -225,6 +225,11 @@ export class PopDetailedViewBpmn extends React.Component {
           <DialogShowBusinessAlliances
             user_id={this.props.user_id}
             handleSetXmlString={this.props.handleSetXmlString}
+            setPopMissionId={this.props.setPopMissionId}
+            saveFile={this.props.addPopMissionDetailedModel}
+            updateFile={this.props.updatePopMissionDetailedModel}
+            setpopDetailedModelId={this.props.setpopDetailedModelId}
+            setNameVariabilityButton={this.props.setNameVariabilityButton}
           />
 
           <Button
@@ -233,7 +238,7 @@ export class PopDetailedViewBpmn extends React.Component {
               this.saveFile();
             }}
           >
-            Save PoP Mission Model
+            Save PoP Mission Detailed Model
           </Button>
           <Button
             variant="outlined"
@@ -241,22 +246,22 @@ export class PopDetailedViewBpmn extends React.Component {
               this.downloadFile();
             }}
           >
-            Download PoP Mission Model
+            Download PoP Mission Detailed Model
           </Button>
-          <DialogPopMissionModelOutOfDate
+          {/* <DialogPopMissionModelOutOfDate
             openDialogPopMissionModelOutOfDate={
               this.props.openDialogPopMissionModelOutOfDate
             }
             setOpenDialogPopMissionModelOutOfDate={
               this.props.setOpenDialogPopMissionModelOutOfDate
             }
-          />
+          /> */}
 
-          <DialogAddConstituentProcessesConstraintsMissionModel
-            nameConstraintsButton={this.props.nameConstraintsButton}
-            setNameConstraintsButton={this.props.setNameConstraintsButton}
-            popMissionModelId={this.props.popMissionModelId}
-            updateFile={this.props.updatePopMissionModel}
+          <DialogAddVariabilityConstraintsMissionModel
+            nameVariabilityButton={this.props.nameVariabilityButton}
+            setNameVariabilityButton={this.props.setNameVariabilityButton}
+            popDetailedModelId={this.props.popDetailedModelId}
+            updateFile={this.props.updatePopMissionDetailedModel}
           />
         </Box>
         {this.props.blocker ? (
