@@ -6,7 +6,7 @@ function criarTextoAcao(constituinteOrigem, constituinteDestino, rotuloConstitui
 
 function criarTextoCondicaoInteroperabilidade(rotuloObjetoDados) {
     if (rotuloObjetoDados === "") {
-        return rotuloObjetoDados;
+        return "-";
     }
     return `Existe um acordo para formalização da mensagem definido em: ${rotuloObjetoDados}`;
 }
@@ -67,17 +67,9 @@ function criarTextoRastreabilidade(tipoElementoOrigem, rotuloConstituinteOrigem,
     return `${tipoElementoOrigem}(${rotuloConstituinteOrigem})/${tipoElementoDestino}(${rotuloConstituinteDestinho})`;
 }
 
-function criarTextoCondicoesEnvio() {
-    return ``;
-}
-
-function criarTextoCondicoesRecebimento() {
-    return ``;
-}
-function criarTextoRequisitoDetalhado() {
-    const textoAcao = criarTextoAcao();
-    const textoCondicoesEnvio = criarTextoCondicoesEnvio();
-    const textoCondicoesRecebimento = criarTextoCondicoesRecebimento();
+function criarTextoRequisitoDetalhado(textoAcao, temporaryCompactInfos) {
+    const textoCondicoesEnvio = temporaryCompactInfos['CONDICOES_ENVIO'].join(", ");
+    const textoCondicoesRecebimento = temporaryCompactInfos['CONDICOES_RECEBIMENTO'].join(", ");
     return `${textoAcao}, considerando para o envio que ${textoCondicoesEnvio}; e considerando para o recebimento que ${textoCondicoesRecebimento}.`;
 }
 
