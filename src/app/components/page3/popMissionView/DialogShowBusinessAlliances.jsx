@@ -79,6 +79,24 @@ export default function DialogShowBusinessAlliances({
             setPopMissionNumber={setPopMissionNumber}
             updateFile={updateFile}
           />
+          <Box
+            sx={{
+              alignSelf: "center",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Button
+              sx={{ m: 1, width: "15ch" }}
+              color="error"
+              variant="outlined"
+              fullWidth
+              onClick={handleCloseDialog}
+            >
+              Close
+            </Button>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
