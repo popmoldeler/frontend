@@ -223,10 +223,10 @@ export class PopMissionViewBpmn extends React.Component {
   }
 
   async saveFile() {
-    console.log("save");
+    
     try {
       const { xml } = await this.bpmnViewer.saveXML({ format: true });
-      console.log(xml);
+     
       const newPopMissionModel = {
         name: "overallview",
         file_text: xml,
@@ -239,7 +239,7 @@ export class PopMissionViewBpmn extends React.Component {
       const source = new DOMParser().parseFromString(xml, "text/xml");
 
       const collaboration = source.getElementsByTagName("bpmn:collaboration");
-      const process = source.getElementsByTagName("bpmn:process");
+      const process = source.getElementsByTagName("bpmn:subProcess");
 
 
       
