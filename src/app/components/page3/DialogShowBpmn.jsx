@@ -56,6 +56,24 @@ export default function DialogShowBpmn({
             saveFile={saveFile}
             setNameConstraintsButton={setNameConstraintsButton}
           ></AddBpmn>
+          <Box
+            sx={{
+              alignSelf: "center",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Button
+              sx={{ m: 1, width: "15ch" }}
+              color="error"
+              variant="outlined"
+              fullWidth
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>

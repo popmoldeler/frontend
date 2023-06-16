@@ -1,7 +1,7 @@
 import { apiSlice } from "../../api/sliceApi";
 
 export const overallViewApiSlice = apiSlice.injectEndpoints({
-  tagTypes: ["overallView", "AllianceMember"],
+  tagTypes: ["BusinessAlliance"],
   endpoints: (builder) => ({
     addOverallView: builder.mutation({
       query: (overall_view) => ({
@@ -11,7 +11,7 @@ export const overallViewApiSlice = apiSlice.injectEndpoints({
       }),
    
       
-      invalidatesTags: ["overallView", "AllianceMember"],
+      invalidatesTags: ["BusinessAlliance"],
     }),
     getOverallView: builder.query({
       query: (id) => ({
@@ -20,7 +20,7 @@ export const overallViewApiSlice = apiSlice.injectEndpoints({
       
       }),
   
-      invalidatesTags: ["PopConstituentProcess"],
+      invalidatesTags: ["overallView"],
     }),
     updateOverallView: builder.mutation({
       query: (overallview) => ({
@@ -28,9 +28,8 @@ export const overallViewApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: overallview,
       }),
-      invalidatesTags: (result, error, arg) => [
-        "PopConstituentProcess",
-        { type: "PopConstituentProcess", id: arg.id },
+      invalidatesTags:  [
+         "BusinessAlliance",
       ],
     }),
     

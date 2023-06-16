@@ -4,7 +4,11 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-export default function MenuBusinesProcessModel({ editando, deletando, block }) {
+export default function MenuBusinesProcessModel({
+  editando,
+  deletando,
+  block,
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -14,7 +18,6 @@ export default function MenuBusinesProcessModel({ editando, deletando, block }) 
   const handleClose = () => {
     setAnchorEl(null);
   };
-
 
   return (
     <div>
@@ -38,6 +41,7 @@ export default function MenuBusinesProcessModel({ editando, deletando, block }) 
           "aria-labelledby": "basic-button",
         }}
       >
+        {/* <MenuItem onClick={() => console.log("preview")}>Preview</MenuItem> */}
         <MenuItem onClick={editando}>Update</MenuItem>
         <MenuItem onClick={deletando} disabled={block}>
           Delete
