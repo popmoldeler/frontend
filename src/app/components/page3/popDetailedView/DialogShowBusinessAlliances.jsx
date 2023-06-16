@@ -996,38 +996,38 @@ function MenuSelectMission({
 
       const serializer = new XMLSerializer();
       const xmlFinal = serializer.serializeToString(sourceBase[0][0]);
-      // const newPopDetailedModel = {
-      //   name: "PoP Detailed Model",
-      //   file_text: xmlFinal,
-      //   user_id: user_id,
-      //   pop_mission_id: mission.id,
-      //   updated: true,
-      // };
-      // if (mission.detailed_view == null) {
-      //   saveFile(newPopDetailedModel).then(({ data }) => {
-      //     setpopDetailedModelId(data.id);
-      //   });
-      //   console.log(newPopDetailedModel);
-      //   handleSetXmlString(xmlFinal);
-      // } else {
-      //   const updatePopDetailedModel = {
-      //     name: "PoP Detailed Model",
-      //     file_text: xmlFinal,
-      //     user_id: user_id,
-      //     pop_mission_id: mission.id,
-      //     updated: true,
-      //     id: mission.detailed_view.id,
-      //   };
-      //   updateFile(updatePopDetailedModel).then(({ data }) => {
-      //     setpopDetailedModelId(data.id);
-      //   });
-      // }
+      const newPopDetailedModel = {
+        name: "PoP Detailed Model",
+        file_text: xmlFinal,
+        user_id: user_id,
+        pop_mission_id: mission.id,
+        updated: true,
+      };
+      if (mission.detailed_view == null) {
+        saveFile(newPopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
+        console.log(newPopDetailedModel);
+        handleSetXmlString(xmlFinal);
+      } else {
+        const updatePopDetailedModel = {
+          name: "PoP Detailed Model",
+          file_text: xmlFinal,
+          user_id: user_id,
+          pop_mission_id: mission.id,
+          updated: true,
+          id: mission.detailed_view.id,
+        };
+        updateFile(updatePopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
+      }
       handleSetXmlString(xmlFinal);
     }
   }
 
   async function handleClickLoadPopMissionModel() {
-    // console.log(mission);
+    console.log(mission);
     setPopMissionId(mission.id);
     setpopDetailedModelId(mission.detailed_view.id);
     handleSetXmlString(mission.detailed_view.file_text);
@@ -1067,9 +1067,9 @@ function MenuSelectMission({
         updated: true,
       };
       if (missao.detailed_view == null) {
-        // saveFile(newPopDetailedModel).then(({ data }) => {
-        //   setpopDetailedModelId(data.id);
-        // });
+        saveFile(newPopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
         handleSetXmlString(reader.result);
       } else {
         const updatePopDetailedModel = {
@@ -1080,9 +1080,9 @@ function MenuSelectMission({
           updated: true,
           id: missao.detailed_view.id,
         };
-        // updateFile(updatePopDetailedModel).then(({ data }) => {
-        //   setpopDetailedModelId(data.id);
-        // });
+        updateFile(updatePopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
         handleSetXmlString(reader.result);
       }
 
