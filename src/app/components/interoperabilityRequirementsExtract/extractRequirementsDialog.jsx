@@ -29,11 +29,17 @@ export default function ExtractRequirementsDialog({
 
     const formik = useFormik({
         initialValues: {
+            extractType: '',
             pop_mission_id: mission.id,
             mission: mission
         },
         onSubmit: async (values) => {
-            setCsvData(ExtractInteroperabilityRequirements({ mission: values.mission }));
+            const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: values.extractType });
+            if (csvDataTemp !== '') {
+                setCsvData(csvDataTemp);
+            } else {
+                setCsvData(undefined);
+            }
             formik.resetForm();
         },
     });
@@ -41,7 +47,7 @@ export default function ExtractRequirementsDialog({
     return (
     <>
         <Dialog open={openRequirementsDialog} onClose={handleClose}>
-        <DialogTitle sx={{ alignSelf: "center", paddingBottom: "0px" }}>
+        <DialogTitle sx={{ alignSelf: "center", paddingBottom: "10px" }}>
             Extract Interoperability Requirements
         </DialogTitle>
                 <DialogContent sx={{ padding: "10px" }}>
@@ -55,11 +61,13 @@ export default function ExtractRequirementsDialog({
                         <FormControl>
                             <RadioGroup
                                 aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
-                                    name="radio-buttons-group"
-                                    sx={{marginTop:"10px"}}
+                                defaultValue="detailed"
+                                name="extractType"
+                                value={formik.values.extractType ?? ""}
+                                onChange={formik.handleChange}
                             >
-                                <FormControlLabel value="confiability" control={<Radio />} label="Include Confiability Requirements" />
+                                <FormControlLabel value="detailed" control={<Radio />} label="Detailed" />
+                                <FormControlLabel value="compact" control={<Radio />} label="Compact" />
                             </RadioGroup>
                         </FormControl>
                         <Box
