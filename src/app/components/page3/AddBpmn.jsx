@@ -308,6 +308,7 @@ export default function AddBpmn({
               setId={setId}
               setPopId={setPopId}
               id={id}
+              setNameConstraintsButton={setNameConstraintsButton}
             />
           ))}
         </TableBody>
@@ -329,6 +330,7 @@ function Row({
   setId,
   setPopId,
   id,
+  setNameConstraintsButton
 }) {
   const [openShowPopMission, setOpenShowPopMission] = React.useState(false);
 
@@ -401,6 +403,7 @@ function Row({
                     setId={setId}
                     setPopId={setPopId}
                     id={id}
+                    setNameConstraintsButton={setNameConstraintsButton}
                   />
                 ))}
               </TableBody>
@@ -424,6 +427,7 @@ function PopMission({
   setOverallviewID,
   setId,
   id,
+  setNameConstraintsButton,
   setPopId,
 }) {
   return (
@@ -448,6 +452,7 @@ function PopMission({
             setId={setId}
             setPopId={setPopId}
             id={id}
+            setNameConstraintsButton={setNameConstraintsButton}
           />
         </TableCell>
       </TableRow>
@@ -468,7 +473,8 @@ function MenuSelectMission({
   setOverallviewID,
   setId,
   setPopId,
-  id
+  id,
+  setNameConstraintsButton,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 

@@ -21,7 +21,7 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "./PopMissionViewBpmn.css";
 import DialogShowBusinessAlliances from "./DialogShowBusinessAlliances";
 import DialogPopMissionModelOutOfDate from "./DialogPopMissionModelOutOfDate";
-import DialogAddConstituentProcessesConstraintsMissionModel from "./DialogAddConstituenProcessesConstraintsMissionModel";
+import DialogAddPopMissionsConstraintsMissionModel from "./DialogAddPopMissionsConstraintsMissionModel";
 import DialogShowIsBlocked from "../DialogShowIsBlocked";
 function withMyHook(Component) {
   return function WrappedComponent(props) {
@@ -79,7 +79,8 @@ function DialogPopMissionsModelWithMoreCollaboration({
       <Dialog open={openDialogWithMoreCollaboration} onClose={handleClose}>
         <DialogContent>
           <DialogTitle>
-            Your PoP Missions Model have more than one pool and/or more sub process than missions!
+            Your PoP Missions Model have more than one pool and/or more sub
+            process than missions!
           </DialogTitle>
         </DialogContent>
         <DialogActions>
@@ -223,10 +224,9 @@ export class PopMissionViewBpmn extends React.Component {
   }
 
   async saveFile() {
-    
     try {
       const { xml } = await this.bpmnViewer.saveXML({ format: true });
-     
+
       const newPopMissionModel = {
         name: "overallview",
         file_text: xml,
@@ -240,9 +240,6 @@ export class PopMissionViewBpmn extends React.Component {
 
       const collaboration = source.getElementsByTagName("bpmn:collaboration");
       const process = source.getElementsByTagName("bpmn:subProcess");
-
-
-      
 
       if (
         collaboration[0].children.length > 1 &&
@@ -296,6 +293,7 @@ export class PopMissionViewBpmn extends React.Component {
             saveOrUpdataPopMissionModel={this.props.saveOrUpdataPopMissionModel}
             popMissionModelId={this.props.popMissionModelId}
             setPopMissionModelId={this.props.setPopMissionModelId}
+            setPopMissionConstraints={this.props.setPopMissionConstraints}
             setOpenDialogPopMissionModelOutOfDate={
               this.props.setOpenDialogPopMissionModelOutOfDate
             }
@@ -331,11 +329,13 @@ export class PopMissionViewBpmn extends React.Component {
             }
           />
 
-          <DialogAddConstituentProcessesConstraintsMissionModel
+          <DialogAddPopMissionsConstraintsMissionModel
             nameConstraintsButton={this.props.nameConstraintsButton}
             setNameConstraintsButton={this.props.setNameConstraintsButton}
             popMissionModelId={this.props.popMissionModelId}
             updateFile={this.props.updatePopMissionModel}
+            popMissionConstraints={this.props.popMissionConstraints}
+            setPopMissionConstraints={this.props.setPopMissionConstraints}
           />
         </Box>
         {this.props.blocker ? (
