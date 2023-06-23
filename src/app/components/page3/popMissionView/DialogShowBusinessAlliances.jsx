@@ -39,6 +39,7 @@ export default function DialogShowBusinessAlliances({
   setPopId,
   setNameConstraintsButton,
 
+  setPopMissionConstraints,
   setPopMissionNumber,
 }) {
   const [open, setOpen] = React.useState(false);
@@ -78,7 +79,26 @@ export default function DialogShowBusinessAlliances({
             saveFile={saveFile}
             setPopMissionNumber={setPopMissionNumber}
             updateFile={updateFile}
+            setPopMissionConstraints={setPopMissionConstraints}
           />
+          <Box
+            sx={{
+              alignSelf: "center",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Button
+              sx={{ m: 1, width: "15ch" }}
+              color="error"
+              variant="outlined"
+              fullWidth
+              onClick={handleCloseDialog}
+            >
+              Close
+            </Button>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
@@ -95,6 +115,8 @@ function ShowBusinessAlliace({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+
+  setPopMissionConstraints,
 
   setPopMissionNumber,
 }) {
@@ -229,6 +251,7 @@ function ShowBusinessAlliace({
               setPopId={setPopId}
               setNameConstraintsButton={setNameConstraintsButton}
               setPopMissionNumber={setPopMissionNumber}
+              setPopMissionConstraints={setPopMissionConstraints}
             />
           ))}
         </TableBody>
@@ -248,6 +271,7 @@ function Row({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+  setPopMissionConstraints,
 
   setPopMissionNumber,
 }) {
@@ -323,6 +347,7 @@ function Row({
                     setPopId={setPopId}
                     setNameConstraintsButton={setNameConstraintsButton}
                     setPopMissionNumber={setPopMissionNumber}
+                    setPopMissionConstraints={setPopMissionConstraints}
                   />
                 ))}
               </TableBody>
@@ -346,6 +371,8 @@ function PopMission({
   setPopId,
   setNameConstraintsButton,
   setPopMissionNumber,
+  setPopMissionConstraints,
+
 }) {
   return (
     <React.Fragment>
@@ -370,6 +397,8 @@ function PopMission({
             setPopId={setPopId}
             setNameConstraintsButton={setNameConstraintsButton}
             setPopMissionNumber={setPopMissionNumber}
+            setPopMissionConstraints={setPopMissionConstraints}
+
           />
         </TableCell>
       </TableRow>
@@ -390,6 +419,8 @@ function MenuSelectMission({
   setPopId,
   setNameConstraintsButton,
   setPopMissionNumber,
+  setPopMissionConstraints,
+
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -429,11 +460,13 @@ function MenuSelectMission({
       handleSetXmlString(pop.pop_mission_model.file_text);
       setPopId(pop.id);
       setPopMissionModelId(pop.pop_mission_model.id);
+      
+
       if (
-        pop.pop_mission_model.constituent_processes_constraints_model != null
+        pop.pop_mission_model.pop_missions_constraints_model != null
       ) {
         setNameConstraintsButton(
-          pop.pop_mission_model.constituent_processes_constraints_model
+          pop.pop_mission_model.pop_missions_constraints_model
         );
       } else {
         setNameConstraintsButton("add");

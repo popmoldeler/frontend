@@ -46,6 +46,7 @@ function AddPopAsConstituentProcessModel({
         updateOverallView(overallView);
       }
       formik.resetForm();
+      handleClose()
     },
   });
 

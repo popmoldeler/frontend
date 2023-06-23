@@ -77,6 +77,24 @@ export default function DialogShowBusinessAlliances({
             setpopDetailedModelId={setpopDetailedModelId}
             setNameVariabilityButton={setNameVariabilityButton}
           />
+          <Box
+            sx={{
+              alignSelf: "center",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Button
+              sx={{ m: 1, width: "15ch" }}
+              color="error"
+              variant="outlined"
+              fullWidth
+              onClick={handleCloseDialog}
+            >
+              Close
+            </Button>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
@@ -517,13 +535,13 @@ function MenuSelectMission({
   var xmlFinal = "";
 
   async function handleClickCreatePopMissionModel(params) {
-    const { rootElement: definitions } = await moddle.fromXML(xmlStr);
     setPopMissionId(mission.id);
     // console.log(mission.id)
     const sources = []; //doms dos constituents
 
     let bigger = [];
     let maior = 0;
+    let maiorBounds = 0;
 
     for (let i = 0; i < mission.mission_processes.length; i++) {
       const source = new DOMParser().parseFromString(
@@ -539,15 +557,38 @@ function MenuSelectMission({
       ) {
         if (
           Number(
-            sources[i].getElementsByTagName("dc:Bounds")[j].attributes.y.value
+            sources[i].getElementsByTagName("dc:Bounds")[j].attributes.height
+              .value
           ) > maior
         ) {
           maior = Number(
-            sources[i].getElementsByTagName("dc:Bounds")[j].attributes.y.value
+            sources[i].getElementsByTagName("dc:Bounds")[j].attributes.height
+              .value
           );
         }
       }
-      bigger.push(maior);
+
+      for (
+        let j = 0;
+        j < sources[i].getElementsByTagName("Bounds").length;
+        j++
+      ) {
+        if (
+          Number(
+            sources[i].getElementsByTagName("Bounds")[j].attributes.height.value
+          ) > maiorBounds
+        ) {
+          maiorBounds = Number(
+            sources[i].getElementsByTagName("Bounds")[j].attributes.height.value
+          );
+        }
+      }
+
+      if (maiorBounds > maior) {
+        bigger.push(maiorBounds);
+      } else {
+        bigger.push(maior);
+      }
       maior = 0;
     }
 
@@ -561,92 +602,80 @@ function MenuSelectMission({
         sourceBase.push(sources[i].getElementsByTagName("definitions"));
         baseNumber = i;
       }
-    }
-    console.log(sources[0]);
-    console.log(baseNumber);
-
-    if (sourceBase.length == 0) {
-      sourceBase.push(sources[0].getElementsByTagName("bpmn:definitions"));
+      if (sources[i].getElementsByTagName("bpmn:collaboration").length != 0) {
+        sourceBase.push(sources[i].getElementsByTagName("bpmn:definitions"));
+      }
     }
 
     if (baseNumber >= 0) {
-      // console.log("baseNumber");
-      // Pega a collaboration
-      const collaborations = [];
+      // has bpmn from other source
+
       const collaborationBase = [];
+
       collaborationBase.push(
         sources[baseNumber].getElementsByTagName("collaboration")
       );
 
-      // console.log(collaborationBase[0][0]);
-      for (let i = 0; i < mission.mission_processes.length; i++) {
-        if (i != baseNumber) {
-          const collaboration =
-            sources[i].getElementsByTagName("collaboration");
-          if (collaboration.length == 0) {
-            const collaboration =
-              sources[i].getElementsByTagName("bpmn:collaboration");
+      for (let i = 0; i < mission.mission_processes.length - 1; i++) {
+        const collaboration = sources[i].getElementsByTagName("collaboration");
 
-            while (collaboration[0].children[0] != undefined) {
-              const collaborationChild = collaboration[0].children[0];
+        if (collaboration.length == 0) {
+          const collaborationBPMN =
+            sources[i].getElementsByTagName("bpmn:collaboration");
 
-              collaborationBase[0][0].appendChild(collaborationChild);
-            }
-          } else {
-            while (collaboration[0].children[0] != undefined) {
-              const collaborationChild = collaboration[0].children[0];
+          while (collaborationBPMN[0].children[0] != undefined) {
+            const collaborationBPMNChild = collaborationBPMN[0].children[0];
 
-              collaborationBase[0][0].appendChild(collaborationChild);
-            }
-            sourceBase[0][0]
-              .getElementsByTagName("collaboration")
-              .item(0)
-              .remove();
-            sourceBase[0][0].append(collaborationBase[0][0]);
+            collaborationBase[0][0].appendChild(collaborationBPMNChild);
           }
-        }
-      }
-      // console.log(collaborationBase[0][0]);
-      // console.log(sourceBase[0][0]);
-
-      // sourceBase[0][0].getElementsByTagName("collaboration").item(0).remove();
-      // sourceBase[0][0].append(collaborationBase[0][0]);
-
-      //bpmn:process
-
-      for (let i = 0; i < mission.mission_processes.length; i++) {
-        if (i != baseNumber) {
-          const process = sources[i].getElementsByTagName("bpmn:process");
-          if (process.length != 0) {
-            sourceBase[0][0].appendChild(process[0]);
+        } else {
+          while (collaboration[0].children[0] != undefined) {
+            const collaborationChild = collaboration[0].children[0];
+            collaborationBase[0][0].appendChild(collaborationChild);
           }
         }
       }
 
-      //process
-      for (let i = 0; i < mission.mission_processes.length; i++) {
+      // //bpmn:process
+
+      for (let i = 0; i < mission.mission_processes.length - 1; i++) {
+        const process = sources[i].getElementsByTagName("bpmn:process");
+        if (process.length != 0) {
+          sourceBase[baseNumber][0].appendChild(process[0]);
+        }
+      }
+
+      // //process
+      for (let i = 0; i < mission.mission_processes.length - 1; i++) {
         const process = sources[i].getElementsByTagName("process");
 
         if (process.length != 0) {
-          sourceBase[0][0].appendChild(process[0]);
+          sourceBase[baseNumber][0].appendChild(process[0]);
         }
       }
 
-      //get bigger Y
-      // let biggerY = 0;
+      // //get bigger Y
+      // // let biggerY = 0;
       const bounds = [];
 
-      //diagram and plane
+      // //diagram and plane
       const planeBase = [];
       planeBase.push(sources[baseNumber].getElementsByTagName("BPMNPlane"));
 
-      //get plane for each constituent, minus the planeBase
+      // //get plane for each constituent, minus the planeBase
       let valorY = 0;
+      let tanto = 200;
+
       let reverse = bigger.length;
       let biggerY = 0;
 
       for (let i = 0; i < mission.mission_processes.length; i++) {
-        biggerY += bigger[i] + bigger[reverse - 1];
+        // console.log("biggerY", biggerY);
+        if (i == 0) {
+          biggerY += tanto + bigger[reverse - 1];
+        } else {
+          biggerY += tanto + bigger[i - 1];
+        }
 
         if (i != baseNumber) {
           const plane = sources[i].getElementsByTagName("BPMNPlane");
@@ -715,20 +744,13 @@ function MenuSelectMission({
                             Number(biggerY);
                         }
                       }
-                      // console.log("filho de filho");
                     }
                   }
                 }
+
                 planeBase[0][0].appendChild(planeChild);
               }
             }
-            sourceBase[0][0]
-              .getElementsByTagName("BPMNDiagram")[0]
-              .children.item(0)
-              .remove();
-            sourceBase[0][0]
-              .getElementsByTagName("BPMNDiagram")[0]
-              .appendChild(planeBase[0][0]);
           }
         }
         if (i != baseNumber) {
@@ -804,25 +826,176 @@ function MenuSelectMission({
                 }
                 planeBase[0][0].appendChild(planeChild);
               }
-              valorY += 400;
             }
           }
         }
       }
 
-      // sourceBase[0][0]
-      //   .getElementsByTagName("BPMNDiagram")[0]
-      //   .children.item(0)
-      //   .remove();
-      // sourceBase[0][0]
-      //   .getElementsByTagName("BPMNDiagram")[0]
-      //   .appendChild(planeBase[0][0]);
+      const serializer = new XMLSerializer();
+      const xmlFinal = serializer.serializeToString(sourceBase[baseNumber][0]);
+      // // console.log(xmlFinal);
 
-      // console.log(sourceBase[0][0]);
+      const newPopDetailedModel = {
+        name: "PoP Detailed Model",
+        file_text: xmlFinal,
+        user_id: user_id,
+        pop_mission_id: mission.id,
+        updated: true,
+      };
+      if (mission.detailed_view == null) {
+        saveFile(newPopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
+        // console.log(newPopDetailedModel);
+        handleSetXmlString(xmlFinal);
+      } else {
+        const updatePopDetailedModel = {
+          name: "PoP Detailed Model",
+          file_text: xmlFinal,
+          user_id: user_id,
+          pop_mission_id: mission.id,
+          updated: true,
+          id: mission.detailed_view.id,
+        };
+        updateFile(updatePopDetailedModel).then(({ data }) => {
+          setpopDetailedModelId(data.id);
+        });
+      }
+      handleSetXmlString(xmlFinal);
+    } else {
+      // Pega a collaboration
+      console.log("ELSE");
+      const collaborationBase = [];
+      baseNumber = baseNumber == undefined && 0;
+      collaborationBase.push(
+        sources[baseNumber].getElementsByTagName("bpmn:collaboration")
+      );
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        if (i != baseNumber) {
+          const collaboration =
+            sources[i].getElementsByTagName("bpmn:collaboration");
+          while (collaboration[0].children[0] != undefined) {
+            const collaborationChild = collaboration[0].children[0];
+            collaborationBase[0][0].appendChild(collaborationChild);
+          }
+        }
+      }
+      //bpmn:process
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        if (i != baseNumber) {
+          const process = sources[i].getElementsByTagName("bpmn:process");
+          if (process.length != 0) {
+            sourceBase[0][0].appendChild(process[0]);
+          }
+        }
+      }
+      //process
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        const process = sources[i].getElementsByTagName("bpmn:process");
+        if (process.length != 0) {
+          sourceBase[0][0].appendChild(process[0]);
+        }
+      }
+
+      //get bigger Y
+      // let biggerY = 0;
+      const bounds = [];
+      //diagram and plane
+      const planeBase = [];
+      planeBase.push(
+        sources[baseNumber].getElementsByTagName("bpmndi:BPMNPlane")
+      );
+      //get plane for each constituent, minus the planeBase
+      let valorY = 0;
+      let tanto = 100;
+
+      let reverse = bigger.length;
+      let biggerY = 0;
+
+      for (let i = 0; i < mission.mission_processes.length; i++) {
+        if (i == 0) {
+          biggerY += tanto + bigger[reverse - 1];
+        } else {
+          biggerY += tanto + bigger[i - 1];
+        }
+
+        if (i != baseNumber) {
+          const plane = sources[i].getElementsByTagName("bpmndi:BPMNPlane");
+          for (let k = 0; k < bounds.length; k++) {
+            planeChild.children.item(k).attributes.y.value =
+              Number(planeChild.children.item(k).attributes.y.value) +
+              Number(valorY) +
+              Number(biggerY);
+          }
+          if (plane.length != 0) {
+            for (let j = 0; j < plane.length; j++) {
+              while (plane[0].children[0] != undefined) {
+                const planeChild = plane[j].children[0];
+                if (planeChild.tagName == "bpmndi:BPMNEdge") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        console.log(planeChild);
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                    }
+                  }
+                }
+                if (planeChild.tagName == "bpmndi:BPMNShape") {
+                  for (let k = 0; k < planeChild.children.length; k++) {
+                    if (planeChild.children.item(k)?.attributes?.y?.value) {
+                      planeChild.children.item(k).attributes.y.value =
+                        Number(planeChild.children.item(k).attributes.y.value) +
+                        Number(valorY) +
+                        Number(biggerY);
+                    }
+                    if (planeChild.children.item(k).children.length != 0) {
+                      for (
+                        let index = 0;
+                        index < planeChild.children.item(k).children.length;
+                        index++
+                      ) {
+                        const childChild = planeChild.children
+                          .item(k)
+                          .children.item(index);
+                        if (childChild?.attributes?.y?.value) {
+                          childChild.attributes.y.value =
+                            Number(childChild.attributes.y.value) +
+                            Number(valorY) +
+                            Number(biggerY);
+                        }
+                      }
+                      // console.log("filho de filho");
+                    }
+                  }
+                }
+                planeBase[0][0].appendChild(planeChild);
+              }
+            }
+          }
+        }
+      }
 
       const serializer = new XMLSerializer();
       const xmlFinal = serializer.serializeToString(sourceBase[0][0]);
-
       const newPopDetailedModel = {
         name: "PoP Detailed Model",
         file_text: xmlFinal,
@@ -850,178 +1023,6 @@ function MenuSelectMission({
         });
       }
       handleSetXmlString(xmlFinal);
-    } else {
-      // Pega a collaboration
-      const collaborations = [];
-      const collaborationBase = [];
-      baseNumber = baseNumber == undefined && 0;
-
-      collaborationBase.push(
-        sources[baseNumber].getElementsByTagName("bpmn:collaboration")
-      );
-
-      for (let i = 0; i < mission.mission_processes.length; i++) {
-        if (i != baseNumber) {
-          const collaboration =
-            sources[i].getElementsByTagName("bpmn:collaboration");
-
-          while (collaboration[0].children[0] != undefined) {
-            const collaborationChild = collaboration[0].children[0];
-
-            collaborationBase[0][0].appendChild(collaborationChild);
-          }
-        }
-      }
-
-      //bpmn:process
-
-      for (let i = 0; i < mission.mission_processes.length; i++) {
-        if (i != baseNumber) {
-          const process = sources[i].getElementsByTagName("bpmn:process");
-          if (process.length != 0) {
-            sourceBase[0][0].appendChild(process[0]);
-          }
-        }
-      }
-
-      //process
-      for (let i = 0; i < mission.mission_processes.length; i++) {
-        const process = sources[i].getElementsByTagName("bpmn:process");
-
-        if (process.length != 0) {
-          sourceBase[0][0].appendChild(process[0]);
-        }
-      }
-
-      //get bigger Y
-      // let biggerY = 0;
-      const bounds = [];
-
-      //diagram and plane
-      const planeBase = [];
-      planeBase.push(
-        sources[baseNumber].getElementsByTagName("bpmndi:BPMNPlane")
-      );
-
-      //get plane for each constituent, minus the planeBase
-      let valorY = 0;
-      let reverse = bigger.length;
-      let biggerY = bigger[reverse - 1];
-
-      for (let i = 0; i < mission.mission_processes.length; i++) {
-        // console.log("biggerY", biggerY);
-        reverse = reverse - 1;
-        biggerY = biggerY + bigger[reverse];
-
-        if (i != baseNumber) {
-          const plane = sources[i].getElementsByTagName("bpmndi:BPMNPlane");
-
-          for (let k = 0; k < bounds.length; k++) {
-            planeChild.children.item(k).attributes.y.value =
-              Number(planeChild.children.item(k).attributes.y.value) +
-              Number(valorY) +
-              Number(biggerY);
-          }
-
-          if (plane.length != 0) {
-            for (let j = 0; j < plane.length; j++) {
-              while (plane[0].children[0] != undefined) {
-                const planeChild = plane[j].children[0];
-
-                if (planeChild.tagName == "bpmndi:BPMNEdge") {
-                  for (let k = 0; k < planeChild.children.length; k++) {
-                    if (planeChild.children.item(k)?.attributes?.y?.value) {
-                      planeChild.children.item(k).attributes.y.value =
-                        Number(planeChild.children.item(k).attributes.y.value) +
-                        Number(valorY) +
-                        Number(biggerY);
-                    }
-                    if (planeChild.children.item(k).children.length != 0) {
-                      for (
-                        let index = 0;
-                        index < planeChild.children.item(k).children.length;
-                        index++
-                      ) {
-                        const childChild = planeChild.children
-                          .item(k)
-                          .children.item(index);
-                        if (childChild?.attributes?.y?.value) {
-                          childChild.attributes.y.value =
-                            Number(childChild.attributes.y.value) +
-                            Number(valorY) +
-                            Number(biggerY);
-                        }
-                      }
-                    }
-                  }
-                }
-                if (planeChild.tagName == "bpmndi:BPMNShape") {
-                  for (let k = 0; k < planeChild.children.length; k++) {
-                    if (planeChild.children.item(k)?.attributes?.y?.value) {
-                      planeChild.children.item(k).attributes.y.value =
-                        Number(planeChild.children.item(k).attributes.y.value) +
-                        Number(valorY) +
-                        Number(biggerY);
-                    }
-
-                    if (planeChild.children.item(k).children.length != 0) {
-                      for (
-                        let index = 0;
-                        index < planeChild.children.item(k).children.length;
-                        index++
-                      ) {
-                        const childChild = planeChild.children
-                          .item(k)
-                          .children.item(index);
-                        if (childChild?.attributes?.y?.value) {
-                          childChild.attributes.y.value =
-                            Number(childChild.attributes.y.value) +
-                            Number(valorY) +
-                            Number(biggerY);
-                        }
-                      }
-                      // console.log("filho de filho");
-                    }
-                  }
-                }
-                planeBase[0][0].appendChild(planeChild);
-              }
-              valorY += 400;
-            }
-          }
-        }
-      }
-
-      const serializer = new XMLSerializer();
-      const xmlFinal = serializer.serializeToString(sourceBase[0][0]);
-
-      const newPopDetailedModel = {
-        name: "PoP Detailed Model",
-        file_text: xmlFinal,
-        user_id: user_id,
-        pop_mission_id: mission.id,
-        updated: true,
-      };
-      if (mission.detailed_view == null) {
-        saveFile(newPopDetailedModel).then(({ data }) => {
-          setpopDetailedModelId(data.id);
-        });
-        console.log(newPopDetailedModel);
-        handleSetXmlString(xmlFinal);
-      } else {
-        const updatePopDetailedModel = {
-          name: "PoP Detailed Model",
-          file_text: xmlFinal,
-          user_id: user_id,
-          pop_mission_id: mission.id,
-          updated: true,
-          id: mission.detailed_view.id,
-        };
-        updateFile(updatePopDetailedModel).then(({ data }) => {
-          setpopDetailedModelId(data.id);
-        });
-        handleSetXmlString(xmlFinal);
-      }
     }
   }
 

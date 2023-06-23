@@ -90,33 +90,11 @@ function Members({ value, handleToggle, checked, handleSetEntryDate }) {
           sx={{ alignSelf: " center" }}
           primary={value.name}
         ></ListItemText>
-        {/* <BasicDatePicker
-          date={entryDate}
-          handleSetDate={handleSetDate}
-          label="Join Date"
-          wid={130}
-        /> */}
 
-        {/* <TextField
-          sx={{ m: 1, minWidth: 100 }}
-          id="date"
-          variant="standard"
-          label="Join Date"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={entryDate}
-          onChange={(e) =>
-            // handleSetEntryDate(e.target.value, value.cnpj)
-
-            setEntryDate(e.target.value)
-          }
-        /> */}
         <ResponsiveDateTimePickers
           handleSetDate={handleSetDate}
         ></ResponsiveDateTimePickers>
-        {/* <MaterialUIPickers handleSetDate={handleSetDate}></MaterialUIPickers> */}
+      
         <TextField
           id="standard-basic"
           sx={{ m: 1, minWidth: 130, bottom: 8 }}

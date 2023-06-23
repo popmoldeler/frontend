@@ -190,7 +190,6 @@ export class PopDetailedViewBpmn extends React.Component {
         id: this.props.popDetailedModelId,
         updated: true,
       };
-      // console.log(newPopDetailedModel);
       this.props.updatePopMissionDetailedModel(newPopDetailedModel);
     } catch (err) {
       console.error("Error happened saving XML: ", err);

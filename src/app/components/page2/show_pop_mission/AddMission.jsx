@@ -30,13 +30,15 @@ function AddPopMission({
     },
     onSubmit: async (values) => {
       addPopMission(values);
-      const popMissionModel = {
-        id: pop.pop_mission_model.id,
-        updated: false,
-       
-      };
+      if (pop.pop_mission_model) {
+        const popMissionModel = {
+          id: pop.pop_mission_model.id,
+          updated: false,
+        };
+        updatePopMissionModel(popMissionModel);
+        // console.log(popMissionModel);
+      }
 
-      updatePopMissionModel(popMissionModel);
       formik.resetForm();
 
       handleClose();

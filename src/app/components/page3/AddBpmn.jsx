@@ -19,7 +19,10 @@ import { useGetBusinessAlliancesQuery } from "../../features/business_alliance/b
 import { useSelector } from "react-redux";
 import { selectCurrentUserId } from "../../features/auth/authSlice";
 import { Button, Menu, MenuItem } from "@mui/material";
-import { useGetPoPConstituentProcessQuery, constituentProcessApiSlice } from "../../features/constituent_process/constituenProcessApiSlice";
+import {
+  useGetPoPConstituentProcessQuery,
+  constituentProcessApiSlice,
+} from "../../features/constituent_process/constituenProcessApiSlice";
 import Mission from "./select_pop/Mission";
 import { Pool } from "@mui/icons-material";
 import { MissedVideoCallDimensions } from "@styled-icons/material/MissedVideoCall";
@@ -49,7 +52,6 @@ export default function AddBpmn({
   const [id, setId] = React.useState(null);
   const { isLoading, isSuccess, isError, error, data } =
     useGetBusinessAlliancesQuery(user_id);
-
 
   let content;
 
@@ -131,71 +133,50 @@ export default function AddBpmn({
     content = <p>{error}</p>;
   }
 
-
-
   const [skip, setSkip] = React.useState(true);
-  const [saveOrUpdate, setSaveOrUpdate] = React.useState('');
+  const [saveOrUpdate, setSaveOrUpdate] = React.useState("");
 
-
-
-  const { data: constituent, isSuccess: suc } = useGetPoPConstituentProcessQuery(id, { skip });
+  const { data: constituent, isSuccess: suc } =
+    useGetPoPConstituentProcessQuery(id, { skip });
 
   // if (suc == true) {
   //   createXml(constituent);
   //   handleClose();
   // }
 
-  const [popID, setPopID] = React.useState('');
-  const [overallviewID, setOverallviewID] = React.useState('');
-
+  const [popID, setPopID] = React.useState("");
+  const [overallviewID, setOverallviewID] = React.useState("");
 
   React.useEffect(() => {
     if (suc) {
-      console.log(constituent)
+      console.log(constituent);
       createXml(constituent, popID, saveOrUpdate, overallviewID);
       handleClose();
     }
-  }, [suc])
-
-
-
-  const loadOverallView = (pop) => {
-
-    if (pop?.overall_view?.constituent_processes_constraints_model) {
-      setNameConstraintsButton(pop.overall_view.constituent_processes_constraints_model)
-    }
-
-    handleSetXmlString(pop.overall_view.file_text);
-    setOverallViewId(pop.overall_view.id)
-    setOverallviewID(pop.overall_view.id)
-    setId(id)
-    setPopId(pop.id)
-
-    handleClose()
-
-  };
-
+  }, [suc]);
 
   const getConstituent = (id, pop) => {
     if (pop?.overall_view?.constituent_processes_constraints_model) {
-      setNameConstraintsButton(pop.overall_view.constituent_processes_constraints_model)
+      setNameConstraintsButton(
+        pop.overall_view.constituent_processes_constraints_model
+      );
     }
     if (pop.overall_view) {
-
-      setOverallViewId(pop.overall_view.id)
-      setOverallviewID(pop.overall_view.id)
+      setOverallViewId(pop.overall_view.id);
+      setOverallviewID(pop.overall_view.id);
     }
-    setId(id)
-    setPopId(id)
-    setSkip((skip) => !skip)
-    setPopID(pop.id)
-
+    setId(id);
+    setPopId(id);
+    setSkip((skip) => !skip);
+    setPopID(pop.id);
   };
 
-
-
-  async function createXml(content_constituent, popID, saveOrUpdate, overallviewID) {
-
+  async function createXml(
+    content_constituent,
+    popID,
+    saveOrUpdate,
+    overallviewID
+  ) {
     const { rootElement: definitions } = await moddle.fromXML(xmlStr);
 
     var add = 0;
@@ -211,7 +192,7 @@ export default function AddBpmn({
     var diagram = moddle.create("bpmndi:BPMNDiagram", {
       id: `Diagram_${Math.floor(Math.random() * 999)}`,
     });
-    console.log(content_constituent)
+    console.log(content_constituent);
     content_constituent?.map((mission) => {
       const participant = moddle.create("bpmn:Participant", {
         id: `Participant_${Math.floor(Math.random() * 999)}`,
@@ -253,8 +234,9 @@ export default function AddBpmn({
 
     if (saveOrUpdate == "save") {
       // this.props.addOverallView(overallview);
-      saveFile(overallview).then(({ data }) => { setOverallViewId(data.id), console.log('u', data.id) });
-
+      saveFile(overallview).then(({ data }) => {
+        setOverallViewId(data.id), console.log("s", data.id);
+      });
     } else {
       const newoverallview = {
         name: "overallview",
@@ -262,22 +244,22 @@ export default function AddBpmn({
         user_id: user_id,
         pop_id: popID,
         id: overallviewID,
-        updated: true
+        updated: true,
       };
       // console.log('update');
-      updateFile(newoverallview).then(({ data }) => { setOverallViewId(data.id), console.log('u', data.id) });
+      updateFile(newoverallview).then(({ data }) => {
+        setOverallViewId(data.id), console.log("u", data.id);
+      });
       // this.props.updateOverallView(newoverallview)
     }
   }
 
   const handleOpenDialogOutOfDate = (pop) => {
     if (pop.overall_view.updated == false) {
-      console.log('uma vez')
+      console.log("uma vez");
       setOpenDialogOutOfDate(true);
     }
-
   };
-
 
   return (
     <TableContainer
@@ -312,7 +294,22 @@ export default function AddBpmn({
         </TableHead>
         <TableBody>
           {content.map((row) => (
-            <Row setSaveOrUpdate={setSaveOrUpdate} row={row} key={row.id} getConstituent={getConstituent} handleClose={handleClose} setSaveOrUpdataOverallView={setSaveOrUpdataOverallView} loadOverallView={loadOverallView} handleOpenDialogOutOfDate={handleOpenDialogOutOfDate} />
+            <Row
+              setSaveOrUpdate={setSaveOrUpdate}
+              row={row}
+              key={row.id}
+              getConstituent={getConstituent}
+              handleClose={handleClose}
+              setSaveOrUpdataOverallView={setSaveOrUpdataOverallView}
+              handleSetXmlString={handleSetXmlString}
+              handleOpenDialogOutOfDate={handleOpenDialogOutOfDate}
+              setOverallViewId={setOverallViewId}
+              setOverallviewID={setOverallviewID}
+              setId={setId}
+              setPopId={setPopId}
+              id={id}
+              setNameConstraintsButton={setNameConstraintsButton}
+            />
           ))}
         </TableBody>
       </Table>
@@ -320,9 +317,21 @@ export default function AddBpmn({
   );
 }
 
-function Row({ setSaveOrUpdate, row, getConstituent, handleClose, setSaveOrUpdataOverallView, loadOverallView, handleOpenDialogOutOfDate }) {
-
-
+function Row({
+  setSaveOrUpdate,
+  row,
+  getConstituent,
+  handleClose,
+  setSaveOrUpdataOverallView,
+  handleSetXmlString,
+  handleOpenDialogOutOfDate,
+  setOverallViewId,
+  setOverallviewID,
+  setId,
+  setPopId,
+  id,
+  setNameConstraintsButton
+}) {
   const [openShowPopMission, setOpenShowPopMission] = React.useState(false);
 
   return (
@@ -380,7 +389,6 @@ function Row({ setSaveOrUpdate, row, getConstituent, handleClose, setSaveOrUpdat
               </TableHead>
               <TableBody>
                 {row.pops.map((mission) => (
-
                   <PopMission
                     setSaveOrUpdate={setSaveOrUpdate}
                     mission={mission}
@@ -388,8 +396,14 @@ function Row({ setSaveOrUpdate, row, getConstituent, handleClose, setSaveOrUpdat
                     getConstituent={getConstituent}
                     handleClose={handleClose}
                     setSaveOrUpdataOverallView={setSaveOrUpdataOverallView}
-                    loadOverallView={loadOverallView}
+                    handleSetXmlString={handleSetXmlString}
                     handleOpenDialogOutOfDate={handleOpenDialogOutOfDate}
+                    setOverallViewId={setOverallViewId}
+                    setOverallviewID={setOverallviewID}
+                    setId={setId}
+                    setPopId={setPopId}
+                    id={id}
+                    setNameConstraintsButton={setNameConstraintsButton}
                   />
                 ))}
               </TableBody>
@@ -401,8 +415,21 @@ function Row({ setSaveOrUpdate, row, getConstituent, handleClose, setSaveOrUpdat
   );
 }
 
-function PopMission({ setSaveOrUpdate, mission, getConstituent, handleClose, setSaveOrUpdataOverallView, loadOverallView, handleOpenDialogOutOfDate }) {
-
+function PopMission({
+  setSaveOrUpdate,
+  mission,
+  getConstituent,
+  handleClose,
+  setSaveOrUpdataOverallView,
+  handleSetXmlString,
+  handleOpenDialogOutOfDate,
+  setOverallViewId,
+  setOverallviewID,
+  setId,
+  id,
+  setNameConstraintsButton,
+  setPopId,
+}) {
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -412,7 +439,21 @@ function PopMission({ setSaveOrUpdate, mission, getConstituent, handleClose, set
         <TableCell align="left">{mission.name}</TableCell>
         <TableCell align="left">{mission.description}</TableCell>
         <TableCell align="left">
-          <MenuSelectMission setSaveOrUpdate={setSaveOrUpdate} pop={mission} getConstituent={getConstituent} handleCloseAdd={handleClose} setSaveOrUpdataOverallView={setSaveOrUpdataOverallView} loadOverallView={loadOverallView} handleOpenDialogOutOfDate={handleOpenDialogOutOfDate} />
+          <MenuSelectMission
+            setSaveOrUpdate={setSaveOrUpdate}
+            pop={mission}
+            getConstituent={getConstituent}
+            handleCloseAdd={handleClose}
+            setSaveOrUpdataOverallView={setSaveOrUpdataOverallView}
+            handleSetXmlString={handleSetXmlString}
+            handleOpenDialogOutOfDate={handleOpenDialogOutOfDate}
+            setOverallViewId={setOverallViewId}
+            setOverallviewID={setOverallviewID}
+            setId={setId}
+            setPopId={setPopId}
+            id={id}
+            setNameConstraintsButton={setNameConstraintsButton}
+          />
         </TableCell>
       </TableRow>
       <TableRow></TableRow>
@@ -420,8 +461,21 @@ function PopMission({ setSaveOrUpdate, mission, getConstituent, handleClose, set
   );
 }
 
-function MenuSelectMission({ setSaveOrUpdate, pop, getConstituent, handleCloseAdd, setSaveOrUpdataOverallView, loadOverallView, handleOpenDialogOutOfDate }) {
-
+function MenuSelectMission({
+  setSaveOrUpdate,
+  pop,
+  getConstituent,
+  handleCloseAdd,
+  setSaveOrUpdataOverallView,
+  handleSetXmlString,
+  handleOpenDialogOutOfDate,
+  setOverallViewId,
+  setOverallviewID,
+  setId,
+  setPopId,
+  id,
+  setNameConstraintsButton,
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const open = Boolean(anchorEl);
@@ -431,9 +485,6 @@ function MenuSelectMission({ setSaveOrUpdate, pop, getConstituent, handleCloseAd
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-
-
 
   return (
     <div>
@@ -445,7 +496,7 @@ function MenuSelectMission({ setSaveOrUpdate, pop, getConstituent, handleCloseAd
         aria-haspopup="true"
         onClick={handleClick}
 
-      // onBlur={handleClickBlur}
+        // onBlur={handleClickBlur}
       >
         <MoreVertIcon />
       </IconButton>
@@ -461,21 +512,42 @@ function MenuSelectMission({ setSaveOrUpdate, pop, getConstituent, handleCloseAd
         <MenuItem
           onClick={() => (
             getConstituent(pop.id, pop),
-
-
-            pop.overall_view == null ? (setSaveOrUpdataOverallView('save'), setSaveOrUpdate('save')) : (setSaveOrUpdataOverallView('update'), setSaveOrUpdate('update'))
-
-          )}>Create new PoP Overall Model</MenuItem>
-        <MenuItem
-          onClick={() => (
-            loadOverallView(pop),
-
-            pop.overall_view == null ? (setSaveOrUpdataOverallView('save'), setSaveOrUpdate('save')) : (setSaveOrUpdataOverallView('update'), setSaveOrUpdate('update')),
-            handleOpenDialogOutOfDate(pop)
+            pop.overall_view == null
+              ? (setSaveOrUpdataOverallView("save"), setSaveOrUpdate("save"))
+              : (setSaveOrUpdataOverallView("update"),
+                setSaveOrUpdate("update"))
           )}
+        >
+          Create new PoP Overall Model
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            console.log("overall_view", pop.overall_view);
+            if (pop?.overall_view?.constituent_processes_constraints_model) {
+              setNameConstraintsButton(
+                pop.overall_view.constituent_processes_constraints_model
+              );
+            }
+
+            handleSetXmlString(pop.overall_view.file_text);
+            setOverallViewId(pop.overall_view.id);
+            setOverallviewID(pop.overall_view.id);
+            setId(id);
+
+            setPopId(pop.id);
+
+            pop.overall_view == null
+              ? (setSaveOrUpdataOverallView("save"), setSaveOrUpdate("save"))
+              : (setSaveOrUpdataOverallView("update"),
+                setSaveOrUpdate("update")),
+              handleOpenDialogOutOfDate(pop);
+            handleClose();
+          }}
           disabled={pop.overall_view != null ? false : true}
-        >Load PoP Overall Model</MenuItem>
+        >
+          Load PoP Overall Model
+        </MenuItem>
       </Menu>
-    </div >
+    </div>
   );
 }
