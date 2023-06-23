@@ -220,8 +220,8 @@ export class ReactBpmn extends React.Component {
         pop_id: this.props.popId,
       };
       if (this.props.saveOrUpdataOverallView == "save") {
-        // console.log('s', this.props.saveOrUpdataOverallView);
-        this.props.addOverallView(overallview);
+        console.log('s', this.props.saveOrUpdataOverallView);
+        // this.props.addOverallView(overallview);
       } else {
         const { xml } = await this.bpmnViewer.saveXML({ format: true });
 
@@ -233,7 +233,7 @@ export class ReactBpmn extends React.Component {
           id: this.props.overallViewId,
           updated: true,
         };
-        // console.log('update', this.props.saveOrUpdataOverallView, this.props.overallViewId, newoverallview);
+        console.log('update', this.props.saveOrUpdataOverallView, this.props.overallViewId, newoverallview);
         this.props.updateOverallView(newoverallview);
       }
       // this.props.addOverallView(overallview);

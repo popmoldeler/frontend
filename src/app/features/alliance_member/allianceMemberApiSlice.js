@@ -43,7 +43,7 @@ export const allianceMemberApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: constituent_process,
       }),
-      invalidatesTags: ["AllianceMember"],
+      invalidatesTags: ["AllianceMember","BusinessAlliance"],
     }),
     deleteBusinessProcessModel: builder.mutation({
       query: (id) => ({
