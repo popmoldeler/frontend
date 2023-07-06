@@ -22,6 +22,7 @@ export default function ExtractRequirementsDialog({
   mission
 }) {
     const [csvData, setCsvData] = useState(undefined);
+    const [extractTypeText, setExtractTypeText] = useState(undefined);
     const handleClose = () => {
         setOpenRequirementsDialog(false);
         setCsvData(undefined);
@@ -37,8 +38,10 @@ export default function ExtractRequirementsDialog({
             const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: values.extractType });
             if (csvDataTemp !== '') {
                 setCsvData(csvDataTemp);
+                setExtractTypeText(values.extractType);
             } else {
                 setCsvData(undefined);
+                setExtractTypeText(undefined);
             }
             formik.resetForm();
         },
@@ -99,7 +102,7 @@ export default function ExtractRequirementsDialog({
                             {csvData ?<CSVLink
                                 data={csvData}
                                 separator={";"}
-                                filename={`${mission.tittle}_interoperability_requirements`}
+                                filename={`${extractTypeText}_${mission.tittle}_interoperability_requirements`}
                                 headers={['Campo', 'Descricao']}
                                 style={{
                                     "backgroundColor": "blue",
