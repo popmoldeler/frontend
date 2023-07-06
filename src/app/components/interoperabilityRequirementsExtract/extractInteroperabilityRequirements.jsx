@@ -36,21 +36,21 @@ export default function ExtractInteroperabilityRequirements({
                 }
             }
             if (isHere) {
-                returnValue = getConstituentAux("bpmn:participant", poolId);
+                returnValue = getConstituentAux("bpmn:participant", poolId, origin);
 
                 if (returnValue === "") {
-                    returnValue = getConstituentAux("participant", poolId);
+                    returnValue = getConstituentAux("participant", poolId, origin);
                 }
 
                 if (returnValue === "") {
-                    returnValue = getConstituentAux("bizagi:participant", poolId);
+                    returnValue = getConstituentAux("bizagi:participant", poolId, origin);
                 }
             }
         }
         return returnValue;
     }
     //Método auxiliar para tratar arquivos do bizagi
-    const getConstituentAux = (tagName, poolId) => { 
+    const getConstituentAux = (tagName, poolId, origin) => { 
         const participants = origin.getElementsByTagName(tagName);
         for (var k = 0; k < participants.length; k++) {
             const participant = participants.item(k);
@@ -325,6 +325,17 @@ export default function ExtractInteroperabilityRequirements({
             // Recupera o elemento
             const originItem = origin.getElementById(originRef);
             originName = originItem.attributes.name.value;
+
+            if (originSplit[0] == "Id") {
+                var newSplit = originItem.tagName.replace(/([A-Z])/g, ' $1').split(" ");
+                switch (newSplit[1]) {
+                    case 'Task':
+                        originSplit[0] = 'Activity';
+                        break;
+                    default:
+                        originSplit[0] = newSplit[1];
+                }
+            }
         
             // Verifica o tipo de elemento de envio
             switch (originSplit[0]) {
@@ -562,7 +573,7 @@ export default function ExtractInteroperabilityRequirements({
     var compactRequirements = [];
     // Consulta string do arquivo bpmn da visão detalhada da missão
     const xmlString = mission.detailed_view.file_text;
-    console.log('arquivo', xmlString);
+
     // Realiza o parser do texto do arquivo para um htmlcollection
     const origin = new DOMParser().parseFromString(xmlString, "text/xml");
     
