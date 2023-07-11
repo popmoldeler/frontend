@@ -24,6 +24,7 @@ import DialogAddConstituentProcessModel from "./DialogAddConstituentProcessModel
 import MenuMission from "./MenuMission";
 import ConstituentProcessModel from "./ConstituentProcessModel";
 import DialogAddPoPAsConstituentProcessModel from "./DialogAddPoPAsConstituentProcessModel";
+import ExtractRequirementsDialog from "../../interoperabilityRequirementsExtract/extractRequirementsDialog";
 export default function Mission({ mission, allianceMembers, pop_id, pop,popExternalCollaboration ,popOverall}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
@@ -42,6 +43,10 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
     openDialogAddPopAsConstientProcessModel,
     setOpenDialogAddPopAsConstientProcessModel,
   ] = React.useState(false);
+  const [
+    openRequirementsDialog,
+    setOpenRequirementsDialog,
+  ] = React.useState(false);
 
   const adicionandoConstituentProcessModel = () => {
     setOpenDialogAddConstientProcessModel(!openDialogAddConstientProcessModel);
@@ -49,6 +54,10 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
 
   const adicionandoPopAsConstituentProcessModel = () => {
     setOpenDialogAddPopAsConstientProcessModel(!openDialogAddPopAsConstientProcessModel);
+  };
+
+  const extractInteroperabilityRequirements = () => {
+    setOpenRequirementsDialog(true);
   };
 
   const deletando = () => {
@@ -102,7 +111,8 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
         popOverall={popOverall}
         pop={pop}
       />
-       <DialogAddPoPAsConstituentProcessModel
+
+      <DialogAddPoPAsConstituentProcessModel
         openDialogAddPopAsConstientProcessModel={openDialogAddPopAsConstientProcessModel}
         setOpenDialogAddPopAsConstientProcessModel={
           setOpenDialogAddPopAsConstientProcessModel
@@ -116,9 +126,16 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
         // constituentProcessesJaCadastrados={mission?.mission_processes}
         popOverall={popOverall}
         pop={pop}
-
       />
      
+      <ExtractRequirementsDialog
+          openRequirementsDialog={openRequirementsDialog}
+        setOpenRequirementsDialog={
+          setOpenRequirementsDialog
+        }
+        mission={mission}
+      />
+
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
@@ -211,6 +228,9 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
               }
               adicionandoPopAsConstituentProcessModel={
                 adicionandoPopAsConstituentProcessModel
+              }
+              extractInteroperabilityRequirements={
+                extractInteroperabilityRequirements
               }
             ></MenuMission>
           )}
