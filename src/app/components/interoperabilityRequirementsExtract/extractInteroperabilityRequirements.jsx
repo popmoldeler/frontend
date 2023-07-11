@@ -314,7 +314,11 @@ export default function ExtractInteroperabilityRequirements({
             var destinyName = '';
             var isSendPool = false;
             var dataObjectName = '';
-            var newDataObjectName = '';
+            var messageFlowName = '-'
+            if (messageFlow.attributes.hasOwnProperty('name')) {
+                messageFlowName = messageFlow.attributes.name.value;
+            }
+             
 
             // Primeiramente as infos do elemento que realiza o envio (originRef)
             const originRef = messageFlow.attributes.sourceRef.value;
@@ -452,7 +456,7 @@ export default function ExtractInteroperabilityRequirements({
                     // Verificar multiplicidade
                     quantityMessagesReceive = getMultiplicity(destinyItem, false);
                     // Verificar associação com dataObj
-                    newDataObjectName = getDataInput(destinyItem, origin);
+                    dataObjectName = getDataInput(destinyItem, origin);
                     switch (options) {
                         case 'detailed':
                             // Verificar a existencia de um acoplamento de um Evento de borda tempo
@@ -488,7 +492,7 @@ export default function ExtractInteroperabilityRequirements({
                     // Quantidade de mensagens recebidas sempre será 1, pois não tem multiplicidade
                     quantityMessagesReceive = "uma mensagem";
                     // Verificar associação com dataObj
-                    newDataObjectName = getDataInput(destinyItem, origin);
+                    dataObjectName = getDataInput(destinyItem, origin);
                     switch (options) {
                         case 'detailed':
                             // Verificar associação com dataStore
@@ -547,6 +551,7 @@ export default function ExtractInteroperabilityRequirements({
                     requirements.push(['Quantidade de mensagens enviadas', criarTextoQuantidadeMensagensEnviadas(originPoolConstituent, destinyPoolConstituent, quantityMessagesSent)]);
                     requirements.push(['Quantidade de mensagens recebidas por um mesmo constituinte', criarTextoQuantidadeMensagensRecebidas(originPoolConstituent, destinyPoolConstituent, quantityMessagesReceive)]);
                     requirements.push(['Ação', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, (isSendPool ? "envio de informações (processo de envio independente)" : originName))]);
+                    requirements.push(["Informação da mensagem relacionada à interoperabilidade", messageFlowName]);
                     requirements.push(["Condição da interoperabilidade", criarTextoCondicaoInteroperabilidade(dataObjectName)]);
                     requirements.push(['Rastreabilidade', criarTextoRastreabilidade(originSplit[0], originName, destinySplit[0], destinyName)]);
                     // Adiciona marcação para diferenciar visualmente o próximo requisito
@@ -555,6 +560,7 @@ export default function ExtractInteroperabilityRequirements({
                 case 'compact':
                     temporaryCompactInfos["CONDICOES_ENVIO"].push(criarTextoQuantidadeMensagensEnviadas(originPoolConstituent, destinyPoolConstituent, quantityMessagesSent));
                     temporaryCompactInfos["CONDICOES_RECEBIMENTO"].push(criarTextoQuantidadeMensagensRecebidas(originPoolConstituent, destinyPoolConstituent, quantityMessagesReceive));
+                    compactRequirements.push(["Informação da mensagem relacionada à interoperabilidade", messageFlowName]);
                     compactRequirements.push(["Condição da interoperabilidade", criarTextoCondicaoInteroperabilidade(dataObjectName)]);
                     compactRequirements.push(['Descrição textual detalhada', criarTextoRequisitoDetalhado(criarTextoAcao(originPoolConstituent, destinyPoolConstituent, (isSendPool ? "envio de informações (processo de envio independente)" : originName)), temporaryCompactInfos)]);
                     compactRequirements.push(['Rastreabilidade', criarTextoRastreabilidade(originSplit[0], originName, destinySplit[0], destinyName)]);
