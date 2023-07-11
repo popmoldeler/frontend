@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import ExtractInteroperabilityRequirements from "./extractInteroperabilityRequirements";
+import ExtractInteroperabilityRequirementsPortuguese from "./extractInteroperabilityRequirementsPortuguese";
 import { CSVLink, CSVDownload } from "react-csv";
 
 export default function ExtractRequirementsDialog({
@@ -35,13 +36,31 @@ export default function ExtractRequirementsDialog({
             mission: mission
         },
         onSubmit: async (values) => {
-            const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: values.extractType });
-            if (csvDataTemp !== '') {
-                setCsvData(csvDataTemp);
-                setExtractTypeText(values.extractType);
-            } else {
-                setCsvData(undefined);
-                setExtractTypeText(undefined);
+            switch (values.extractType){
+                case 'detailed':
+                case 'compact':
+                    const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: values.extractType });
+                    if (csvDataTemp !== '') {
+                        setCsvData(csvDataTemp);
+                        setExtractTypeText(values.extractType);
+                    } else {
+                        setCsvData(undefined);
+                        setExtractTypeText(undefined);
+                    }
+                    break;
+                case 'detailedPt':
+                case 'compactPt':
+                    const csvDadosTemp = ExtractInteroperabilityRequirementsPortuguese({ mission: values.mission, options: values.extractType });
+                    if (csvDadosTemp !== '') {
+                        setCsvData(csvDadosTemp);
+                        setExtractTypeText(values.extractType);
+                    } else {
+                        setCsvData(undefined);
+                        setExtractTypeText(undefined);
+                    }
+                    break;
+                default:
+                    break;
             }
             formik.resetForm();
         },
@@ -71,6 +90,8 @@ export default function ExtractRequirementsDialog({
                             >
                                 <FormControlLabel value="detailed" control={<Radio />} label="Detailed" />
                                 <FormControlLabel value="compact" control={<Radio />} label="Compact" />
+                                <FormControlLabel value="detailedPt" control={<Radio />} label="Detailed (Portuguese)" />
+                                <FormControlLabel value="compactPt" control={<Radio />} label="Compact (Portuguese)" />
                             </RadioGroup>
                         </FormControl>
                         <Box
