@@ -40,7 +40,7 @@ export default function MenuMission({ editando, deletando,adicionandoConstituent
         <MenuItem onClick={adicionandoConstituentProcessModel} >Add Constituent Process</MenuItem>
         <MenuItem onClick={adicionandoPopAsConstituentProcessModel}>Add PoP as Constituent Process</MenuItem>
         <MenuItem onClick={extractInteroperabilityRequirements}>Extract Interoperability Requirements</MenuItem>
-        <MenuItem onClick={extractReliabilityRequirements}>Extract Reliability Requirements</MenuItem>
+        <MenuItem onClick={extractReliabilityRequirements}>Extract Fault Tolerance Requirements (Portuguese)</MenuItem>
         <MenuItem onClick={editando}>Update</MenuItem>
         <MenuItem onClick={deletando}>Delete</MenuItem>
       </Menu>
