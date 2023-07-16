@@ -7,11 +7,10 @@ import React from 'react';
 // Ação textual de envio
 function criarTextoAcaoEnvio(constituinte_origem, constituinte_destino, momento_falha_envio, falha_envio, solucao_falha_envio) {
     const combinedArray = falha_envio.map((fail, index) => {
-        return fail + ", então " + solucao_falha_envio[index];
+        return fail + ", then " + solucao_falha_envio[index];
       });
-    return `Durante a interoperabilidade do ${constituinte_origem} para o ${constituinte_destino}, quando ${momento_falha_envio} ao ocorrer ${combinedArray.join(" ")}`;
+    return `During the interoperability of ${constituinte_origem} to the ${constituinte_destino}, when ${momento_falha_envio} upon occurrence ${combinedArray.join(" ")}`;
 }
-//`Durante o envio de mensagem do
 
 // Momento para ocorrência da falha durante o envio da mensagem
 function criarTextoMomentoFalhaEnvio(momento_falha_envio, tarefa_envio_msg_com_ev_erro){

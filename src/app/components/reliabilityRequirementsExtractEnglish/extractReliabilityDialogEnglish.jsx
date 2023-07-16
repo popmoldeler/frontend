@@ -13,17 +13,17 @@ import {
     FormControlLabel
 } from "@mui/material";
 import { useFormik } from "formik";
-import ExtractReliabilityRequirements from "./extractReliabilityRequirements";
+import ExtractReliabilityRequirementsEnglish from "./extractReliabilityRequirementsEnglish";
 import { CSVLink } from "react-csv";
 
-export default function ExtractReliabilityDialog({
-  openReliabilityDialog,
-  setOpenReliabilityDialog,
+export default function ExtractReliabilityDialogEnglish({
+  openReliabilityDialogEnglish,
+  setOpenReliabilityDialogEnglish,
   mission
 }) {
    
     const handleClose = () => {
-        setOpenReliabilityDialog(false);
+        setOpenReliabilityDialogEnglish(false);
         setCsvData(undefined);
     };
     const [csvData, setCsvData] = useState(undefined);
@@ -34,16 +34,16 @@ export default function ExtractReliabilityDialog({
             mission: mission
         },
         onSubmit: async (values) => {
-            setCsvData(ExtractReliabilityRequirements({ mission: values.mission }));
+            setCsvData(ExtractReliabilityRequirementsEnglish({ mission: values.mission }));
             formik.resetForm();
         },
     });
     
     return (
     <>
-        <Dialog open={openReliabilityDialog} onClose={handleClose}>
+        <Dialog open={openReliabilityDialogEnglish} onClose={handleClose}>
         <DialogTitle sx={{ alignSelf: "center", paddingBottom: "0px" }}>
-            Extract Fault Tolerance Requirements (Portuguese)
+            Extract Fault Tolerance Requirements (English)
         </DialogTitle>
                 <DialogContent sx={{ padding: "10px" }}>
                 <form onSubmit={formik.handleSubmit}>
@@ -82,8 +82,8 @@ export default function ExtractReliabilityDialog({
                             {csvData ?<CSVLink
                                 data={csvData}
                                 separator={";"}
-                                filename={`${mission.tittle} - Fault Tolerance Requirements (Portuguese)`}
-                                headers={['Campo', 'Descrição']}
+                                filename={`${mission.tittle}- Fault Tolerance Requirements (English)`}
+                                headers={['Field', 'Description']}
                                 style={{
                                     "backgroundColor": "blue",
                                     "color": "white",
