@@ -5,7 +5,6 @@ import TableRow from "@mui/material/TableRow";
 import MenuMission from "./MenuMission";
 
 export default function Mission({ mission, allianceMembers, pop_id }) {
-  console.log(mission);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
 
