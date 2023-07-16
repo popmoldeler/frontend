@@ -2,10 +2,14 @@ import React from 'react';
 
 // SOMENTE ENVIO ****************************************
 
+
+
 // Ação textual de envio
 function criarTextoAcaoEnvio(constituinte_origem, constituinte_destino, momento_falha_envio, falha_envio, solucao_falha_envio) {
-    return `Durante o envio de mensagem do ${constituinte_origem} para o ${constituinte_destino}, 
-    quando ${momento_falha_envio} ao ocorrer ${falha_envio}, então ${solucao_falha_envio}`;
+    const combinedArray = falha_envio.map((fail, index) => {
+        return fail + ", Então " + solucao_falha_envio[index];
+      });
+    return `Durante o envio de mensagem do ${constituinte_origem} para o ${constituinte_destino}, quando ${momento_falha_envio} ao ocorrer ${combinedArray.join(" ")}`;
 }
 
 // Momento para ocorrência da falha durante o envio da mensagem

@@ -1,248 +1,418 @@
-import * as React from "react";
-import { criarTextoAcaoEnvio } from "./reliabilityInfosToText";
+import {  criarTextoAcaoEnvio,
+    criarTextoMomentoFalhaEnvio,
+    criarTextoQuaisFalhasEnvio,
+    criarTextoComoResolverFalhasEnvio,
+    CriarTextoRastreabilidadeEnvio,
+    criarTextoAcaoRecebimento,
+    CriarTextoMomentoFalhaRecebimento1,
+    CriarTextoMomentoFalhaRecebimento2,
+    CriarTextoQuaisFalhasRecebimento,
+    CriarTextoComoResolverFalhasRecebimento,
+    criarTextoTratamentoExcecaoEnvio,
+    criarTextoTratamentoExcecaoRecebimento,
+    criarTextoRequisitoConfiabilidadeDetalhado 
+  } from "./reliabilityInfosToText";
+  
+  
+  export default function ExtractReabilityRequirements({
+      mission,
+      options
+  }) {
+  
+   // ================================================== v
+  
+  // Método auxiliar para descobrir o nome do constituinte de um elemento
+  const getConstituent = (item, itemId, origin, process) => {
+    for (var i = 0; i < process.length; i++) {
+        const pool = process.item(i);
+        const poolId = pool.attributes.id.value;
+        const poolElements = pool.getElementsByTagName(item.tagName);
+        // Para cada task da pool, validar se o elemento pertence a ela
+        var isHere = false;
+        for (var j = 0; j < poolElements.length; j++) {
+            const task = poolElements.item(j);
+            if (task.attributes.id.value === itemId) {
+                isHere = true;
+                break;
+            }
+        }
+        if (isHere) {
+            const participants = origin.getElementsByTagName("bpmn:participant");
+            for (var k = 0; k < participants.length; k++) {
+                const participant = participants.item(k);
+                if (participant.attributes.processRef) {
+                    if (participant.attributes.processRef.value === poolId) {
+                        return participant.attributes.name.value;
+                    }
+                }
+            }
+        }
+    }
+    return '';
+  }
+  
+  const getActivityByEvent = (flows, event) => {
+    let activity = "";
+      for (let v of flows) {
+        if(v.getAttribute("sourceRef") === event){
+          activity = v.getAttribute("targetRef");
+           break;
+        }
+      }
+    return activity;
+  }
+  const getEventStartIdByActivity = (subProcess, idActivity) => {
+       for (let v of subProcess) {
+        if(v.getAttribute("id") === idActivity){
+          let start = v.getElementsByTagName("bpmn:startEvent");
+            if (start.length > 0) {      
+                  const startEventId = start[0].getAttribute("id");
+                  return startEventId;
+            }
+        }
+      }
+  }
+  
+  const getGatwayIdByEventStartId = (flows, startEventId)=> {
+    let gatewayId = "";
+    for (let v of flows) {
+      if(v.getAttribute("sourceRef") === startEventId){
+        gatewayId = v.getAttribute("targetRef");         
+        break;
+      }
+    }
+    return gatewayId;
+  }
+  
+  const getNameSequenceByGateWay = (flows, gatewayId) => {
+  let names = [];
+    for (let v of flows) {
+      if(v.getAttribute("sourceRef") === gatewayId){
+        names.push(v.getAttribute("name"))         
+      }
+    }
+    return names;
+  }
 
-//import React from 'react';
-//import { useEffect, useState } from 'react';
-//import { parseString } from 'xml2js';
+  
+const getMessageFlowBySource = (flows, source) => {
+  let msg = null;
+  for (let v of flows) {
+    if(v.getAttribute("sourceRef") === source){
+      msg = v;
+       break;
+    }
+  }
+return msg;
+}
 
+  const getMessageFlowByName = (flows, name) => {
+		let msg = null;
+	  for (let v of flows) {
+			if(v.getAttribute("name") === name){
+				msg = v;
+     		break;
+    	}
+    }
+  return msg;
+}
 
-export default function ExtractReabilityRequirements({
-    mission,
-    options
-}) {
+  const getSolutions = (falhas, flows, origin) => {
+    let solutions = [];
+    
+    falhas.map(v => {
+      let msg = getMessageFlowByName(flows, v);   
+      if(msg){ 
+      let isFinal = false;
+      let solution = "Para cada " + v;
+      let count = 0;
+      let target = "";
+      
+      while(!isFinal || count > 10){
+        if (count !== 0) {
+          msg = getMessageFlowBySource(flows, target);
+        }
+        if(msg){ 
+            target = msg.getAttribute("targetRef");      	
+                  
+            //verificar se o target é gateway se for encerra, se nao continua
+            if(!target.includes("Gateway")){
+              
+              //busco o item por id e pego o texto para formar solucao 
+              const originItem = origin.getElementById(target);
+              let txtSolve = originItem.attributes.name.value;
+              
+              solution += count === 0 ? ", será necessário " + txtSolve : " e " + txtSolve;
+            } else {
+                isFinal = true;
+            }
+        } else {
+          isFinal = true;
+        }
+        count++;
+      }      
+      solutions.push(solution);
+     }
+    });
+    
+    return solutions;
+  }
 
+  // Metodo para verificar o acoplamento de um evento de borda de erro
+  const getBoundaryErrorEvent = (item, origin) => {
+    const boundaryEvents = origin.getElementsByTagName("bpmn:boundaryEvent");
+    const taskNames = [];
+  
+    for (var i = 0; i < boundaryEvents.length; i++) {
+      const boundaryEvent = boundaryEvents.item(i);
+      if (boundaryEvent.attributes.attachedToRef.value === item.attributes.id.value) {
+        const getErrorEventDefinition = boundaryEvent.getElementsByTagName(
+          "bpmn:errorEventDefinition"
+        );
+        if (getErrorEventDefinition.length === 1) {
+          // Obter o nome da tarefa associada
+          const taskName = item.attributes.name.value;
+          taskNames.push(taskName);
+        }
+      }
+    }
+  
+    return taskNames;
+  };
+  
+  console.log(mission)
+  // Consulta string do arquivo bpmn da visão detalhada da missão
+  const xmlString = mission.mission_processes[0].constituent_process.file_text;
+      
+  // Realiza o parser do texto do arquivo para um htmlcollection
+  const origin = new DOMParser().parseFromString(xmlString, "text/xml");
+
+  // Regra para BPMN.IO - Consulta todos messageFlow (pontos de interoperabilidade)
+  const messageFlows = origin.getElementsByTagName("bpmn:messageFlow");
+  
+  // Consulta todo conteúdo interno de uma pool // todas pools que possuem conteúdo são retornadas aqui
+  const process = origin.getElementsByTagName("bpmn:process");
+
+  const boundaryEvents = origin.getElementsByTagName("bpmn:boundaryEvent");
+
+  const sequenceFlows= origin.getElementsByTagName("bpmn:sequenceFlow");
+  const subProcess = origin.getElementsByTagName("bpmn:subProcess");
+  
+  // ================================================== v
+  // Variável que irá armazenar o texto de todos requisitos de confiabilidade
   const requirements = [];
 
-  requirements.push(["ID", "TESTE"]);
 
-    console.log('missão', mission.mission_processes[0]);
-    
-    const xmlString =
-        mission.mission_processes[0].constituent_process.file_text;
+  for (let boundaryEvent of boundaryEvents) {
+    let failMoment = '';
+    let messageFlowId = '';
+    let confiabilityId = '';
+    let destinyPoolConstituent = ''
+    let originPoolConstituent = ''
+    let fails = [];
+    let solution = "";
 
-    const source = new DOMParser().parseFromString(xmlString, "text/xml");
+    const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
+    if (errorEventDefinition.length > 0) {      
+        const originRef = boundaryEvent.getAttribute("attachedToRef");
+        const eventId = boundaryEvent.getAttribute("id");
+        const errorId = errorEventDefinition[0].getAttribute("id");
+        
+        // Recupera o elemento
+        const originItem = origin.getElementById(originRef);
+        let originName = originItem.attributes.name.value;   
+        
+        for (let messageFlow of messageFlows) {
+          const targetRef = messageFlow.getAttribute("targetRef");
+						const sourceRef = messageFlow.getAttribute("sourceRef");
+        		if(sourceRef === originRef || targetRef === originRef){							
+              messageFlowId = messageFlow.getAttribute("id");
 
-    console.log('source', source);
-
-    //Elementos da BPMN do meu trabalho
-    
-    const sendTask = source.getElementsByTagName("bpmn:sendTask"); //Tarefa de envio;
-    const receiveTask = source.getElementsByTagName("bpmn:receiveTask"); //Tarefa de recebimento;
-    const serviceTask = source.getElementsByTagName("bpmn:serviceTask"); //Tarefa de serviço;
-    const boundaryEvent = source.getElementsByTagName("bpmn:boundaryEvent"); //Evento de borda;
-    const errorEventDefinition = source.getElementsByTagName("bpmn:errorEventDefinition"); //Evento de erro;
-
-    const subProcess = source.getElementsByTagName("bpmn:subProcess"); // SUBPROCESSO
-    const exclusiveGateway = source.getElementsByTagName("bpmn:exclusiveGateway"); // Desvio exclusive
-    const sequenceFlow = source.getElementsByTagName("bpmn:sequenceFlow"); // Rótulos dos fluxos
-    const intermediateCatchEvent = source.getElementsByTagName("bpmn:intermediateCatchEvent"); //EV intermediario catch
-    const timerEventDefinition = source.getElementsByTagName("bpmn:timerEventDefinition"); //Timer
-    const messageEventDefinition = source.getElementsByTagName("bpmn:messageEventDefinition"); //message recebimento
-    const manualTask = source.getElementsByTagName("bpmn:manualTask"); // Tarefa manual
-
-    console.log('length', sendTask.length); //Tarefa de envio;                
-    console.log('length', receiveTask.length); //Tarefa de recebimento;              
-    console.log('length', serviceTask.length); //Tarefa de serviço;              
-    console.log('length', boundaryEvent.length); //Evento de borda;           
-    console.log('length', errorEventDefinition.length); //Evento de erro; 
-
-    console.log('length', subProcess.length);  // SUBPROCESSO 
-    console.log('length', exclusiveGateway.length); // Desvio exclusive
-    console.log('length', sequenceFlow.length); // Rótulos dos fluxos
-    console.log('length', intermediateCatchEvent.length); //EV intermediario catch
-    console.log('length', timerEventDefinition.length);  //Timer
-    console.log('length', messageEventDefinition.length); //message recebimento
-    console.log('length', manualTask.length); // Tarefa manual
-
-    // ========================================================================== sendTask
-
-    // sendTask BPMN
-    const itemsendTask = sendTask.item(0);
-    const idsendTask = itemsendTask.attributes.id.value;
-    const namesendTask = itemsendTask.attributes.name.value;
-    const incomingsendTask = itemsendTask.attributes.incoming.value;
-    const outgoingsendTask = itemsendTask.attributes.outgoing.value;
-    console.log('idsendTask', idsendTask);
-    console.log('namesendTask', namesendTask);
-    console.log('incomingsendTask', incomingsendTask);
-    console.log('outgoingsendTask', outgoingsendTask);
-
-    //sendTask Source
-    const itemIdsendTask = source.getElementById(idsendTask);
-    const itemnamesendTask = source.getElementById(namesendTask);
-    const itemincomingsendTask = source.getElementById(incomingsendTask);
-    const itemoutgoingsendtask = source.getElementById(outgoingsendTask);
-    console.log('itemIdsendTask', itemIdsendTask.attributes);
-    console.log('itemnamesendTask', itemnamesendTask);
-    console.log('itemincomingsendTask',itemincomingsendTask.attributes);
-    console.log('itemoutgoingsendtask', itemoutgoingsendtask);
-
-    // ========================================================================== receiveTask
-
-    // receiveTask BPMN
-     const itemreceiveTask = receiveTask.item(0);
-     const idreceiveTask = itemreceiveTask.attributes.id.value;
-     const namereceiveTask = itemreceiveTask.attributes.name.value;
-     const incomingreceiveTask = itemreceiveTask.attributes.incoming.value;
-     const outgoingreceiveTask = itemreceiveTask.attributes.outgoing.value;
-     console.log('idreceiveTask', idreceiveTask);
-     console.log('namereceiveTask', namereceiveTask);
-     console.log('incomingreceiveTask', incomingreceiveTask);
-     console.log('outgoingreceiveTask', outgoingreceiveTask);
-
-     //receiveTask Source
-     const itemIdreceiveTask = source.getElementById(idreceiveTask);
-     const itemnamereceiveTask = source.getElementById(namereceiveTask);
-     const itemincomingreceiveTask = source.getElementById(incomingreceiveTask);
-     const itemoutgoingreceiveTask = source.getElementById(outgoingreceiveTask);
-     console.log('itemIdreceiveTask', itemIdreceiveTask.attributes);
-     console.log('itemnamereceiveTask', itemnamereceiveTask);
-     console.log('itemincomingreceiveTask',itemincomingreceiveTask.attributes);
-     console.log('itemoutgoingreceiveTask', itemoutgoingreceiveTask);
-
-    // ========================================================================== serviceTask
-
-    // serviceTask BPMN
-    const itemserviceTask = serviceTask.item(0);
-    const idserviceTask = itemserviceTask.attributes.id.value;
-    const nameserviceTask = itemserviceTask.attributes.name.value;
-    const incomingserviceTask = itemserviceTask.attributes.incoming.value;
-    const outgoingserviceTask = itemserviceTask.attributes.outgoing.value;
-    console.log('idserviceTask', idserviceTask);
-    console.log('nameserviceTask', nameserviceTask);
-    console.log('incomingserviceTask', incomingserviceTask);
-    console.log('outgoingserviceTask', outgoingserviceTask);
-
-    //serviceTask Source
-    const itemIdserviceTask = source.getElementById(idserviceTask);
-    const itemnameserviceTask = source.getElementById(nameserviceTask);
-    const itemincomingserviceTask = source.getElementById(incomingserviceTask);
-    const itemoutgoingserviceTask = source.getElementById(outgoingserviceTask);
-    console.log('itemIdserviceTaskk', itemIdserviceTask.attributes);
-    console.log('itemnameserviceTask', itemnameserviceTask);
-    console.log('itemincomingserviceTask',itemincomingserviceTask.attributes);
-    console.log('itemoutgoingserviceTask', itemoutgoingserviceTask);
-
-    // ========================================================================== boundaryEvent
-
-    // boundaryEvent BPMN
-    const itemboundaryEvent = boundaryEvent.item(0);
-    const idboundaryEvent = itemboundaryEvent.attributes.id.value;
-    const attachedToRefboundaryEvent = itemboundaryEvent.attributes.attachedToRef.value;
-    console.log('idboundaryEvent', idboundaryEvent);
-    console.log('attachedToRefboundaryEvent', attachedToRefboundaryEvent);
-
-    //boundaryEvent SOURCE 
-    const itemIdboundary = source.getElementById(idboundaryEvent);
-    const itemAttachedToRefboundary = source.getElementById(attachedToRefboundaryEvent);
-    console.log('itemIdboundary', itemIdboundary.attributes);
-    console.log('itemAttachedToRefboundary',itemAttachedToRefboundary.attributes);
-
-    // ========================================================================== errorEventDefinition
-
-    // errorEventDefinition BPMN
-    const itemErrorEvent = errorEventDefinition.item(0);
-    const idErrorEvent = itemErrorEvent.attributes.id.value;
-    console.log('idErrorEvent', idErrorEvent);
-
-    //errorEventDefinition SOURCE
-    const itemIdErro = source.getElementById(idErrorEvent);
-    console.log('itemIdErro', itemIdErro.attributes);
-
-    // ========================================================================== sequenceFlow
-
-    // sequenceFlow BPMN
-    const itemsequenceFlow = sequenceFlowDefinition.item(0);
-    const idsequenceFlow = itemsequenceFlow.attributes.id.value;
-    const namesequenceFlow = namesequenceFlow.attributes.name.value;
-    const sourceRefsequenceFlow = sourceRefsequenceFlow.attributes.sourceRef.value;
-    const targetRefsequenceFlow = targetRefsequenceFlow.attributes.targetRef.value;
-    console.log('idsequenceFlow', idsequenceFlow);
-    console.log('namesequenceFlow', namesequenceFlow);
-    console.log('sourceRefsequenceFlow', sourceRefsequenceFlow);
-    console.log('targetRefsequenceFlow', targetRefsequenceFlow);
-
-    // sequenceFlow SOURCE
-    const itemidsequenceFlow = source.getElementById(idsequenceFlow);
-    const itemnamesequenceFlow = source.getElementById(namesequenceFlow);
-    const itemsourceRefsequenceFlow  = source.getElementById(sourceRefsequenceFlow);
-    const itemtargetRefsequenceFlow  = source.getElementById(targetRefsequenceFlow);
-    console.log('itemidsequenceFlow', itemidsequenceFlow.attributes);
-    console.log('itemnamesequenceFlow', itemnamesequenceFlow.attributes);
-    console.log('itemsourceRefsequenceFlow', itemsourceRefsequenceFlow.attributes);
-    console.log('itemtargetRefsequenceFlow', itemtargetRefsequenceFlow.attributes);
-
-    // ========================================================================== subProcess
-
-    // subProcess BPMN
-    const itemsubProcess = subProcess.item(0);
-    const idsubProcess = itemsubProcess.attributes.id.value;
-    const namesubProcess = itemsubProcess.attributes.name.value;
-    const incomingsubProcess = itemsubProcess.attributes.incoming.value;
-    const outgoingsubProcessk = itemsubProcess.attributes.outgoing.value;
-    console.log('idsubProcess', idsubProcess);
-    console.log('namesubProcess', namesubProcess);
-    console.log('incomingsubProcess', incomingsubProcess);
-    console.log('outgoingsubProcessk', outgoingsubProcessk);
-
-    // subProcess SOURCE
-    const itemidsubProcess = source.getElementById(idsubProcess);
-    const itemnamesubProcess = source.getElementById(namesubProcess);
-    const itemincomingsubProcess  = source.getElementById(incomingsubProcess);
-    const itemoutgoingsubProcessk  = source.getElementById(outgoingsubProcessk);
-
-    console.log('itemidsubProcess', itemidsubProcess.attributes);
-    console.log('itemnamesubProcess', itemnamesubProcess.attributes);
-    console.log('itemincomingsubProcess', itemincomingsubProcess.attributes);
-    console.log('itemoutgoingsubProcessk', itemoutgoingsubProcessk.attributes);
-
-    // ================================================== carregar informações de dentro do subProces
-
-    const extractSequenceFlowInformation = () => {
-        // Vá até o SubProcess desejado (exemplo: ID do SubProcess = 'subProcessId')
-        const subProcess = bpmnData.definitions.process[0].subProcess.find(sub => sub.$.id === 'subProcessId');
-    
-        if (subProcess) {
-          // Vá até o Exclusive Gateway desejado (exemplo: ID do Exclusive Gateway = 'exclusiveGatewayId')
-          const exclusiveGateway = subProcess.exclusiveGateway.find(gateway => gateway.$.id === 'exclusiveGatewayId');
-    
-          if (exclusiveGateway) {
-            // Filtra os SequenceFlows conectados ao Exclusive Gateway
-            const sequenceFlows = subProcess.sequenceFlow.filter(flow => flow.$.sourceRef === exclusiveGateway.$.id);
-    
-            sequenceFlows.forEach(sequenceFlow => {
-              // Verifica o tipo do elemento de destino
-              const destinationType = getElementType(sequenceFlow.$.targetRef);
-    
-              if (destinationType === 'SendTask' || destinationType === 'ManualTask' || destinationType === 'IntermediateCatchEvent') {
-                // Extrai as informações desejadas do SequenceFlow
-                const source = sequenceFlow.$.sourceRef;
-                const target = sequenceFlow.$.targetRef;
-                const name = sequenceFlow.$.name;
-    
-                console.log('SequenceFlow encontrado:');
-                console.log('Source:', source);
-                console.log('Target:', target);
-                console.log('Name:', name);
+              if(messageFlow.getAttribute("sourceRef") === originRef){
+                originPoolConstituent = getConstituent(originItem, originRef, origin, process);                
+                const itemDestinyName = messageFlow.getAttribute("targetRef");
+                const itemDestiny = origin.getElementById(itemDestinyName);
+                destinyPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
+              } else {              
+                const itemDestinyName = messageFlow.getAttribute("sourceRef");
+                const itemDestiny = origin.getElementById(itemDestinyName);
+                originPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
+                destinyPoolConstituent = getConstituent(originItem, originRef, origin, process);
+              	
               }
-            });
-          }
+						}
         }
-      };
 
-      const getElementType = (elementId) => {
-        // Obtém o tipo do elemento com base no seu ID (você pode adaptar essa função para mapear seus IDs)
-        // Exemplo: Obtém o tipo com base no prefixo do ID (SendTask_, ManualTask_, IntermediateCatchEvent_)
-        if (elementId.startsWith('SendTask_')) {
-          return 'SendTask';
-        } else if (elementId.startsWith('ManualTask_')) {
-          return 'ManualTask';
-        } else if (elementId.startsWith('IntermediateCatchEvent_')) {
-          return 'IntermediateCatchEvent';
+        confiabilityId = `${eventId} - ${errorId} - ${originRef}`;
+        failMoment = `${originName} (${originRef}) com o ${eventId} do tipo ${errorId}`;               
+        fails = getNameSequenceByGateWay(sequenceFlows, getGatwayIdByEventStartId(sequenceFlows, getEventStartIdByActivity(subProcess, getActivityByEvent(sequenceFlows, eventId))));
+        solution = getSolutions(fails, sequenceFlows, origin);
+        let rastreability = ''
+        if(originPoolConstituent && destinyPoolConstituent){
+          rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} na ${originName}`
+        }
+        // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
+        requirements.push(
+          ['ID da Interoperabilidade', messageFlowId],
+          ['ID da Confiabilidade', confiabilityId],
+          ['Classe', 'SoS_NFR'],
+          ['Sujeito', 'SoS'],
+          ['Constituinte de origem', originPoolConstituent], 
+          ['Constituinte de destino', destinyPoolConstituent],          
+          ['Momento Falha', failMoment],
+          ['Falha', fails.join(",")],
+          ['Solucao Falha', solution.join(". ")],
+          ['Ação textual', criarTextoAcaoEnvio(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
+          ['Rastreabilidadede', rastreability],
+        );
+
+      // Adiciona marcação para diferenciar visualmente o próximo requisito
+      requirements.push(['---------------', '---------------'])  
+  
+    }  
+  }
+  
+    const getTasksWithBoundaryErrorEvent = (origin) => {
+        const sendTasks = origin.getElementsByTagName("bpmn:sendTask");
+        const receiveTasks = origin.getElementsByTagName("bpmn:receiveTask");
+        const serviceTasks = origin.getElementsByTagName("bpmn:serviceTask");
+    
+        const tasksWithBoundaryErrorEvent = [];
+    
+        // Verificar sendTasks
+        for (let i = 0; i < sendTasks.length; i++) {
+            const sendTask = sendTasks.item(i);
+            if (getBoundaryErrorEvent(sendTask, origin)) {
+                tasksWithBoundaryErrorEvent.push(sendTask);
+            }
         }
     
-        return '';
-      }    
-
-  return requirements;
-};
+        // Verificar receiveTasks
+        for (let i = 0; i < receiveTasks.length; i++) {
+            const receiveTask = receiveTasks.item(i);
+            if (getBoundaryErrorEvent(receiveTask, origin)) {
+                tasksWithBoundaryErrorEvent.push(receiveTask);
+            }
+        }
+    
+        // Verificar serviceTasks
+        for (let i = 0; i < serviceTasks.length; i++) {
+            const serviceTask = serviceTasks.item(i);
+            if (getBoundaryErrorEvent(serviceTask, origin)) {
+                tasksWithBoundaryErrorEvent.push(serviceTask);
+            }
+        }
+    
+        return tasksWithBoundaryErrorEvent;
+    };
+  
+    //==================================================== 
+  
+    const extractSubprocessData = (origin) => {
+      const subprocesses = origin.getElementsByTagName("bpmn:subProcess");
+      const subprocessData = [];
+  
+      for (let i = 0; i < subprocesses.length; i++) {
+          const subprocess = subprocesses.item(i);
+          const exclusiveGateway = subprocess.getElementsByTagName("bpmn:exclusiveGateway").item(0);
+  
+          if (exclusiveGateway) {
+              const outgoingSequenceFlows = exclusiveGateway.getElementsByTagName("bpmn:sequenceFlow");
+  
+              for (let j = 0; j < outgoingSequenceFlows.length; j++) {
+                  const sequenceFlow = outgoingSequenceFlows.item(j);
+                  const targetRef = sequenceFlow.attributes.targetRef.value;
+  
+                  const intermediateCatchEvents = subprocess.getElementsByTagName("bpmn:intermediateCatchEvent");
+                  const intermediateTimerEvents = subprocess.getElementsByTagName("bpmn:intermediateTimerEvent");
+                  const sendTasks = subprocess.getElementsByTagName("bpmn:sendTask");
+                  const manualTasks = subprocess.getElementsByTagName("bpmn:manualTask");
+  
+                  for (let k = 0; k < intermediateCatchEvents.length; k++) {
+                      const intermediateCatchEvent = intermediateCatchEvents.item(k);
+                      if (intermediateCatchEvent.attributes.id.value === targetRef) {
+                          subprocessData.push(intermediateCatchEvent);
+                      }
+                  }
+  
+                  for (let k = 0; k < intermediateTimerEvents.length; k++) {
+                      const intermediateTimerEvent = intermediateTimerEvents.item(k);
+                      if (intermediateTimerEvent.attributes.id.value === targetRef) {
+                          subprocessData.push(intermediateTimerEvent);
+                      }
+                  }
+  
+                  for (let k = 0; k < sendTasks.length; k++) {
+                      const sendTask = sendTasks.item(k);
+                      if (sendTask.attributes.id.value === targetRef) {
+                          subprocessData.push(sendTask);
+                      }
+                  }
+  
+                  for (let k = 0; k < manualTasks.length; k++) {
+                      const manualTask = manualTasks.item(k);
+                      if (manualTask.attributes.id.value === targetRef) {
+                          subprocessData.push(manualTask);
+                      }
+                  }
+              }
+          }
+      }
+  
+      return subprocessData;
+  };
+  
+    
+  
+      // ================================================== carregar informações de dentro do subProces
+  
+      const extractSequenceFlowInformation = () => {
+          // Vá até o SubProcess desejado (exemplo: ID do SubProcess = 'subProcessId')
+          const subProcess = bpmnData.definitions.process[0].subProcess.find(sub => sub.$.id === 'subProcessId');
+      
+          if (subProcess) {
+            // Vá até o Exclusive Gateway desejado (exemplo: ID do Exclusive Gateway = 'exclusiveGatewayId')
+            const exclusiveGateway = subProcess.exclusiveGateway.find(gateway => gateway.$.id === 'exclusiveGatewayId');
+      
+            if (exclusiveGateway) {
+              // Filtra os SequenceFlows conectados ao Exclusive Gateway
+              const sequenceFlows = subProcess.sequenceFlow.filter(flow => flow.$.sourceRef === exclusiveGateway.$.id);
+      
+              sequenceFlows.forEach(sequenceFlow => {
+                // Verifica o tipo do elemento de destino
+                const destinationType = getElementType(sequenceFlow.$.targetRef);
+      
+                if (destinationType === 'SendTask' || destinationType === 'ManualTask' || destinationType === 'IntermediateCatchEvent') {
+                  // Extrai as informações desejadas do SequenceFlow
+                  const source = sequenceFlow.$.sourceRef;
+                  const target = sequenceFlow.$.targetRef;
+                  const name = sequenceFlow.$.name;
+      
+                  console.log('SequenceFlow encontrado:');
+                  console.log('Source:', source);
+                  console.log('Target:', target);
+                  console.log('Name:', name);
+                }
+              });
+            }
+          }
+        };
+  
+        const getElementType = (elementId) => {
+          // Obtém o tipo do elemento com base no seu ID (você pode adaptar essa função para mapear seus IDs)
+          // Exemplo: Obtém o tipo com base no prefixo do ID (SendTask_, ManualTask_, IntermediateCatchEvent_)
+          if (elementId.startsWith('SendTask_')) {
+            return 'SendTask';
+          } else if (elementId.startsWith('ManualTask_')) {
+            return 'ManualTask';
+          } else if (elementId.startsWith('IntermediateCatchEvent_')) {
+            return 'IntermediateCatchEvent';
+          }
+      
+          return '';
+        }
+        
+        
+  
+    return requirements;
+  };
