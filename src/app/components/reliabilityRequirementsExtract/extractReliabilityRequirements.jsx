@@ -124,7 +124,7 @@ return msg;
       let msg = getMessageFlowByName(flows, v);   
       if(msg){ 
       let isFinal = false;
-      let solution = "Para cada " + v;
+      let solution = "Para " + v;
       let count = 0;
       let target = "";
       
@@ -244,12 +244,12 @@ return msg;
         }
 
         confiabilityId = `${eventId} - ${errorId} - ${originRef}`;
-        failMoment = `${originName} (${originRef}) com o ${eventId} do tipo ${errorId}`;               
+        failMoment = `${originName}`;// (${originRef})`; //com o ${eventId} do tipo ${errorId}`;               
         fails = getNameSequenceByGateWay(sequenceFlows, getGatwayIdByEventStartId(sequenceFlows, getEventStartIdByActivity(subProcess, getActivityByEvent(sequenceFlows, eventId))));
         solution = getSolutions(fails, sequenceFlows, origin);
         let rastreability = ''
         if(originPoolConstituent && destinyPoolConstituent){
-          rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} na ${originName}`
+          rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} ao ${originName}`
         }
         // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
         requirements.push(
@@ -261,7 +261,7 @@ return msg;
           ['Constituinte de destino', destinyPoolConstituent],          
           ['Momento Falha', failMoment],
           ['Falha', fails.join(",")],
-          ['Solucao Falha', solution.join(". ")],
+          ['Solução Falha', solution.join(". ")],
           ['Ação textual', criarTextoAcaoEnvio(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
           ['Rastreabilidadede', rastreability],
         );

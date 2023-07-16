@@ -43,7 +43,7 @@ export default function ExtractReliabilityDialog({
     <>
         <Dialog open={openReliabilityDialog} onClose={handleClose}>
         <DialogTitle sx={{ alignSelf: "center", paddingBottom: "0px" }}>
-            Extract Reability Requirements
+            Extract Fault Tolerance Requirements (Portuguese)
         </DialogTitle>
                 <DialogContent sx={{ padding: "10px" }}>
                 <form onSubmit={formik.handleSubmit}>
