@@ -26,6 +26,8 @@ import ConstituentProcessModel from "./ConstituentProcessModel";
 import DialogAddPoPAsConstituentProcessModel from "./DialogAddPoPAsConstituentProcessModel";
 import ExtractRequirementsDialog from "../../interoperabilityRequirementsExtract/extractRequirementsDialog";
 import ExtractReliabilityDialog from "../../reliabilityRequirementsExtract/extractReliabilityDialog";
+// Nova em inglês
+import ExtractReliabilityDialogEnglish from "../../reliabilityRequirementsExtractEnglish/extractReliabilityDialogEnglish";
 
 export default function Mission({ mission, allianceMembers, pop_id, pop,popExternalCollaboration ,popOverall}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -55,6 +57,11 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
     setOpenReliabilityDialog,
   ] = React.useState(false);
 
+  const [
+    openReliabilityDialogEnglish,
+    setOpenReliabilityDialogEnglish,
+  ] = React.useState(false);
+
   const adicionandoConstituentProcessModel = () => {
     setOpenDialogAddConstientProcessModel(!openDialogAddConstientProcessModel);
   };
@@ -69,6 +76,10 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
 
   const extractReliabilityRequirements = () => {
     setOpenReliabilityDialog(true);
+  };
+
+  const extractReliabilityRequirementsEnglish = () => {
+    setOpenReliabilityDialogEnglish(true);
   };
 
   const deletando = () => {
@@ -154,6 +165,14 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
         }
         mission={mission}
       />
+
+    <ExtractReliabilityDialogEnglish
+            openReliabilityDialogEnglish={openReliabilityDialogEnglish}
+            setOpenReliabilityDialogEnglish={
+              setOpenReliabilityDialogEnglish
+            }
+            mission={mission}
+          />
 
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
@@ -253,6 +272,9 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
               }
               extractReliabilityRequirements={
                 extractReliabilityRequirements
+              }
+              extractReliabilityRequirementsEnglish={
+                extractReliabilityRequirementsEnglish
               }
             ></MenuMission>
           )}

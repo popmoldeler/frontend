@@ -11,10 +11,10 @@ import {  criarTextoAcaoEnvio,
     criarTextoTratamentoExcecaoEnvio,
     criarTextoTratamentoExcecaoRecebimento,
     criarTextoRequisitoConfiabilidadeDetalhado 
-  } from "./reliabilityInfosToText";
+  } from "./reliabilityInfosToTextEnglish";
   
   
-  export default function ExtractReabilityRequirements({
+  export default function ExtractReabilityRequirementsEnglish({
       mission,
       options
   }) {
@@ -124,7 +124,7 @@ return msg;
       let msg = getMessageFlowByName(flows, v);   
       if(msg){ 
       let isFinal = false;
-      let solution = "Para " + v;
+      let solution = "To " + v;
       let count = 0;
       let target = "";
       
@@ -142,7 +142,7 @@ return msg;
               const originItem = origin.getElementById(target);
               let txtSolve = originItem.attributes.name.value;
               
-              solution += count === 0 ? ", será necessário " + txtSolve : " e " + txtSolve;
+              solution += count === 0 ? ", will be necessary " + txtSolve : " and " + txtSolve;
             } else {
                 isFinal = true;
             }
@@ -249,21 +249,21 @@ return msg;
         solution = getSolutions(fails, sequenceFlows, origin);
         let rastreability = ''
         if(originPoolConstituent && destinyPoolConstituent){
-          rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} ao ${originName}`
+          rastreability = `To ${originPoolConstituent} for ${destinyPoolConstituent} at ${originName}`
         }
         // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
         requirements.push(
-          ['ID da Interoperabilidade', messageFlowId],
-          ['ID da Tolerância a Falha', confiabilityId],
-          ['Classe', 'SoS_NFR'],
-          ['Sujeito', 'SoS'],
-          ['Constituinte de Origem', originPoolConstituent], 
-          ['Constituinte de Destino', destinyPoolConstituent],          
-          ['Momento da Falha', failMoment],
-          ['Falha(s)', fails.join(",")],
-          ['Solução da(s) Falha(s)', solution.join(". ")],
-          ['Ação textual', criarTextoAcaoEnvio(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
-          ['Rastreabilidadede', rastreability],
+          ['Interoperability ID', messageFlowId],
+          ['Fault Tolerance ID', confiabilityId],
+          ['Class', 'SoS_NFR'],
+          ['Subject', 'SoS'],
+          ['Source Constituent', originPoolConstituent], 
+          ['Destination Constituent', destinyPoolConstituent],          
+          ['Moment of failure', failMoment],
+          ['Failure(s)', fails.join(",")],
+          ['ailure(s) solution', solution.join(". ")],
+          ['Textual action', criarTextoAcaoEnvio(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
+          ['Traceability', rastreability],
         );
 
       // Adiciona marcação para diferenciar visualmente o próximo requisito

@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-export default function MenuMission({ editando, deletando,adicionandoConstituentProcessModel,adicionandoPopAsConstituentProcessModel, extractInteroperabilityRequirements, extractReliabilityRequirements}) {
+export default function MenuMission({ editando, deletando,adicionandoConstituentProcessModel,adicionandoPopAsConstituentProcessModel, extractInteroperabilityRequirements, extractReliabilityRequirements, extractReliabilityRequirementsEnglish}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -41,6 +41,7 @@ export default function MenuMission({ editando, deletando,adicionandoConstituent
         <MenuItem onClick={adicionandoPopAsConstituentProcessModel}>Add PoP as Constituent Process</MenuItem>
         <MenuItem onClick={extractInteroperabilityRequirements}>Extract Interoperability Requirements</MenuItem>
         <MenuItem onClick={extractReliabilityRequirements}>Extract Fault Tolerance Requirements (Portuguese)</MenuItem>
+        <MenuItem onClick={extractReliabilityRequirementsEnglish}>Extract Fault Tolerance Requirements (English)</MenuItem>
         <MenuItem onClick={editando}>Update</MenuItem>
         <MenuItem onClick={deletando}>Delete</MenuItem>
       </Menu>
