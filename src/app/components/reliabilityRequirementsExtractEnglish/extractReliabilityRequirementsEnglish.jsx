@@ -255,13 +255,13 @@ return msg;
         requirements.push(
           ['Interoperability ID', messageFlowId],
           ['Fault Tolerance ID', confiabilityId],
-          ['Class', 'SoS_NFR'],
-          ['Subject', 'SoS'],
+          //['Class', 'SoS_NFR'],
+          //['Subject', 'SoS'],
           ['Source Constituent', originPoolConstituent], 
-          ['Destination Constituent', destinyPoolConstituent],          
+          ['Target Constituent', destinyPoolConstituent],          
           ['Moment of failure', failMoment],
           ['Failure(s)', fails.join(",")],
-          ['ailure(s) solution', solution.join(". ")],
+          ['Failure(s) solution', solution.join(". ")],
           ['Textual action', criarTextoAcaoEnvio(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
           ['Traceability', rastreability],
         );
