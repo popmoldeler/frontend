@@ -255,8 +255,8 @@ return msg;
         requirements.push(
           ['ID da Interoperabilidade', messageFlowId],
           ['ID da Tolerância a Falha', confiabilityId],
-          ['Classe', 'SoS_NFR'],
-          ['Sujeito', 'SoS'],
+          //['Classe', 'SoS_NFR'],
+          //['Sujeito', 'SoS'],
           ['Constituinte de Origem', originPoolConstituent], 
           ['Constituinte de Destino', destinyPoolConstituent],          
           ['Momento da Falha', failMoment],
