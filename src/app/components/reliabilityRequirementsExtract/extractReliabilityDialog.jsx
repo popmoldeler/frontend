@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import ExtractReliabilityRequirements from "./extractReliabilityRequirements";
+import ExtractReliabilityRequirementsEnglish from "../reliabilityRequirementsExtractEnglish/extractReliabilityRequirementsEnglish";
 import { CSVLink } from "react-csv";
 
 export default function ExtractReliabilityDialog({
@@ -31,10 +32,15 @@ export default function ExtractReliabilityDialog({
     const formik = useFormik({
         initialValues: {
             pop_mission_id: mission.id,
-            mission: mission
+            mission: mission,
+            language: "Portuguese", // Opção padrão
         },
         onSubmit: async (values) => {
-            setCsvData(ExtractReliabilityRequirements({ mission: values.mission }));
+            if (values.language === "Portuguese") {
+                setCsvData(ExtractReliabilityRequirements({ mission: values.mission }));
+            } else if (values.language === "English") {
+                setCsvData(ExtractReliabilityRequirementsEnglish({ mission: values.mission }));
+            }
             formik.resetForm();
         },
     });
@@ -43,7 +49,7 @@ export default function ExtractReliabilityDialog({
     <>
         <Dialog open={openReliabilityDialog} onClose={handleClose}>
         <DialogTitle sx={{ alignSelf: "center", paddingBottom: "0px" }}>
-            Extract Fault Tolerance Requirements (Portuguese)
+            Extract Fault Tolerance Requirements 
         </DialogTitle>
                 <DialogContent sx={{ padding: "10px" }}>
                 <form onSubmit={formik.handleSubmit}>
@@ -53,6 +59,26 @@ export default function ExtractReliabilityDialog({
                     justifyContent="center"
                     alignItems="center"
                     >
+                        <FormControl component="fieldset">
+                            <RadioGroup
+                                row
+                                aria-label="language"
+                                name="language"
+                                value={formik.values.language}
+                                onChange={formik.handleChange}
+                            >
+                                <FormControlLabel
+                                    value="Portuguese"
+                                    control={<Radio />}
+                                    label="Portuguese"
+                                />
+                                <FormControlLabel
+                                    value="English"
+                                    control={<Radio />}
+                                    label="English"
+                                />
+                            </RadioGroup>
+                        </FormControl>
                         <Box
                             sx={{
                             paddingTop: "5px",
@@ -82,7 +108,7 @@ export default function ExtractReliabilityDialog({
                             {csvData ?<CSVLink
                                 data={csvData}
                                 separator={";"}
-                                filename={`${mission.tittle} - Fault Tolerance Requirements (Portuguese)`}
+                                filename={`${mission.tittle} - Fault Tolerance Requirements`}
                                 headers={['Campo', 'Descrição']}
                                 style={{
                                     "backgroundColor": "blue",
