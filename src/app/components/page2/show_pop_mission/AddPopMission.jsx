@@ -35,11 +35,9 @@ function AddPopMission({
       business_alliance_id: id,
     },
     onSubmit: async (values) => {
-      console.log(right);
       addPop(values).then((res) =>
         right.map((mission) => {
           mission.pop_id = res.data.id;
-          console.log(mission);
           addPopMission(mission);
         })
       );

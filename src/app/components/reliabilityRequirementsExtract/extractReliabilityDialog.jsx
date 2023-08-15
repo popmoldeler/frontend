@@ -1,0 +1,129 @@
+import React, {useState} from "react";
+import {
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    Button,
+    Box,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    Radio,
+    FormControlLabel
+} from "@mui/material";
+import { useFormik } from "formik";
+import ExtractReliabilityRequirements from "./extractReliabilityRequirements";
+import ExtractReliabilityRequirementsEnglish from "../reliabilityRequirementsExtractEnglish/extractReliabilityRequirementsEnglish";
+import { CSVLink } from "react-csv";
+
+export default function ExtractReliabilityDialog({
+  openReliabilityDialog,
+  setOpenReliabilityDialog,
+  mission
+}) {
+   
+    const handleClose = () => {
+        setOpenReliabilityDialog(false);
+        setCsvData(undefined);
+    };
+    const [csvData, setCsvData] = useState(undefined);
+
+    const formik = useFormik({
+        initialValues: {
+            pop_mission_id: mission.id,
+            mission: mission,
+            language: "Portuguese", // Opção padrão
+        },
+        onSubmit: async (values) => {
+            if (values.language === "Portuguese") {
+                setCsvData(ExtractReliabilityRequirements({ mission: values.mission }));
+            } else if (values.language === "English") {
+                setCsvData(ExtractReliabilityRequirementsEnglish({ mission: values.mission }));
+            }
+            formik.resetForm();
+        },
+    });
+    
+    return (
+    <>
+        <Dialog open={openReliabilityDialog} onClose={handleClose}>
+        <DialogTitle sx={{ alignSelf: "center", paddingBottom: "0px" }}>
+            Extract Fault Tolerance Requirements 
+        </DialogTitle>
+                <DialogContent sx={{ padding: "10px" }}>
+                <form onSubmit={formik.handleSubmit}>
+                    <Grid
+                    container
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    >
+                        <FormControl component="fieldset">
+                            <RadioGroup
+                                row
+                                aria-label="language"
+                                name="language"
+                                value={formik.values.language}
+                                onChange={formik.handleChange}
+                            >
+                                <FormControlLabel
+                                    value="Portuguese"
+                                    control={<Radio />}
+                                    label="Portuguese"
+                                />
+                                <FormControlLabel
+                                    value="English"
+                                    control={<Radio />}
+                                    label="English"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                        <Box
+                            sx={{
+                            paddingTop: "5px",
+                            display: "flex",
+                            justifyContent: "center",
+                            }}
+                        >
+                            <Button
+                                sx={{ m: 1, width: "20ch" }}
+                                color="error"
+                                variant="outlined"
+                                fullWidth
+                                onClick={handleClose}
+                                >
+                                Close
+                            </Button>
+                            <Button
+                                sx={{ m: 1, width: "20ch" }}
+                                color="success"
+                                variant="outlined"
+                                fullWidth
+                                type="submit"
+                                >
+                                Extract Requirements
+                            </Button>
+                        </Box>
+                            {csvData ?<CSVLink
+                                data={csvData}
+                                separator={";"}
+                                filename={`${mission.tittle} - Fault Tolerance Requirements`}
+                                headers={['Campo', 'Descrição']}
+                                style={{
+                                    "backgroundColor": "blue",
+                                    "color": "white",
+                                    "border": "2px solid blue",
+                                    "padding": "10px 20px",
+                                    "textAlign": "center",
+                                    "textDecoration": "none",
+                                    "display": "inline-block"
+                                }}
+                            >Download CSV File</CSVLink> : ''}
+                    </Grid>
+                </form> 
+            </DialogContent>
+        </Dialog>
+    </>
+    );
+}
