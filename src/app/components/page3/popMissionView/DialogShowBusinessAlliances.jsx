@@ -30,14 +30,17 @@ import { useGetBusinessAlliancesQuery } from "../../../features/business_allianc
 export default function DialogShowBusinessAlliances({
   handleSetXmlString,
   saveFile,
+  updateFile,
   user_id,
   setSaveOrUpdataPopMissionModel,
   saveOrUpdataPopMissionModel,
   setPopMissionModelId,
   setOpenDialogPopMissionModelOutOfDate,
-  updateFile,
   setPopId,
   setNameConstraintsButton,
+
+  setPopMissionConstraints,
+  setPopMissionNumber,
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -53,27 +56,49 @@ export default function DialogShowBusinessAlliances({
     <Box>
       <Box>
         <Button variant="outlined" onClick={handleClickOpen}>
-          PoP Mission
+          PoP Missions Model
         </Button>
       </Box>
       <Dialog open={open} onClose={handleCloseDialog}>
-        <DialogTitle sx={{ alignSelf: "center" }}>PoP Mission</DialogTitle>
+        <DialogTitle sx={{ alignSelf: "center" }}>
+          PoP Missions Model
+        </DialogTitle>
         <DialogContent>
           <ShowBusinessAlliace
             user_id={user_id}
             handleSetXmlString={handleSetXmlString}
             handleCloseDialog={handleCloseDialog}
-            saveFile={saveFile}
             setSaveOrUpdataPopMissionModel={setSaveOrUpdataPopMissionModel}
             saveOrUpdataPopMissionModel={saveOrUpdataPopMissionModel}
             setPopMissionModelId={setPopMissionModelId}
             setOpenDialogPopMissionModelOutOfDate={
               setOpenDialogPopMissionModelOutOfDate
             }
-            updateFile={updateFile}
             setPopId={setPopId}
             setNameConstraintsButton={setNameConstraintsButton}
+            saveFile={saveFile}
+            setPopMissionNumber={setPopMissionNumber}
+            updateFile={updateFile}
+            setPopMissionConstraints={setPopMissionConstraints}
           />
+          <Box
+            sx={{
+              alignSelf: "center",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Button
+              sx={{ m: 1, width: "15ch" }}
+              color="error"
+              variant="outlined"
+              fullWidth
+              onClick={handleCloseDialog}
+            >
+              Close
+            </Button>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
@@ -90,6 +115,10 @@ function ShowBusinessAlliace({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+
+  setPopMissionConstraints,
+
+  setPopMissionNumber,
 }) {
   const { isLoading, isSuccess, isError, error, data } =
     useGetBusinessAlliancesQuery(user_id);
@@ -221,6 +250,8 @@ function ShowBusinessAlliace({
               updateFile={updateFile}
               setPopId={setPopId}
               setNameConstraintsButton={setNameConstraintsButton}
+              setPopMissionNumber={setPopMissionNumber}
+              setPopMissionConstraints={setPopMissionConstraints}
             />
           ))}
         </TableBody>
@@ -240,6 +271,9 @@ function Row({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+  setPopMissionConstraints,
+
+  setPopMissionNumber,
 }) {
   const [openShowPopMission, setOpenShowPopMission] = React.useState(false);
 
@@ -312,6 +346,8 @@ function Row({
                     updateFile={updateFile}
                     setPopId={setPopId}
                     setNameConstraintsButton={setNameConstraintsButton}
+                    setPopMissionNumber={setPopMissionNumber}
+                    setPopMissionConstraints={setPopMissionConstraints}
                   />
                 ))}
               </TableBody>
@@ -334,6 +370,9 @@ function PopMission({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+  setPopMissionNumber,
+  setPopMissionConstraints,
+
 }) {
   return (
     <React.Fragment>
@@ -357,6 +396,9 @@ function PopMission({
             updateFile={updateFile}
             setPopId={setPopId}
             setNameConstraintsButton={setNameConstraintsButton}
+            setPopMissionNumber={setPopMissionNumber}
+            setPopMissionConstraints={setPopMissionConstraints}
+
           />
         </TableCell>
       </TableRow>
@@ -376,6 +418,9 @@ function MenuSelectMission({
   updateFile,
   setPopId,
   setNameConstraintsButton,
+  setPopMissionNumber,
+  setPopMissionConstraints,
+
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -387,6 +432,7 @@ function MenuSelectMission({
     setAnchorEl(null);
   };
   async function handleClickCreatePopMissionModel(params) {
+    setPopMissionNumber(pop.pop_missions.length);
     createXml(pop, user_id, setPopMissionModelId, saveFile, updateFile).then(
       (res) => {
         handleSetXmlString(res);
@@ -406,17 +452,21 @@ function MenuSelectMission({
   }
 
   async function handleClickLoadPopMissionModel(params) {
+    setPopMissionNumber(pop.pop_missions.length);
+
     if (pop.pop_mission_model.updated == false) {
       setOpenDialogPopMissionModelOutOfDate(true);
     } else {
       handleSetXmlString(pop.pop_mission_model.file_text);
       setPopId(pop.id);
       setPopMissionModelId(pop.pop_mission_model.id);
+      
+
       if (
-        pop.pop_mission_model.constituent_processes_constraints_model != null
+        pop.pop_mission_model.pop_missions_constraints_model != null
       ) {
         setNameConstraintsButton(
-          pop.pop_mission_model.constituent_processes_constraints_model
+          pop.pop_mission_model.pop_missions_constraints_model
         );
       } else {
         setNameConstraintsButton("add");
@@ -458,7 +508,7 @@ function MenuSelectMission({
             //     setSaveOrUpdate("update"))
           }
         >
-          Create new PoP Mission Model
+          Create new PoP Missions Model
         </MenuItem>
         <MenuItem
           onClick={
@@ -472,7 +522,7 @@ function MenuSelectMission({
           }
           disabled={pop.pop_mission_model != null ? false : true}
         >
-          Load PoP Mission
+          Load PoP Missions Model
         </MenuItem>
       </Menu>
     </div>
@@ -507,6 +557,7 @@ async function createXml(
   });
   const participant = moddle.create("bpmn:Participant", {
     id: `Participant_${Math.floor(Math.random() * 999)}`,
+    name: `${pop.name}`,
     processRef: process,
   });
   bpmnCollaboration.participants.push(participant);

@@ -1,7 +1,7 @@
 import { apiSlice } from "../../api/sliceApi";
 
 export const allianceMemberApiSlice = apiSlice.injectEndpoints({
-  tagTypes: ["AllianceMember"],
+  tagTypes: ["AllianceMember","BusinessAlliance"],
   endpoints: (builder) => ({
     getAllianceMember: builder.query({
       query: () => "/alliance_member",
@@ -43,7 +43,7 @@ export const allianceMemberApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: constituent_process,
       }),
-      invalidatesTags: ["AllianceMember"],
+      invalidatesTags: ["AllianceMember","BusinessAlliance"],
     }),
     deleteBusinessProcessModel: builder.mutation({
       query: (id) => ({

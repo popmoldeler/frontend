@@ -60,6 +60,7 @@ import {
   useUpdatePopMissionModelMutation,
 } from "./features/pop_mission_model/popMissionModel";
 import { useGetPoPConstituentProcessQuery } from "./features/constituent_process/constituenProcessApiSlice";
+import { useAddPopMissionDetailedModelMutation, useUpdatePopMissionDetailedModelMutation } from "./features/pop_mission_detailed_model/popMissionDetailedModel";
 
 let router = createBrowserRouter(
   createRoutesFromElements(
@@ -192,6 +193,8 @@ function PopMissionView() {
   const token = useSelector(selectCurrentToken);
   const user_id = useSelector(selectCurrentUserId);
   const [popId, setPopId] = React.useState("");
+  const [popMissionNumber, setPopMissionNumber] = React.useState("");
+
   const [nameConstraintsButton, setNameConstraintsButton] =
     React.useState("add");
 
@@ -236,6 +239,7 @@ function PopMissionView() {
       token={token}
       user_id={user_id}
       addPopMissionModel={addPopMissionModel}
+      updatePopMissionModel={updatePopMissionModel}
       setSaveOrUpdataPopMissionModel={setSaveOrUpdataPopMissionModel}
       saveOrUpdataPopMissionModel={saveOrUpdataPopMissionModel}
       popMissionModelId={popMissionModelId}
@@ -244,11 +248,12 @@ function PopMissionView() {
       setOpenDialogPopMissionModelOutOfDate={
         setOpenDialogPopMissionModelOutOfDate
       }
-      updatePopMissionModel={updatePopMissionModel}
       setPopId={setPopId}
       popId={popId}
       nameConstraintsButton={nameConstraintsButton}
       setNameConstraintsButton={setNameConstraintsButton}
+      popMissionNumber={popMissionNumber}
+      setPopMissionNumber={setPopMissionNumber}
     />
   );
 }
@@ -256,11 +261,12 @@ function PopMissionView() {
 function PopDetailedView() {
   const token = useSelector(selectCurrentToken);
   const user_id = useSelector(selectCurrentUserId);
-  const [popId, setPopId] = React.useState("");
-  const [nameConstraintsButton, setNameConstraintsButton] =
+  const [popMissionId, setPopMissionId] = React.useState("");
+  const [nameVariabilityButton, setNameVariabilityButton] =
     React.useState("add");
 
-  const [popMissionModelId, setPopMissionModelId] = React.useState("");
+    
+  const [popDetailedModelId, setpopDetailedModelId] = React.useState("");
   const [
     openDialogPopMissionModelOutOfDate,
     setOpenDialogPopMissionModelOutOfDate,
@@ -287,8 +293,8 @@ function PopDetailedView() {
   function onError(err) {
     console.log("failed to show diagram");
   }
-  const [addPopMissionModel] = useAddPopMissionModelMutation();
-  const [updatePopMissionModel] = useUpdatePopMissionModelMutation();
+  const [addPopMissionDetailedModel] = useAddPopMissionDetailedModelMutation();
+  const [updatePopMissionDetailedModel] = useUpdatePopMissionDetailedModelMutation();
 
 
 
@@ -301,6 +307,14 @@ function PopDetailedView() {
       token={token}
       user_id={user_id}
       handleSetXmlString={handleSetXmlString}
+      popMissionId={popMissionId}
+      setPopMissionId={setPopMissionId}
+      popDetailedModelId={popDetailedModelId}
+      setpopDetailedModelId={setpopDetailedModelId}
+      addPopMissionDetailedModel={addPopMissionDetailedModel}
+      updatePopMissionDetailedModel={updatePopMissionDetailedModel}
+      nameVariabilityButton={nameVariabilityButton}
+      setNameVariabilityButton={setNameVariabilityButton}
     />
   );
 }

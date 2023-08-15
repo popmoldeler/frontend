@@ -1,99 +1,89 @@
-import React from 'react';
-
-function criarTextoAcao(constituinteOrigem, constituinteDestino, rotuloConstituinteOrigem) {
-    return `${constituinteOrigem} deve interoperar com ${constituinteDestino} para ${rotuloConstituinteOrigem}`;
+function createTextAction(constituinteOrigem, constituinteDestino, rotuloConstituinteOrigem) {
+    return `${constituinteOrigem} should interoperate with ${constituinteDestino} to ${rotuloConstituinteOrigem}`;
 }
 
-function criarTextoCondicaoInteroperabilidade(rotuloObjetoDados) {
+function createTextConditionInteroperability(rotuloObjetoDados) {
     if (rotuloObjetoDados === "") {
-        return rotuloObjetoDados;
+        return "-";
     }
-    return `Existe um acordo para formalização da mensagem definido em: ${rotuloObjetoDados}`;
+    return `There is an agreement for formalizing the message defined in: ${rotuloObjetoDados}`;
 }
 
-function criarTextoQuantidadeMensagensEnviadas(constituinteOrigem, constituinteDestino, quantidadeMensagensEnvio) {
-    return `${constituinteOrigem} envia ${quantidadeMensagensEnvio} para ${constituinteDestino}`;
+function createTextQuantityMessagesSent(constituinteOrigem, constituinteDestino, quantidadeMensagensEnvio) {
+    return `${constituinteOrigem} send ${quantidadeMensagensEnvio} to ${constituinteDestino}`;
 }
 
-function criarTextoRestricaoTempoEnvioMensagem(rotuloEventoTempoEnvio) {
+function createTextRestrictionTimeSendMessage(rotuloEventoTempoEnvio) {
      if (rotuloEventoTempoEnvio === "-") {
         return rotuloEventoTempoEnvio;
     }
-    return `O envio de mensagem será realizado durante ${rotuloEventoTempoEnvio}`;
+    return `The message will be sent during ${rotuloEventoTempoEnvio}`;
 }
 
-function criarTextoOrigemDadosDuranteEnvio(rotuloNomeRepositorioLeitura) {
+function createTextOriginDataDuringSend(rotuloNomeRepositorioLeitura) {
     if (rotuloNomeRepositorioLeitura === "-") {
         return rotuloNomeRepositorioLeitura;
     }
-    return `Os dados são obtidos a partir de um repositório de dados: ${rotuloNomeRepositorioLeitura}`;
+    return `Data is fetched from a data repository: ${rotuloNomeRepositorioLeitura}`;
 }
 
-function criarTextoFalhaEnvioMensagem() {
-    return `Caso ocorra uma falha durante a interoperabilidade, a transmissão da mensagem é interrompida e o tratamento de erro é executado`;
+function createTextFailSendingMessage() {
+    return `If a failure occurs during interoperability, message transmission is stopped and error handling is performed.`;
 }
 
-function criarTextoFluxoEnvioMensagemPrivado() {
-    return `O envio da mensagem é realizado de modo independente`;
+function createTextFlowSendMessagePrivate() {
+    return `The sending of the message is carried out independently`;
 }
 
-function criarTextoQuantidadeMensagensRecebidas(constituinteOrigem, constituinteDestino, quantidadeMensagensRecebimento) {
-    return `${constituinteDestino} recebe ${quantidadeMensagensRecebimento} de ${constituinteOrigem}`;
+function createTextQuantityMessagesReceived(constituinteOrigem, constituinteDestino, quantidadeMensagensRecebimento) {
+    return `${constituinteDestino} receive ${quantidadeMensagensRecebimento} from ${constituinteOrigem}`;
 }
 
-function criarTextoRestricaoTempoRecebimentoMensagem(rotuloEventoTempoRecebimento) {
+function createTextRestrictionTimeReceiptMessage(rotuloEventoTempoRecebimento) {
      if (rotuloEventoTempoRecebimento === "-") {
         return rotuloEventoTempoRecebimento;
     }
-    return `O recebimento de mensagem será realizado durante ${rotuloEventoTempoRecebimento}`;
+    return `Message receipt will be performed for ${rotuloEventoTempoRecebimento}`;
 }
 
-function criarTextoDestinoDadosDuranteRecebimento(rotuloNomeRepesitorioArmazenamento) {
+function createTextDestinationDataDuringReceipt(rotuloNomeRepesitorioArmazenamento) {
     if (rotuloNomeRepesitorioArmazenamento === "-") {
         return rotuloNomeRepesitorioArmazenamento;
     }
-    return `Os dados são armazenados em um repositório de dados: ${rotuloNomeRepesitorioArmazenamento}`;
+    return `Data is stored in a data repository: ${rotuloNomeRepesitorioArmazenamento}`;
 }
 
-function criarTextoFalhaRecebimentoMensagem() {
-    return `Caso ocorra uma falha durante a interoperabilidade, o recebimento da mensagem é interrompido e o tratamento de erro é executado`;
+function createTextFailureReceiptMessage() {
+    return `If a failure occurs during interoperability, message reception is stopped and error handling is performed.`;
 }
 
-function criarTextoFluxoRecebimentoMensagemPrivado() {
-    return `O recebimento da mensagem é realizado de modo independente`;
+function createTextFlowReceiptMessagePrivate() {
+    return `Receiving the message is carried out independently`;
 }
 
-function criarTextoRastreabilidade(tipoElementoOrigem, rotuloConstituinteOrigem, tipoElementoDestino, rotuloConstituinteDestinho) {
+function createTextTraceability(tipoElementoOrigem, rotuloConstituinteOrigem, tipoElementoDestino, rotuloConstituinteDestinho) {
     return `${tipoElementoOrigem}(${rotuloConstituinteOrigem})/${tipoElementoDestino}(${rotuloConstituinteDestinho})`;
 }
 
-function criarTextoCondicoesEnvio() {
-    return ``;
-}
-
-function criarTextoCondicoesRecebimento() {
-    return ``;
-}
-function criarTextoRequisitoDetalhado() {
-    const textoAcao = criarTextoAcao();
-    const textoCondicoesEnvio = criarTextoCondicoesEnvio();
-    const textoCondicoesRecebimento = criarTextoCondicoesRecebimento();
-    return `${textoAcao}, considerando para o envio que ${textoCondicoesEnvio}; e considerando para o recebimento que ${textoCondicoesRecebimento}.`;
+function createTextDetailedRequirement(textoAcao, temporaryCompactInfos) {
+    const textoCondicoesEnvio = temporaryCompactInfos['SEND_CONDITIONS'].join(", ");
+    const textoCondicoesRecebimento = temporaryCompactInfos['RECEIVE_CONDITIONS'].join(", ");
+    return `${textoAcao}, considering for sending that ${textoCondicoesEnvio}; and considering for receive that ${textoCondicoesRecebimento}.`;
 }
 
 export {
-    criarTextoAcao,
-    criarTextoCondicaoInteroperabilidade,
-    criarTextoQuantidadeMensagensEnviadas,
-    criarTextoRestricaoTempoEnvioMensagem,
-    criarTextoOrigemDadosDuranteEnvio,
-    criarTextoFalhaEnvioMensagem,
-    criarTextoFluxoEnvioMensagemPrivado,
-    criarTextoQuantidadeMensagensRecebidas,
-    criarTextoRestricaoTempoRecebimentoMensagem,
-    criarTextoDestinoDadosDuranteRecebimento,
-    criarTextoFalhaRecebimentoMensagem,
-    criarTextoFluxoRecebimentoMensagemPrivado,
-    criarTextoRastreabilidade,
-    criarTextoRequisitoDetalhado,
+    createTextAction,
+    createTextConditionInteroperability,
+    createTextQuantityMessagesSent,
+    createTextRestrictionTimeSendMessage,
+    createTextOriginDataDuringSend,
+    createTextFailSendingMessage,
+    createTextFlowSendMessagePrivate,
+    createTextQuantityMessagesReceived,
+    createTextRestrictionTimeReceiptMessage,
+    createTextDestinationDataDuringReceipt,
+    createTextFailureReceiptMessage,
+    createTextFlowReceiptMessagePrivate,
+    createTextTraceability,
+    createTextDetailedRequirement,
 };
