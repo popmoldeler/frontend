@@ -182,7 +182,7 @@ return msg;
   
   console.log(mission)
   // Consulta string do arquivo bpmn da visão detalhada da missão
-  const xmlString = mission.mission_processes[0].constituent_process.file_text;
+  const xmlString = mission.detailed_view.file_text;
       
   // Realiza o parser do texto do arquivo para um htmlcollection
   const origin = new DOMParser().parseFromString(xmlString, "text/xml");
