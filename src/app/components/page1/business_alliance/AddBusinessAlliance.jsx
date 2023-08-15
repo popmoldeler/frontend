@@ -20,6 +20,7 @@ import {
   useAddBusinessAllianceMutation,
   useAddInternalCollaborationMutation,
 } from "../../../features/business_alliance/bussinesAllianceApiSlice";
+import { InsertEmoticonRounded } from "@mui/icons-material";
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
@@ -187,10 +188,20 @@ function RegisterAlliance({
       const m = {
         alliance_member_id: org.toString(),
         relationship: relation,
-        entry_date: date.toLocaleString("en-US", options),
+        entry_date: date.toLocaleString("pt-BR", options),
         business_alliance_id: "",
       };
-      setMember([...member, m]);
+
+      const index = member.findIndex(
+        (item) => item.alliance_member_id === m.alliance_member_id
+      );
+      if (index !== -1) {
+        const newState = [...member];
+        newState[index] = m;
+        setMember(newState);
+      } else {
+        setMember([...member, m]);
+      }
     }
   }
   function handleSetDate(date) {
@@ -209,29 +220,35 @@ function RegisterAlliance({
 
           const alianca = {
             name: nome,
-            creation_date: date.toLocaleString("en-US", options),
+            creation_date: date.toLocaleString("pt-BR", options).toString(),
             business_goal: goal,
             responsable_member_id: responsableOrganization.id,
             user_id: user_id,
             is_public: isPublic,
           };
-
           addBusinessAlliance(alianca).then((res) => {
             var teste = member.filter(function (element, index, array) {
               if (right.indexOf(element) === -1) return element;
             });
-            const m = {
+            const Responsible = {
               alliance_member_id: responsableOrganization.id,
               relationship: "Responsible",
-              entry_date: date.toLocaleString("en-US", options),
+              entry_date: date.toLocaleString("pt-BR", options).toString(),
               business_alliance_id: res.data.id,
               is_public: isPublic,
             };
+            console.log("teste", teste);
+            console.log("right", right);
+            console.log("member", member);
 
-            addInternalCollaboration(m);
+            addInternalCollaboration(Responsible);
             setIndex(res.data.id);
-            teste.map((membro) => (membro.business_alliance_id = res.data.id));
-            teste.map((membro) => addInternalCollaboration(membro));
+            for (let i = 0; i < member.length; i++) {
+              member[i].business_alliance_id = res.data.id;
+              addInternalCollaboration(member[i]);
+            }
+            // teste.map((membro) => (membro.business_alliance_id = res.data.id));
+            // teste.map((membro) => addInternalCollaboration(membro));
           });
 
           // const dispatch = useDispatch();
@@ -246,7 +263,7 @@ function RegisterAlliance({
           setIndex("");
           handleSetDate(new Date());
           setResponsableOrganization("");
-          handleClose();
+          // handleClose();
         }}
       >
         <Grid

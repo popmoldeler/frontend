@@ -28,10 +28,7 @@ export const businessAllianceApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: alliance,
       }),
-      invalidatesTags: (result, error, arg) => [
-        "BusinessAlliance",
-        { type: "BusinessAlliance", id: arg },
-      ],
+      invalidatesTags: ["BusinessAlliance"],
     }),
     updateBusinessAlliance: builder.mutation({
       query: (alliance) => ({

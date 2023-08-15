@@ -186,10 +186,10 @@ export default function ShowInternalCollaboration({
       <TableCell align="center">
         {deletingMember || (editingMember && !block) ? (
           <form onSubmit={formik.handleSubmit}>
-            <MaterialUIPickers
+            <ResponsiveDateTimePickers
               setFormik={setFormikExitDate}
               value1={formatDate(formik.values.exit_date)}
-            ></MaterialUIPickers>
+            ></ResponsiveDateTimePickers>
           </form>
         ) : (
           formatDate(member.exit_date)

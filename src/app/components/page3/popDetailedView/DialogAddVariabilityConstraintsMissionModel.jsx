@@ -6,11 +6,12 @@ import { Box, Grid, TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import { useFormik } from "formik";
 
-export default function DialogAddConstituentProcessesConstraintsMissionModel({
-  popMissionModelId,
+export default function DialogAddVariabilityConstraintsMissionModel({
+  popDetailedModelId,
   updateFile,
-  nameConstraintsButton,
-  setNameConstraintsButton,
+  nameVariabilityButton,
+  setNameVariabilityButton,
+  
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -24,37 +25,37 @@ export default function DialogAddConstituentProcessesConstraintsMissionModel({
 
   const formik = useFormik({
     initialValues: {
-      constituent_processes_constraints_model: "",
+      variability_constraints_model: "",
       id: "",
     },
     onSubmit: async (values) => {
       updateFile(values);
       console.log(values);
-      setNameConstraintsButton("Update");
+      setNameVariabilityButton("Update");
       handleClose();
     },
   });
 
   {
-    nameConstraintsButton === "add"
-      ? (formik.initialValues.constituent_processes_constraints_model = "")
-      : (formik.initialValues.constituent_processes_constraints_model =
-          nameConstraintsButton);
+    nameVariabilityButton === "add"
+      ? (formik.initialValues.variability_constraints_model = "")
+      : (formik.initialValues.variability_constraints_model =
+          nameVariabilityButton);
   }
-  formik.initialValues.id = popMissionModelId;
+  formik.initialValues.id = popDetailedModelId;
 
   return (
     <Box>
       <Box>
         <Button variant="outlined" onClick={handleClickOpen}>
-          {nameConstraintsButton === "add"
-            ? "Add PoP Missions Constraints Model"
-            : "Update PoP Missions Constraints Model"}
+          {nameVariabilityButton === "add"
+            ? "Add Variability Constraints Model"
+            : "Update Variability Constraints Model"}
         </Button>
       </Box>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle sx={{ alignSelf: "center" }}>
-        PoP Missions Constraints Model
+          Variability Constraints Model
         </DialogTitle>
         <DialogContent>
           <form onSubmit={formik.handleSubmit}>
@@ -68,14 +69,14 @@ export default function DialogAddConstituentProcessesConstraintsMissionModel({
               }}
             >
               <TextField
-                label=" Add PoP Missions Constraints Model"
+                label=" Add Variability Constraints Model"
                 variant="standard"
                 multiline
                 rows={6}
-                id="constituent_processes_constraints_model"
-                name="constituent_processes_constraints_model"
+                id="variability_constraints_model"
+                name="variability_constraints_model"
                 sx={{ width: "400px" }}
-                value={formik.values.constituent_processes_constraints_model}
+                value={formik.values.variability_constraints_model}
                 onChange={formik.handleChange}
               />
 
