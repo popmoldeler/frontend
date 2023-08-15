@@ -25,6 +25,10 @@ import MenuMission from "./MenuMission";
 import ConstituentProcessModel from "./ConstituentProcessModel";
 import DialogAddPoPAsConstituentProcessModel from "./DialogAddPoPAsConstituentProcessModel";
 import ExtractRequirementsDialog from "../../interoperabilityRequirementsExtract/extractRequirementsDialog";
+import ExtractReliabilityDialog from "../../reliabilityRequirementsExtract/extractReliabilityDialog";
+// Nova em inglês
+import ExtractReliabilityDialogEnglish from "../../reliabilityRequirementsExtractEnglish/extractReliabilityDialogEnglish";
+
 export default function Mission({ mission, allianceMembers, pop_id, pop,popExternalCollaboration ,popOverall}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
@@ -48,6 +52,16 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
     setOpenRequirementsDialog,
   ] = React.useState(false);
 
+  const [
+    openReliabilityDialog,
+    setOpenReliabilityDialog,
+  ] = React.useState(false);
+
+  const [
+    openReliabilityDialogEnglish,
+    setOpenReliabilityDialogEnglish,
+  ] = React.useState(false);
+
   const adicionandoConstituentProcessModel = () => {
     setOpenDialogAddConstientProcessModel(!openDialogAddConstientProcessModel);
   };
@@ -58,6 +72,14 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
 
   const extractInteroperabilityRequirements = () => {
     setOpenRequirementsDialog(true);
+  };
+
+  const extractReliabilityRequirements = () => {
+    setOpenReliabilityDialog(true);
+  };
+
+  const extractReliabilityRequirementsEnglish = () => {
+    setOpenReliabilityDialogEnglish(true);
   };
 
   const deletando = () => {
@@ -129,12 +151,28 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
       />
      
       <ExtractRequirementsDialog
-          openRequirementsDialog={openRequirementsDialog}
+        openRequirementsDialog={openRequirementsDialog}
         setOpenRequirementsDialog={
           setOpenRequirementsDialog
         }
         mission={mission}
       />
+
+      <ExtractReliabilityDialog
+        openReliabilityDialog={openReliabilityDialog}
+        setOpenReliabilityDialog={
+          setOpenReliabilityDialog
+        }
+        mission={mission}
+      />
+
+    <ExtractReliabilityDialogEnglish
+            openReliabilityDialogEnglish={openReliabilityDialogEnglish}
+            setOpenReliabilityDialogEnglish={
+              setOpenReliabilityDialogEnglish
+            }
+            mission={mission}
+          />
 
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
@@ -231,6 +269,12 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
               }
               extractInteroperabilityRequirements={
                 extractInteroperabilityRequirements
+              }
+              extractReliabilityRequirements={
+                extractReliabilityRequirements
+              }
+              extractReliabilityRequirementsEnglish={
+                extractReliabilityRequirementsEnglish
               }
             ></MenuMission>
           )}
