@@ -1,16 +1,4 @@
-import {  criarTextoAcaoEnvio,
-    criarTextoMomentoFalhaEnvio,
-    criarTextoQuaisFalhasEnvio,
-    criarTextoComoResolverFalhasEnvio,
-    CriarTextoRastreabilidadeEnvio,
-    criarTextoAcaoRecebimento,
-    CriarTextoMomentoFalhaRecebimento1,
-    CriarTextoMomentoFalhaRecebimento2,
-    CriarTextoQuaisFalhasRecebimento,
-    CriarTextoComoResolverFalhasRecebimento,
-    criarTextoTratamentoExcecaoEnvio,
-    criarTextoTratamentoExcecaoRecebimento,
-    criarTextoRequisitoConfiabilidadeDetalhado 
+import {criarTextoAcao,
   } from "./reliabilityInfosToText";
   
   
@@ -255,15 +243,13 @@ return msg;
         requirements.push(
           ['ID da Interoperabilidade', messageFlowId],
           ['ID da Tolerância a Falha', confiabilityId],
-          //['Classe', 'SoS_NFR'],
-          //['Sujeito', 'SoS'],
           ['Constituinte de Origem', originPoolConstituent], 
           ['Constituinte de Destino', destinyPoolConstituent],          
           ['Momento da Falha', failMoment],
           ['Falha(s)', fails.join(",")],
           ['Solução da(s) Falha(s)', solution.join(". ")],
-          ['Ação textual', criarTextoAcaoEnvio(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
-          ['Rastreabilidadede', rastreability],
+          ['Ação textual', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
+          ['Rastreabilidade', rastreability],
         );
 
       // Adiciona marcação para diferenciar visualmente o próximo requisito
@@ -272,147 +258,7 @@ return msg;
     }  
   }
   
-    const getTasksWithBoundaryErrorEvent = (origin) => {
-        const sendTasks = origin.getElementsByTagName("bpmn:sendTask");
-        const receiveTasks = origin.getElementsByTagName("bpmn:receiveTask");
-        const serviceTasks = origin.getElementsByTagName("bpmn:serviceTask");
-    
-        const tasksWithBoundaryErrorEvent = [];
-    
-        // Verificar sendTasks
-        for (let i = 0; i < sendTasks.length; i++) {
-            const sendTask = sendTasks.item(i);
-            if (getBoundaryErrorEvent(sendTask, origin)) {
-                tasksWithBoundaryErrorEvent.push(sendTask);
-            }
-        }
-    
-        // Verificar receiveTasks
-        for (let i = 0; i < receiveTasks.length; i++) {
-            const receiveTask = receiveTasks.item(i);
-            if (getBoundaryErrorEvent(receiveTask, origin)) {
-                tasksWithBoundaryErrorEvent.push(receiveTask);
-            }
-        }
-    
-        // Verificar serviceTasks
-        for (let i = 0; i < serviceTasks.length; i++) {
-            const serviceTask = serviceTasks.item(i);
-            if (getBoundaryErrorEvent(serviceTask, origin)) {
-                tasksWithBoundaryErrorEvent.push(serviceTask);
-            }
-        }
-    
-        return tasksWithBoundaryErrorEvent;
-    };
-  
-    //==================================================== 
-  
-    const extractSubprocessData = (origin) => {
-      const subprocesses = origin.getElementsByTagName("bpmn:subProcess");
-      const subprocessData = [];
-  
-      for (let i = 0; i < subprocesses.length; i++) {
-          const subprocess = subprocesses.item(i);
-          const exclusiveGateway = subprocess.getElementsByTagName("bpmn:exclusiveGateway").item(0);
-  
-          if (exclusiveGateway) {
-              const outgoingSequenceFlows = exclusiveGateway.getElementsByTagName("bpmn:sequenceFlow");
-  
-              for (let j = 0; j < outgoingSequenceFlows.length; j++) {
-                  const sequenceFlow = outgoingSequenceFlows.item(j);
-                  const targetRef = sequenceFlow.attributes.targetRef.value;
-  
-                  const intermediateCatchEvents = subprocess.getElementsByTagName("bpmn:intermediateCatchEvent");
-                  const intermediateTimerEvents = subprocess.getElementsByTagName("bpmn:intermediateTimerEvent");
-                  const sendTasks = subprocess.getElementsByTagName("bpmn:sendTask");
-                  const manualTasks = subprocess.getElementsByTagName("bpmn:manualTask");
-  
-                  for (let k = 0; k < intermediateCatchEvents.length; k++) {
-                      const intermediateCatchEvent = intermediateCatchEvents.item(k);
-                      if (intermediateCatchEvent.attributes.id.value === targetRef) {
-                          subprocessData.push(intermediateCatchEvent);
-                      }
-                  }
-  
-                  for (let k = 0; k < intermediateTimerEvents.length; k++) {
-                      const intermediateTimerEvent = intermediateTimerEvents.item(k);
-                      if (intermediateTimerEvent.attributes.id.value === targetRef) {
-                          subprocessData.push(intermediateTimerEvent);
-                      }
-                  }
-  
-                  for (let k = 0; k < sendTasks.length; k++) {
-                      const sendTask = sendTasks.item(k);
-                      if (sendTask.attributes.id.value === targetRef) {
-                          subprocessData.push(sendTask);
-                      }
-                  }
-  
-                  for (let k = 0; k < manualTasks.length; k++) {
-                      const manualTask = manualTasks.item(k);
-                      if (manualTask.attributes.id.value === targetRef) {
-                          subprocessData.push(manualTask);
-                      }
-                  }
-              }
-          }
-      }
-  
-      return subprocessData;
-  };
-  
-    
-  
-      // ================================================== carregar informações de dentro do subProces
-  
-      const extractSequenceFlowInformation = () => {
-          // Vá até o SubProcess desejado (exemplo: ID do SubProcess = 'subProcessId')
-          const subProcess = bpmnData.definitions.process[0].subProcess.find(sub => sub.$.id === 'subProcessId');
-      
-          if (subProcess) {
-            // Vá até o Exclusive Gateway desejado (exemplo: ID do Exclusive Gateway = 'exclusiveGatewayId')
-            const exclusiveGateway = subProcess.exclusiveGateway.find(gateway => gateway.$.id === 'exclusiveGatewayId');
-      
-            if (exclusiveGateway) {
-              // Filtra os SequenceFlows conectados ao Exclusive Gateway
-              const sequenceFlows = subProcess.sequenceFlow.filter(flow => flow.$.sourceRef === exclusiveGateway.$.id);
-      
-              sequenceFlows.forEach(sequenceFlow => {
-                // Verifica o tipo do elemento de destino
-                const destinationType = getElementType(sequenceFlow.$.targetRef);
-      
-                if (destinationType === 'SendTask' || destinationType === 'ManualTask' || destinationType === 'IntermediateCatchEvent') {
-                  // Extrai as informações desejadas do SequenceFlow
-                  const source = sequenceFlow.$.sourceRef;
-                  const target = sequenceFlow.$.targetRef;
-                  const name = sequenceFlow.$.name;
-      
-                  console.log('SequenceFlow encontrado:');
-                  console.log('Source:', source);
-                  console.log('Target:', target);
-                  console.log('Name:', name);
-                }
-              });
-            }
-          }
-        };
-  
-        const getElementType = (elementId) => {
-          // Obtém o tipo do elemento com base no seu ID (você pode adaptar essa função para mapear seus IDs)
-          // Exemplo: Obtém o tipo com base no prefixo do ID (SendTask_, ManualTask_, IntermediateCatchEvent_)
-          if (elementId.startsWith('SendTask_')) {
-            return 'SendTask';
-          } else if (elementId.startsWith('ManualTask_')) {
-            return 'ManualTask';
-          } else if (elementId.startsWith('IntermediateCatchEvent_')) {
-            return 'IntermediateCatchEvent';
-          }
-      
-          return '';
-        }
-        
-        
+                  
   
     return requirements;
   };
