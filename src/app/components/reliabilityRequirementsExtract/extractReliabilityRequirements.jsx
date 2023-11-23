@@ -200,6 +200,45 @@ return msg;
     let fails = [];
     let solution = "";
 
+    const attachedToRef = boundaryEvent.attributes.attachedToRef.value;
+    const attachedToElement = origin.getElementById(attachedToRef);
+
+    // Verificar se o elemento associado é do tipo 'serviceTask'
+    if (attachedToElement.tagName === 'bpmn:serviceTask') {
+        // Se for uma 'serviceTask', pule para a próxima iteração do loop
+        continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'userTask'
+    if (attachedToElement.tagName === 'bpmn:userTask') {
+      // Se for uma 'userTask', pule para a próxima iteração do loop
+      continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'manualTask'
+    if (attachedToElement.tagName === 'bpmn:manualTask') {
+    // Se for uma 'manualTask', pule para a próxima iteração do loop
+    continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'businessRuleTask'
+    if (attachedToElement.tagName === 'bpmn:businessRuleTask') {
+      // Se for uma 'businessRuleTask', pule para a próxima iteração do loop
+      continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'scriptTask'
+    if (attachedToElement.tagName === 'bpmn:scriptTask') {
+      // Se for uma 'scriptTask', pule para a próxima iteração do loop
+      continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'callActivity'
+    if (attachedToElement.tagName === 'bpmn:callActivity') {
+      // Se for uma 'callActivity', pule para a próxima iteração do loop
+      continue;
+    }
+
     const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
     if (errorEventDefinition.length > 0) {      
         const originRef = boundaryEvent.getAttribute("attachedToRef");
