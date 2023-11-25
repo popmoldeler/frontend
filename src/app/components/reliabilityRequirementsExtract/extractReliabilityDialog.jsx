@@ -60,24 +60,23 @@ export default function ExtractReliabilityDialog({
                     alignItems="center"
                     >
                         <FormControl component="fieldset">
-                            <RadioGroup
-                                row
-                                aria-label="language"
-                                name="language"
-                                value={formik.values.language}
-                                onChange={formik.handleChange}
-                            >
-                                <FormControlLabel
-                                    value="Portuguese"
-                                    control={<Radio />}
-                                    label="Portuguese"
-                                />
-                                <FormControlLabel
-                                    value="English"
-                                    control={<Radio />}
-                                    label="English"
-                                />
-                            </RadioGroup>
+                        <RadioGroup
+                            aria-label="language"
+                            name="language"
+                            value={formik.values.language}
+                            onChange={formik.handleChange}
+                        >
+                            <FormControlLabel
+                                value="Portuguese"
+                                control={<Radio />}
+                                label=" Detailed (Portuguese)"
+                            />
+                            <FormControlLabel
+                                value="English"
+                                control={<Radio />}
+                                label="Detailed (English)"
+                            />
+                        </RadioGroup>
                         </FormControl>
                         <Box
                             sx={{

@@ -244,6 +244,14 @@ return msg;
         const originRef = boundaryEvent.getAttribute("attachedToRef");
         const eventId = boundaryEvent.getAttribute("id");
         const errorId = errorEventDefinition[0].getAttribute("id");
+
+        const tipo_interacao = isSendTask(attachedToElement) ? 'envio' : 'recebimento';
+
+        // Função auxiliar para verificar se o elemento é um 'sendTask'
+        // Se for diferente, será recebimento
+        function isSendTask(element) {
+          return element.tagName === 'bpmn:sendTask';
+        }
         
         // Recupera o elemento
         const originItem = origin.getElementById(originRef);
@@ -287,7 +295,7 @@ return msg;
           ['Momento da Falha', failMoment],
           ['Falha(s)', fails.join(",")],
           ['Solução da(s) Falha(s)', solution.join(". ")],
-          ['Ação textual', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
+          ['Ação textual', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],
           ['Rastreabilidade', rastreability],
         );
 
