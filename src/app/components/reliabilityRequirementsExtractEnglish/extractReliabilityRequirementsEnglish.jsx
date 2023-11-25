@@ -200,11 +200,58 @@ return msg;
     let fails = [];
     let solution = "";
 
+    const attachedToRef = boundaryEvent.attributes.attachedToRef.value;
+    const attachedToElement = origin.getElementById(attachedToRef);
+
+    // Verificar se o elemento associado é do tipo 'serviceTask'
+    if (attachedToElement.tagName === 'bpmn:serviceTask') {
+        // Se for uma 'serviceTask', pule para a próxima iteração do loop
+        continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'userTask'
+    if (attachedToElement.tagName === 'bpmn:userTask') {
+      // Se for uma 'userTask', pule para a próxima iteração do loop
+      continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'manualTask'
+    if (attachedToElement.tagName === 'bpmn:manualTask') {
+    // Se for uma 'manualTask', pule para a próxima iteração do loop
+    continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'businessRuleTask'
+    if (attachedToElement.tagName === 'bpmn:businessRuleTask') {
+      // Se for uma 'businessRuleTask', pule para a próxima iteração do loop
+      continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'scriptTask'
+    if (attachedToElement.tagName === 'bpmn:scriptTask') {
+      // Se for uma 'scriptTask', pule para a próxima iteração do loop
+      continue;
+    }
+
+    // Verificar se o elemento associado é do tipo 'callActivity'
+    if (attachedToElement.tagName === 'bpmn:callActivity') {
+      // Se for uma 'callActivity', pule para a próxima iteração do loop
+      continue;
+    }
+
     const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
     if (errorEventDefinition.length > 0) {      
         const originRef = boundaryEvent.getAttribute("attachedToRef");
         const eventId = boundaryEvent.getAttribute("id");
         const errorId = errorEventDefinition[0].getAttribute("id");
+
+        const tipo_interacao = isSendTask(attachedToElement) ? 'envio' : 'recebimento';
+
+        // Função auxiliar para verificar se o elemento é um 'sendTask'
+        // Se for diferente, será recebimento
+        function isSendTask(element) {
+          return element.tagName === 'bpmn:sendTask';
+        }
         
         // Recupera o elemento
         const originItem = origin.getElementById(originRef);
@@ -248,7 +295,7 @@ return msg;
           ['Moment of failure', failMoment],
           ['Failure(s)', fails.join(",")],
           ['Failure(s) solution', solution.join(". ")],
-          ['Textual action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
+          ['Textual action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],
           ['Traceability', rastreability],
         );
 
