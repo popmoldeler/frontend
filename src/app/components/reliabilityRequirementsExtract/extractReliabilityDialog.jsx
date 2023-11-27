@@ -14,7 +14,9 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import ExtractReliabilityRequirements from "./extractReliabilityRequirements";
+import ExtractReliabilityRequirementsCompact from "./extractReliabilityRequirementsCompact";
 import ExtractReliabilityRequirementsEnglish from "../reliabilityRequirementsExtractEnglish/extractReliabilityRequirementsEnglish";
+import ExtractReliabilityRequirementsEnglishCompact from "../reliabilityRequirementsExtractEnglish/extractReliabilityRequirementsEnglishCompact";
 import { CSVLink } from "react-csv";
 
 export default function ExtractReliabilityDialog({
@@ -46,6 +48,17 @@ export default function ExtractReliabilityDialog({
         headers = ["Field", "Description"];
       }
 
+      //IF compacts
+      if (values.language === "PortugueseCompact") {
+        setCsvData(ExtractReliabilityRequirementsCompact({ mission: values.mission }));
+        headers = ["Campo", "Descrição"];
+      } else if (values.language === "EnglishCompact") {
+        setCsvData(
+          ExtractReliabilityRequirementsEnglishCompact({ mission: values.mission })
+        );
+        headers = ["Field", "Description"];
+      }
+
       formik.resetForm();
       formik.setFieldValue("headers", headers);
     },
@@ -73,9 +86,19 @@ export default function ExtractReliabilityDialog({
                   onChange={formik.handleChange}
                 >
                   <FormControlLabel
+                    value="PortugueseCompact"
+                    control={<Radio />}
+                    label=" Compact (Portuguese)"
+                  />
+                  <FormControlLabel
                     value="Portuguese"
                     control={<Radio />}
                     label=" Detailed (Portuguese)"
+                  />
+                  <FormControlLabel
+                    value="EnglishCompact"
+                    control={<Radio />}
+                    label="Compact (English)"
                   />
                   <FormControlLabel
                     value="English"

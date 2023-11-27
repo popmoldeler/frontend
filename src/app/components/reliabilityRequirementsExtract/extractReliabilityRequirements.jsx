@@ -288,6 +288,9 @@ return msg;
         }
         // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
         requirements.push(
+          ['ID', '---'],
+          //['Classe', '---'],
+          //['Sujeito', '---'],
           ['ID da Interoperabilidade', messageFlowId],
           ['ID da Tolerância a Falha', confiabilityId],
           ['Constituinte de Origem', originPoolConstituent], 
