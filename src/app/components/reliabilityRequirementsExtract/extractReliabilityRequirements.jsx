@@ -239,6 +239,24 @@ return msg;
       continue;
     }
 
+    // Adicionado condição para verificar se é uma 'sendTask' ou 'receiveTask'
+    if (
+      attachedToElement.tagName === "bpmn:sendTask" ||
+      attachedToElement.tagName === "bpmn:receiveTask"
+    ) {
+      // Verifica se há uma associação de interoperabilidade (messageFlow) entre a tarefa e outros elementos
+      const hasMessageFlow = Array.from(messageFlows).some((messageFlow) => {
+        const sourceRef = messageFlow.getAttribute("sourceRef");
+        const targetRef = messageFlow.getAttribute("targetRef");
+        return sourceRef === attachedToRef || targetRef === attachedToRef;
+      });
+
+      if (!hasMessageFlow) {
+        // Se não houver associação de interoperabilidade, pule para a próxima iteração do loop
+        continue;
+      }
+    }
+
     const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
     if (errorEventDefinition.length > 0) {      
         const originRef = boundaryEvent.getAttribute("attachedToRef");
@@ -286,18 +304,25 @@ return msg;
         if(originPoolConstituent && destinyPoolConstituent){
           rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} ao ${originName}`
         }
+
+        // Verifica se há falhas e soluções disponíveis
+        const failsText = fails.length > 0 ? fails.join(",") : "Falha(s) não especificadas";
+        const solutionText = solution.length > 0 ? solution.join(". ") : "Soluções não especificadas";
+
         // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
         requirements.push(
           ['ID', '---'],
-          //['Classe', '---'],
-          //['Sujeito', '---'],
-          ['ID da Interoperabilidade', messageFlowId],
-          ['ID da Tolerância a Falha', confiabilityId],
+          ['Classe', '---'],
+          ['Sujeito', '---'],
+          //['ID da Interoperabilidade', messageFlowId],
+          //['ID da Tolerância a Falha', confiabilityId],
           ['Constituinte de Origem', originPoolConstituent], 
           ['Constituinte de Destino', destinyPoolConstituent],          
           ['Momento da Falha', failMoment],
-          ['Falha(s)', fails.join(",")],
-          ['Solução da(s) Falha(s)', solution.join(". ")],
+          //['Falha(s)', fails.join(",")],
+          //['Solução da(s) Falha(s)', solution.join(". ")],
+          ['Falha(s)', failsText],
+          ['Solução da(s) Falha(s)', solutionText],
           ['Ação textual', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],
           ['Rastreabilidade', rastreability],
         );
