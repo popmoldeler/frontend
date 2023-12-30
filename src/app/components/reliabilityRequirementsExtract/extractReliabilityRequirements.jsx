@@ -277,20 +277,49 @@ return msg;
         
         for (let messageFlow of messageFlows) {
           const targetRef = messageFlow.getAttribute("targetRef");
-						const sourceRef = messageFlow.getAttribute("sourceRef");
-        		if(sourceRef === originRef || targetRef === originRef){							
-              messageFlowId = messageFlow.getAttribute("id");
-
-              if(messageFlow.getAttribute("sourceRef") === originRef){
-                originPoolConstituent = getConstituent(originItem, originRef, origin, process);                
-                const itemDestinyName = messageFlow.getAttribute("targetRef");
-                const itemDestiny = origin.getElementById(itemDestinyName);
+          const sourceRef = messageFlow.getAttribute("sourceRef");
+        
+          if (sourceRef === originRef || targetRef === originRef) {
+            messageFlowId = messageFlow.getAttribute("id");
+        
+            if (messageFlow.getAttribute("sourceRef") === originRef) {
+              originPoolConstituent = getConstituent(originItem, originRef, origin, process);
+        
+              const itemDestinyName = messageFlow.getAttribute("targetRef");
+              const itemDestiny = origin.getElementById(itemDestinyName);
+        
+              // Verificar se é um evento de início, intermediário de recebimento, envio ou fim de envio
+              if (itemDestiny.tagName === "bpmn:startEvent" || itemDestiny.tagName === "bpmn:intermediateCatchEvent") {
+                // Obter o "participant" associado ao evento de início ou intermediário de recebimento
+                destinyPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+              } else if (itemDestiny.tagName === "bpmn:intermediateThrowEvent") {
+                // Obter o "participant" associado ao evento intermediário de envio de mensagem
+                destinyPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+              } else if (itemDestiny.tagName === "bpmn:endEvent") {
+                // Obter o "participant" associado ao evento de fim de envio de mensagem
+                destinyPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+              } else {
                 destinyPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
-              } else {              
-                const itemDestinyName = messageFlow.getAttribute("sourceRef");
-                const itemDestiny = origin.getElementById(itemDestinyName);
+              }
+            } else {
+              const itemDestinyName = messageFlow.getAttribute("sourceRef");
+              const itemDestiny = origin.getElementById(itemDestinyName);
+        
+              // Verificar se é um evento de início, intermediário de recebimento, envio ou fim de envio
+              if (itemDestiny.tagName === "bpmn:startEvent" || itemDestiny.tagName === "bpmn:intermediateCatchEvent") {
+                // Obter o "participant" associado ao evento de início ou intermediário de recebimento
+                originPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+              } else if (itemDestiny.tagName === "bpmn:intermediateThrowEvent") {
+                // Obter o "participant" associado ao evento intermediário de envio de mensagem
+                originPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+              } else if (itemDestiny.tagName === "bpmn:endEvent") {
+                // Obter o "participant" associado ao evento de fim de envio de mensagem
+                originPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+              } else {
                 originPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
-                destinyPoolConstituent = getConstituent(originItem, originRef, origin, process);
+              }
+        
+              destinyPoolConstituent = getConstituent(originItem, originRef, origin, process);
               	
               }
 						}

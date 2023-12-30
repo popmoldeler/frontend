@@ -95,12 +95,12 @@ return msg;
 }
 
 const getMessageFlowByName = (flows, name) => {
-      let msg = null;
-    for (let v of flows) {
-          if(v.getAttribute("name") === name){
-              msg = v;
-           break;
-      }
+  let msg = null;
+  for (let v of flows) {
+    if(v.getAttribute("name") === name){
+      msg = v;
+       break;
+    }
   }
 return msg;
 }
@@ -239,6 +239,24 @@ for (let boundaryEvent of boundaryEvents) {
     continue;
   }
 
+  // Adicionado condição para verificar se é uma 'sendTask' ou 'receiveTask'
+  if (
+    attachedToElement.tagName === "bpmn:sendTask" ||
+    attachedToElement.tagName === "bpmn:receiveTask"
+  ) {
+    // Verifica se há uma associação de interoperabilidade (messageFlow) entre a tarefa e outros elementos
+    const hasMessageFlow = Array.from(messageFlows).some((messageFlow) => {
+      const sourceRef = messageFlow.getAttribute("sourceRef");
+      const targetRef = messageFlow.getAttribute("targetRef");
+      return sourceRef === attachedToRef || targetRef === attachedToRef;
+    });
+
+    if (!hasMessageFlow) {
+      // Se não houver associação de interoperabilidade, pule para a próxima iteração do loop
+      continue;
+    }
+  }
+
   const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
   if (errorEventDefinition.length > 0) {      
       const originRef = boundaryEvent.getAttribute("attachedToRef");
@@ -259,23 +277,52 @@ for (let boundaryEvent of boundaryEvents) {
       
       for (let messageFlow of messageFlows) {
         const targetRef = messageFlow.getAttribute("targetRef");
-                      const sourceRef = messageFlow.getAttribute("sourceRef");
-              if(sourceRef === originRef || targetRef === originRef){							
-            messageFlowId = messageFlow.getAttribute("id");
-
-            if(messageFlow.getAttribute("sourceRef") === originRef){
-              originPoolConstituent = getConstituent(originItem, originRef, origin, process);                
-              const itemDestinyName = messageFlow.getAttribute("targetRef");
-              const itemDestiny = origin.getElementById(itemDestinyName);
+        const sourceRef = messageFlow.getAttribute("sourceRef");
+      
+        if (sourceRef === originRef || targetRef === originRef) {
+          messageFlowId = messageFlow.getAttribute("id");
+      
+          if (messageFlow.getAttribute("sourceRef") === originRef) {
+            originPoolConstituent = getConstituent(originItem, originRef, origin, process);
+      
+            const itemDestinyName = messageFlow.getAttribute("targetRef");
+            const itemDestiny = origin.getElementById(itemDestinyName);
+      
+            // Verificar se é um evento de início, intermediário de recebimento, envio ou fim de envio
+            if (itemDestiny.tagName === "bpmn:startEvent" || itemDestiny.tagName === "bpmn:intermediateCatchEvent") {
+              // Obter o "participant" associado ao evento de início ou intermediário de recebimento
+              destinyPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+            } else if (itemDestiny.tagName === "bpmn:intermediateThrowEvent") {
+              // Obter o "participant" associado ao evento intermediário de envio de mensagem
+              destinyPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+            } else if (itemDestiny.tagName === "bpmn:endEvent") {
+              // Obter o "participant" associado ao evento de fim de envio de mensagem
+              destinyPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+            } else {
               destinyPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
-            } else {              
-              const itemDestinyName = messageFlow.getAttribute("sourceRef");
-              const itemDestiny = origin.getElementById(itemDestinyName);
-              originPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
-              destinyPoolConstituent = getConstituent(originItem, originRef, origin, process);
-                
             }
-                      }
+          } else {
+            const itemDestinyName = messageFlow.getAttribute("sourceRef");
+            const itemDestiny = origin.getElementById(itemDestinyName);
+      
+            // Verificar se é um evento de início, intermediário de recebimento, envio ou fim de envio
+            if (itemDestiny.tagName === "bpmn:startEvent" || itemDestiny.tagName === "bpmn:intermediateCatchEvent") {
+              // Obter o "participant" associado ao evento de início ou intermediário de recebimento
+              originPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+            } else if (itemDestiny.tagName === "bpmn:intermediateThrowEvent") {
+              // Obter o "participant" associado ao evento intermediário de envio de mensagem
+              originPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+            } else if (itemDestiny.tagName === "bpmn:endEvent") {
+              // Obter o "participant" associado ao evento de fim de envio de mensagem
+              originPoolConstituent = getConstituent(itemDestiny, itemDestinyName, origin, process);
+            } else {
+              originPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
+            }
+      
+            destinyPoolConstituent = getConstituent(originItem, originRef, origin, process);
+              
+            }
+          }
       }
 
       confiabilityId = `${eventId} - ${errorId} - ${originRef}`;
@@ -286,18 +333,25 @@ for (let boundaryEvent of boundaryEvents) {
       if(originPoolConstituent && destinyPoolConstituent){
         rastreability = `To ${originPoolConstituent} for ${destinyPoolConstituent} at ${originName}`
       }
+
+      // Verifica se há falhas e soluções disponíveis
+      const failsText = fails.length > 0 ? fails.join(",") : "Failures not specified";
+      const solutionText = solution.length > 0 ? solution.join(". ") : "Solutions not specified";
+
       // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
       requirements.push(
         ['ID', '---'],
-      //['Class', '---'],
-      //['Subject', '---'],
-        ['Interoperability ID', messageFlowId],
-        ['Fault Tolerance ID', confiabilityId],
+        ['Class', '---'],
+        ['Subject', '---'],
+        //['Interoperability ID', messageFlowId],
+        //['Fault Tolerance ID', confiabilityId],
         //['Source Constituent', originPoolConstituent], 
-       // ['Target Constituent', destinyPoolConstituent],          
+        //['Target Constituent', destinyPoolConstituent],          
         //['Moment of failure', failMoment],
-       // ['Failure(s)', fails.join(",")],
-       // ['Failure(s) solution', solution.join(". ")],
+        //['Falha(s)', fails.join(",")],
+        //['Solução da(s) Falha(s)', solution.join(". ")],
+        //['Failure(s)', failsText],
+        //['Failure(s) solution', solutionText],
         ['Textual action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],
         ['Traceability', rastreability],
       );
@@ -307,8 +361,8 @@ for (let boundaryEvent of boundaryEvents) {
 
   }  
 }
-       
 
-      
+                
+
   return requirements;
 };
