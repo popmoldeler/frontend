@@ -338,22 +338,26 @@ return msg;
         const failsText = fails.length > 0 ? fails.join(",") : "Falha(s) não especificadas";
         const solutionText = solution.length > 0 ? solution.join(". ") : "Soluções não especificadas";
 
+         // Adiciona apenas se houver falhas ou soluções
+         if (fails.length > 0 || solution.length > 0) {
+          // Organiza os requisitos com base no tipo de interação (envio ou recebimento)
+          const momentoFalha = `Momento para ocorrência da falha durante o ${tipo_interacao} de mensagem`;
+          const falhas = `Quais falhas que ocorrem durante o ${tipo_interacao} de mensagem`;
+          const solucaoFalhas = `Como resolver as falhas durante o ${tipo_interacao} de mensagem`;
+          const rastreabilidade = `Rastreabilidade de ${tipo_interacao} de mensagem`;
+
         // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
         requirements.push(
           ['ID', '---'],
           ['Classe', '---'],
           ['Sujeito', '---'],
-          //['ID da Interoperabilidade', messageFlowId],
-          //['ID da Tolerância a Falha', confiabilityId],
           ['Constituinte de Origem', originPoolConstituent], 
-          ['Constituinte de Destino', destinyPoolConstituent],          
-          ['Momento da Falha', failMoment],
-          //['Falha(s)', fails.join(",")],
-          //['Solução da(s) Falha(s)', solution.join(". ")],
-          ['Falha(s)', failsText],
-          ['Solução da(s) Falha(s)', solutionText],
-          ['Ação textual', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],
-          ['Rastreabilidade', rastreability],
+          ['Constituinte de Destino', destinyPoolConstituent], 
+          ['Ação textual', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],         
+          [momentoFalha, failMoment],
+          [falhas, failsText],
+          [solucaoFalhas, solutionText],
+          [rastreabilidade, rastreability],
         );
 
       // Adiciona marcação para diferenciar visualmente o próximo requisito
@@ -361,7 +365,7 @@ return msg;
   
     }  
   }
-  
+}
                   
   
     return requirements;

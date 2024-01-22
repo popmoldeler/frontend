@@ -263,7 +263,7 @@ for (let boundaryEvent of boundaryEvents) {
       const eventId = boundaryEvent.getAttribute("id");
       const errorId = errorEventDefinition[0].getAttribute("id");
 
-      const tipo_interacao = isSendTask(attachedToElement) ? 'envio' : 'recebimento';
+      const tipo_interacao = isSendTask(attachedToElement) ? 'sending' : 'receiving';
 
       // Função auxiliar para verificar se o elemento é um 'sendTask'
       // Se for diferente, será recebimento
@@ -338,6 +338,15 @@ for (let boundaryEvent of boundaryEvents) {
       const failsText = fails.length > 0 ? fails.join(",") : "Failures not specified";
       const solutionText = solution.length > 0 ? solution.join(". ") : "Solutions not specified";
 
+      // Adiciona apenas se houver falhas ou soluções
+      if (fails.length > 0 || solution.length > 0) {
+        // Organiza os requisitos com base no tipo de interação (envio ou recebimento)
+        const momentoFalha = `Moment for failure occurrence during the ${tipo_interacao} message`;
+        const falhas = `Which failures occur during the ${tipo_interacao} message`;
+        const solucaoFalhas = `How to resolve failures during the ${tipo_interacao} message`;
+        const rastreabilidade = `Traceability of ${tipo_interacao} the message`;
+
+
       // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
       requirements.push(
         ['ID', '---'],
@@ -346,14 +355,12 @@ for (let boundaryEvent of boundaryEvents) {
         //['Interoperability ID', messageFlowId],
         //['Fault Tolerance ID', confiabilityId],
         ['Source Constituent', originPoolConstituent], 
-        ['Target Constituent', destinyPoolConstituent],          
-        ['Moment of failure', failMoment],
-        //['Falha(s)', fails.join(",")],
-        //['Solução da(s) Falha(s)', solution.join(". ")],
-        ['Failure(s)', failsText],
-        ['Failure(s) solution', solutionText],
-        ['Textual action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],
-        ['Traceability', rastreability],
+        ['Target Constituent', destinyPoolConstituent],   
+        ['Textual action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],       
+        [momentoFalha, failMoment],
+        [falhas, failsText],
+        [solucaoFalhas, solutionText],
+        [rastreabilidade, rastreability],
       );
 
     // Adiciona marcação para diferenciar visualmente o próximo requisito
@@ -361,7 +368,7 @@ for (let boundaryEvent of boundaryEvents) {
 
   }  
 }
-
+}
                 
 
   return requirements;
