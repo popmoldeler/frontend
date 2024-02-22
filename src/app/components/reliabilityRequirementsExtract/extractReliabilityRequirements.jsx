@@ -146,6 +146,47 @@ return msg;
     return solutions;
   }
 
+  const getResolutionsForProblems = (falhas, flows, origin) => {
+    let SolutionsForFailures = [];
+    
+    falhas.map(v => {
+      let msg = getMessageFlowByName(flows, v);   
+      if(msg){ 
+      let isFinal = false;
+      let solutionForFailures = "";
+      let count = 0;
+      let target = "";
+      
+      while(!isFinal || count > 10){
+        if (count !== 0) {
+          msg = getMessageFlowBySource(flows, target);
+        }
+        if(msg){ 
+            target = msg.getAttribute("targetRef");      	
+                  
+            //verificar se o target é gateway se for encerra, se nao continua
+            if(!target.includes("Gateway")){
+              
+              //busco o item por id e pego o texto para formar solucao 
+              const originItem = origin.getElementById(target);
+              let txtSolve = originItem.attributes.name.value;
+              
+              solutionForFailures += count === 0 ? "será necessário " + txtSolve : " e " + txtSolve;
+            } else {
+                isFinal = true;
+            }
+        } else {
+          isFinal = true;
+        }
+        count++;
+      }      
+      SolutionsForFailures.push(solutionForFailures);
+     }
+    });
+    
+    return SolutionsForFailures;
+  }
+
   // Metodo para verificar o acoplamento de um evento de borda de erro
   const getBoundaryErrorEvent = (item, origin) => {
     const boundaryEvents = origin.getElementsByTagName("bpmn:boundaryEvent");
@@ -199,6 +240,7 @@ return msg;
     let originPoolConstituent = ''
     let fails = [];
     let solution = "";
+    let solutionForFailures = "";
 
     const attachedToRef = boundaryEvent.attributes.attachedToRef.value;
     const attachedToElement = origin.getElementById(attachedToRef);
@@ -329,14 +371,15 @@ return msg;
         failMoment = `${originName}`;// (${originRef})`; //com o ${eventId} do tipo ${errorId}`;               
         fails = getNameSequenceByGateWay(sequenceFlows, getGatwayIdByEventStartId(sequenceFlows, getEventStartIdByActivity(subProcess, getActivityByEvent(sequenceFlows, eventId))));
         solution = getSolutions(fails, sequenceFlows, origin);
+        solutionForFailures = getResolutionsForProblems(fails, sequenceFlows, origin);
         let rastreability = ''
         if(originPoolConstituent && destinyPoolConstituent){
           rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} ao ${originName}`
         }
 
         // Verifica se há falhas e soluções disponíveis
-        const failsText = fails.length > 0 ? fails.join(",") : "Falha(s) não especificadas";
-        const solutionText = solution.length > 0 ? solution.join(". ") : "Soluções não especificadas";
+        //const failsText = fails.length > 0 ? fails.join(",") : "Falha(s) não especificadas";
+        //const solutionText = solution.length > 0 ? solution.join(". ") : "Soluções não especificadas";
 
          // Adiciona apenas se houver falhas ou soluções
          if (fails.length > 0 || solution.length > 0) {
@@ -349,19 +392,19 @@ return msg;
         // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
         requirements.push(
           ['ID', '---'],
-          ['Classe', '---'],
+          ['Classe', 'Tolerância a falhas'],
           ['Sujeito', '---'],
           ['Constituinte de Origem', originPoolConstituent], 
           ['Constituinte de Destino', destinyPoolConstituent], 
-          ['Ação textual', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],         
           [momentoFalha, failMoment],
-          [falhas, failsText],
-          [solucaoFalhas, solutionText],
+          [falhas, fails],
+          [solucaoFalhas, solution],
+          ['Ação', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solutionForFailures)],         
           [rastreabilidade, rastreability],
         );
 
       // Adiciona marcação para diferenciar visualmente o próximo requisito
-      requirements.push(['---------------', '---------------'])  
+      requirements.push(['-------------------------', '---------------------------'])  
   
     }  
   }
