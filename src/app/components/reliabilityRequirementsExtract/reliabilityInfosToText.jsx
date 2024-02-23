@@ -1,20 +1,18 @@
 import React from 'react';
 
 // Ação textual 
-function criarTextoAcao(constituinte_origem, constituinte_destino, momento_falha, tipo_interacao, falha, solucao_falha) {
-    const combinedArray = falha.map((fail, index) => {
-        return fail + ", então " + solucao_falha[index];
-      });
-
-      let tipoAcao = '';
-      if (tipo_interacao === 'envio') {
-          tipoAcao = 'envio de mensagem';
-      } else if (tipo_interacao === 'recebimento') {
-          tipoAcao = 'recebimento de mensagem';
-      }
-  
-    return `Durante o ${tipoAcao} do ${constituinte_origem} para o ${constituinte_destino}, quando ${momento_falha} ao ocorrer ${combinedArray.join(" ")}`;
-}
+const criarTextoAcao = (origem, destino, momentoFalha, tipoInteracao, falhas, solucoes) => {
+    let textoAcao = `Durante o ${tipoInteracao} de mensagem do ${origem} para ${destino}, quando ${momentoFalha}, `;
+    
+    for (let i = 0; i < falhas.length; i++) {
+        textoAcao += `ao ocorrer ${falhas[i]}, ${solucoes[i]}`;
+        if (i !== falhas.length - 1) {
+            textoAcao += "; ";
+        }
+    }
+    
+    return textoAcao;
+};
 
 export {
     criarTextoAcao
