@@ -8,9 +8,8 @@ import {
   Box,
   FormControl,
   FormLabel,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useFormik } from "formik";
 import ExtractReliabilityRequirements from "./extractReliabilityRequirements";
@@ -29,36 +28,29 @@ export default function ExtractReliabilityDialog({
     setCsvData(undefined);
   };
   const [csvData, setCsvData] = useState(undefined);
+  const [language, setLanguage] = useState("Portuguese");
+  const [type, setType] = useState("Detailed");
 
   const formik = useFormik({
     initialValues: {
       pop_mission_id: mission.id,
       mission: mission,
-      language: "Portuguese", // Opção padrão
     },
-    onSubmit: async (values) => {
+    onSubmit: async () => {
+      let extractedData;
       let headers;
-      if (values.language === "Portuguese") {
-        setCsvData(ExtractReliabilityRequirements({ mission: values.mission }));
+      if (language === "Portuguese") {
+        extractedData = type === "Detailed" ?
+          ExtractReliabilityRequirements({ mission }) :
+          ExtractReliabilityRequirementsCompact({ mission });
         headers = ["Campo", "Descrição"];
-      } else if (values.language === "English") {
-        setCsvData(
-          ExtractReliabilityRequirementsEnglish({ mission: values.mission })
-        );
+      } else if (language === "English") {
+        extractedData = type === "Detailed" ?
+          ExtractReliabilityRequirementsEnglish({ mission }) :
+          ExtractReliabilityRequirementsEnglishCompact({ mission });
         headers = ["Field", "Description"];
       }
-
-      //IF compacts
-      if (values.language === "PortugueseCompact") {
-        setCsvData(ExtractReliabilityRequirementsCompact({ mission: values.mission }));
-        headers = ["Campo", "Descrição"];
-      } else if (values.language === "EnglishCompact") {
-        setCsvData(
-          ExtractReliabilityRequirementsEnglishCompact({ mission: values.mission })
-        );
-        headers = ["Field", "Description"];
-      }
-
+      setCsvData(extractedData);
       formik.resetForm();
       formik.setFieldValue("headers", headers);
     },
@@ -78,35 +70,32 @@ export default function ExtractReliabilityDialog({
               justifyContent="center"
               alignItems="center"
             >
-              <FormControl component="fieldset">
-                <RadioGroup
-                  aria-label="language"
-                  name="language"
-                  value={formik.values.language}
-                  onChange={formik.handleChange}
-                >
-                  <FormControlLabel
-                    value="PortugueseCompact"
-                    control={<Radio />}
-                    label=" Compact (Portuguese)"
-                  />
-                  <FormControlLabel
-                    value="Portuguese"
-                    control={<Radio />}
-                    label=" Detailed (Portuguese)"
-                  />
-                  <FormControlLabel
-                    value="EnglishCompact"
-                    control={<Radio />}
-                    label="Compact (English)"
-                  />
-                  <FormControlLabel
-                    value="English"
-                    control={<Radio />}
-                    label="Detailed (English)"
-                  />
-                </RadioGroup>
-              </FormControl>
+              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                  <FormLabel id="language-label">Language:</FormLabel>
+                  <Select
+                    labelId="language-label"
+                    id="language"
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                  >
+                    <MenuItem value="Portuguese">Portuguese</MenuItem>
+                    <MenuItem value="English">English</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                  <FormLabel id="type-label">Type:</FormLabel>
+                  <Select
+                    labelId="type-label"
+                    id="type"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                  >
+                    <MenuItem value="Detailed">Detailed</MenuItem>
+                    <MenuItem value="Compact">Compact</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
               <Box
                 sx={{
                   paddingTop: "5px",
@@ -115,25 +104,39 @@ export default function ExtractReliabilityDialog({
                 }}
               >
                 <Button
-                  sx={{ m: 1, width: "20ch" }}
-                  color="error"
-                  variant="outlined"
+                  sx={{
+                    m: 1,
+                    minWidth: "120px",
+                    backgroundColor: "blue",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "darkblue",
+                    },
+                  }}
+                  variant="contained"
                   fullWidth
                   onClick={handleClose}
                 >
                   Close
                 </Button>
                 <Button
-                  sx={{ m: 1, width: "20ch" }}
-                  color="success"
-                  variant="outlined"
+                  sx={{
+                    m: 1,
+                    minWidth: "120px",
+                    backgroundColor: "green",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "darkgreen",
+                    },
+                  }}
+                  variant="contained"
                   fullWidth
                   type="submit"
                 >
                   Extract Requirements
                 </Button>
               </Box>
-              {csvData ? (
+              {csvData && (
                 <CSVLink
                   data={csvData}
                   separator={";"}
@@ -151,8 +154,6 @@ export default function ExtractReliabilityDialog({
                 >
                   Download CSV File
                 </CSVLink>
-              ) : (
-                ""
               )}
             </Grid>
           </form>
