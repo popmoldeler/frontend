@@ -142,7 +142,7 @@ const getSolutions = (falhas, flows, origin) => {
       }
       
       // Formata as soluções
-      solution += ", será necessário " + solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " e " : "") + solutionsArray[solutionsArray.length - 1];
+      solution += ", então " + solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " e " : "") + solutionsArray[solutionsArray.length - 1];
       
       solutions.push(solution);
     }
@@ -158,7 +158,7 @@ const getResolutionsForProblems = (falhas, flows, origin) => {
     let msg = getMessageFlowByName(flows, v);   
     if(msg){ 
     let isFinal = false;
-    let solutionForFailures = "";
+    let solution = "";
     let count = 0;
     let target = "";
     let solutionsArray = []; // Array para armazenar as soluções
@@ -179,29 +179,24 @@ const getResolutionsForProblems = (falhas, flows, origin) => {
             
             solutionsArray.push(txtSolve); // Adiciona a solução ao array
           } else {
-            isFinal = true;
+              isFinal = true;
           }
-        } else {
-          isFinal = true;
-        }
-        count++;
+      } else {
+        isFinal = true;
       }
-      
-      // Formata as soluções, apenas se houver soluções disponíveis
-      if (solutionsArray.length > 0) {
-        solutionForFailures += "então " + solutionsArray.slice(0, -1).join(", ");
-        if (solutionsArray.length > 1) {
-          solutionForFailures += " e " + solutionsArray[solutionsArray.length - 1];
-        }
-      }
-      
-      SolutionsForFailures.push(solutionForFailures);
-    }
+      count++;
+    }      
+    
+    // Formata as soluções
+    solution = solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " e " : "") + solutionsArray[solutionsArray.length - 1];
+    
+    SolutionsForFailures.push(solution);
+   }
   });
-  
   
   return SolutionsForFailures;
 }
+
 
 // Metodo para verificar o acoplamento de um evento de borda de erro
 const getBoundaryErrorEvent = (item, origin) => {

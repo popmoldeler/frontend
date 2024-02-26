@@ -5,7 +5,7 @@ const criarTextoAcao = (origem, destino, momentoFalha, tipoInteracao, falhas, so
     let textoAcao = `Durante o ${tipoInteracao} de mensagem do ${origem} para ${destino}, quando ${momentoFalha}, `;
     
     for (let i = 0; i < falhas.length; i++) {
-        textoAcao += `ao ocorrer ${falhas[i]}, ${solucoes[i]}`;
+        textoAcao += `ao ocorrer ${falhas[i]}, então ${solucoes[i]}`;
         if (i !== falhas.length - 1) {
             textoAcao += "; ";
         }
