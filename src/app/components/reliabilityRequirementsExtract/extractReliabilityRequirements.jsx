@@ -398,7 +398,7 @@ for (let boundaryEvent of boundaryEvents) {
         const momentoFalha = `Momento para ocorrência da falha durante o ${tipo_interacao} de mensagem`;
         const falhas = `Quais falhas que ocorrem durante o ${tipo_interacao} de mensagem`;
         const solucaoFalhas = `Como resolver as falhas durante o ${tipo_interacao} de mensagem`;
-        const rastreabilidade = `Rastreabilidade de ${tipo_interacao} de mensagem`;
+        const rastreabilidade = `Rastreabilidade`;
 
         const formatarListaDeFalhas = (fails) => {
           if (fails.length === 0) {
@@ -438,7 +438,7 @@ for (let boundaryEvent of boundaryEvents) {
       );
 
     // Adiciona marcação para diferenciar visualmente o próximo requisito
-    requirements.push(['-------------------------', '---------------------------'])  
+    requirements.push(['------------------------------------------------------------------------------------------', '------------------------------------------------------------------------------------------'])  
 
   }  
 }

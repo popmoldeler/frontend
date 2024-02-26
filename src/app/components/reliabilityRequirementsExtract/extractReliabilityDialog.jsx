@@ -43,12 +43,12 @@ export default function ExtractReliabilityDialog({
         extractedData = type === "Detailed" ?
           ExtractReliabilityRequirements({ mission }) :
           ExtractReliabilityRequirementsCompact({ mission });
-        headers = ["Campo", "Descrição"];
+        headers = ["Campo", "Conteúdo"];
       } else if (language === "English") {
         extractedData = type === "Detailed" ?
           ExtractReliabilityRequirementsEnglish({ mission }) :
           ExtractReliabilityRequirementsEnglishCompact({ mission });
-        headers = ["Field", "Description"];
+        headers = ["Field", "Content"];
       }
       setCsvData(extractedData);
       formik.resetForm();
