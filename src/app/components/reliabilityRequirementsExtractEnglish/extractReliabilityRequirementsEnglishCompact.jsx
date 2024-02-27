@@ -1,4 +1,4 @@
-import {  criarTextoAcaoEnglish,
+import {criarTextoAcaoEnglish,
 } from "./reliabilityInfosToTextEnglish";
 
 
@@ -115,6 +115,7 @@ const getSolutions = (falhas, flows, origin) => {
     let solution = "To " + v;
     let count = 0;
     let target = "";
+    let solutionsArray = []; // Array para armazenar as soluções
     
     while(!isFinal || count > 10){
       if (count !== 0) {
@@ -130,7 +131,53 @@ const getSolutions = (falhas, flows, origin) => {
             const originItem = origin.getElementById(target);
             let txtSolve = originItem.attributes.name.value;
             
-            solution += count === 0 ? ", will be necessary " + txtSolve : " and " + txtSolve;
+            solutionsArray.push(txtSolve); // Adiciona a solução ao array
+          } else {
+            isFinal = true;
+          }
+        } else {
+          isFinal = true;
+        }
+        count++;
+      }
+      
+      // Formata as soluções
+      solution += ", then " + solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " and " : "") + solutionsArray[solutionsArray.length - 1];
+      
+      solutions.push(solution);
+    }
+  });
+  
+  return solutions;
+}
+
+const getResolutionsForProblems = (falhas, flows, origin) => {
+  let SolutionsForFailures = [];
+  
+  falhas.map(v => {
+    let msg = getMessageFlowByName(flows, v);   
+    if(msg){ 
+    let isFinal = false;
+    let solution = "";
+    let count = 0;
+    let target = "";
+    let solutionsArray = []; // Array para armazenar as soluções
+    
+    while(!isFinal || count > 10){
+      if (count !== 0) {
+        msg = getMessageFlowBySource(flows, target);
+      }
+      if(msg){ 
+          target = msg.getAttribute("targetRef");      	
+                
+          //verificar se o target é gateway se for encerra, se nao continua
+          if(!target.includes("Gateway")){
+            
+            //busco o item por id e pego o texto para formar solucao 
+            const originItem = origin.getElementById(target);
+            let txtSolve = originItem.attributes.name.value;
+            
+            solutionsArray.push(txtSolve); // Adiciona a solução ao array
           } else {
               isFinal = true;
           }
@@ -139,12 +186,17 @@ const getSolutions = (falhas, flows, origin) => {
       }
       count++;
     }      
-    solutions.push(solution);
+    
+    // Formata as soluções
+    solution = solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " and " : "") + solutionsArray[solutionsArray.length - 1];
+    
+    SolutionsForFailures.push(solution);
    }
   });
   
-  return solutions;
+  return SolutionsForFailures;
 }
+
 
 // Metodo para verificar o acoplamento de um evento de borda de erro
 const getBoundaryErrorEvent = (item, origin) => {
@@ -199,6 +251,7 @@ for (let boundaryEvent of boundaryEvents) {
   let originPoolConstituent = ''
   let fails = [];
   let solution = "";
+  let solutionForFailures = "";
 
   const attachedToRef = boundaryEvent.attributes.attachedToRef.value;
   const attachedToElement = origin.getElementById(attachedToRef);
@@ -263,7 +316,7 @@ for (let boundaryEvent of boundaryEvents) {
       const eventId = boundaryEvent.getAttribute("id");
       const errorId = errorEventDefinition[0].getAttribute("id");
 
-      const tipo_interacao = isSendTask(attachedToElement) ? 'envio' : 'recebimento';
+      const tipo_interacao = isSendTask(attachedToElement) ? 'sending' : 'receiving';
 
       // Função auxiliar para verificar se o elemento é um 'sendTask'
       // Se for diferente, será recebimento
@@ -329,39 +382,67 @@ for (let boundaryEvent of boundaryEvents) {
       failMoment = `${originName}`;// (${originRef})`; //com o ${eventId} do tipo ${errorId}`;               
       fails = getNameSequenceByGateWay(sequenceFlows, getGatwayIdByEventStartId(sequenceFlows, getEventStartIdByActivity(subProcess, getActivityByEvent(sequenceFlows, eventId))));
       solution = getSolutions(fails, sequenceFlows, origin);
+      solutionForFailures = getResolutionsForProblems(fails, sequenceFlows, origin);
       let rastreability = ''
       if(originPoolConstituent && destinyPoolConstituent){
-        rastreability = `To ${originPoolConstituent} for ${destinyPoolConstituent} at ${originName}`
+        rastreability = `From ${originPoolConstituent} to ${destinyPoolConstituent} when ${originName}`
       }
 
       // Verifica se há falhas e soluções disponíveis
-      const failsText = fails.length > 0 ? fails.join(",") : "Failures not specified";
-      const solutionText = solution.length > 0 ? solution.join(". ") : "Solutions not specified";
+      //const failsText = fails.length > 0 ? fails.join(",") : "Falha(s) não especificadas";
+      //const solutionText = solution.length > 0 ? solution.join(". ") : "Soluções não especificadas";
+
+       // Adiciona apenas se houver falhas ou soluções
+       if (fails.length > 0 || solution.length > 0) {
+        // Organiza os requisitos com base no tipo de interação (envio ou recebimento)
+        const momentoFalha = `Moment for failure occurrence during the ${tipo_interacao} message`;
+        const falhas = `Which failures occur during the ${tipo_interacao} message`;
+        const solucaoFalhas = `How to resolve failures during the ${tipo_interacao} message`;
+        const rastreabilidade = `Traceability`;
+
+        const formatarListaDeFalhas = (fails) => {
+          if (fails.length === 0) {
+            return "No faults identified";
+          } else if (fails.length === 1) {
+            return fails[0];
+          } else {
+            const listaDeFalhas = fails.slice(0, -1).join(", ") + " e " + fails.slice(-1);
+            return listaDeFalhas;
+          }
+        };
+
+        const formatarListaDeSolucoes = (solutions) => {
+        if (solutions.length === 0) {
+          return "No solution identified";
+        } else if (solutions.length === 1) {
+          return solutions[0];
+        } else {
+          const listaDeSolucoes = solutions.join(". ");
+          return listaDeSolucoes;
+        }
+      };
+
 
       // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
       requirements.push(
         ['ID', '---'],
-        ['Class', '---'],
+        ['Class', 'Fault Tolerance'],
         ['Subject', '---'],
-        //['Interoperability ID', messageFlowId],
-        //['Fault Tolerance ID', confiabilityId],
-        //['Source Constituent', originPoolConstituent], 
-        //['Target Constituent', destinyPoolConstituent],          
-        //['Moment of failure', failMoment],
-        //['Falha(s)', fails.join(",")],
-        //['Solução da(s) Falha(s)', solution.join(". ")],
-        //['Failure(s)', failsText],
-        //['Failure(s) solution', solutionText],
-        ['Textual action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solution)],
-        ['Traceability', rastreability],
+         // ['Source Constituent', originPoolConstituent], 
+         // ['Target Constituent', destinyPoolConstituent],   
+         //  [momentoFalha, failMoment],
+         //  [falhas, formatarListaDeFalhas(fails)],
+         // [solucaoFalhas, formatarListaDeSolucoes (solution)],
+        ['Action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solutionForFailures)],         
+        [rastreabilidade, rastreability],
       );
 
     // Adiciona marcação para diferenciar visualmente o próximo requisito
-    requirements.push(['---------------', '---------------'])  
+    requirements.push(['------------------------------------------------------------------------------------------', '------------------------------------------------------------------------------------------'])  
 
   }  
 }
-
+}
                 
 
   return requirements;
