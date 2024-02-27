@@ -1,21 +1,19 @@
 import React from 'react';
 
-
-function criarTextoAcaoEnglish(constituinte_origem, constituinte_destino, momento_falha, tipo_interacao, falha, solucao_falha) {
-    const combinedArray = falha.map((fail, index) => {
-        return fail + ", then " + solucao_falha[index];
-      });
-
-      let tipoAcao = '';
-      if (tipo_interacao === 'sending') {
-          tipoAcao = 'sending the message';
-      } else if (tipo_interacao === 'receiving') {
-          tipoAcao = 'receiving the message';
-      }
-
-    return `During the ${tipoAcao} of ${constituinte_origem} to the ${constituinte_destino}, when ${momento_falha} upon occurrence ${combinedArray.join(" ")}`;
-}
+// Textual Action
+const criarTextoAcaoEnglish = (origin, destination, failureTime, interactionType, failures, solutions) => {
+    let actionText = `During the ${interactionType} message from ${origin} to ${destination}, when ${failureTime}, `;
+    
+    for (let i = 0; i < failures.length; i++) {
+        actionText += `when ${failures[i]} occurs, then ${solutions[i]}`;
+        if (i !== failures.length - 1) {
+            actionText += "; ";
+        }
+    }
+    
+    return actionText;
+};
 
 export {
-    criarTextoAcaoEnglish,
+    criarTextoAcaoEnglish
 };
