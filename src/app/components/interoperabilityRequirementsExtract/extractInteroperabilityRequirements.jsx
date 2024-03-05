@@ -30,9 +30,7 @@ export default function ExtractInteroperabilityRequirements({
     options
 }) {
     //Método que executa a extração de requisitos de acordo com o prefixo definido e o tipo de extração
-    const runExtract = (origin, prefix) => {
-        console.log("ingles");
-    
+    const runExtract = (origin, prefix) => {    
         // Regra para BPMN.IO - Consulta todos messageFlow (pontos de interoperabilidade)
         var messageFlows = origin.getElementsByTagName(`${prefix}messageFlow`);
 
@@ -44,10 +42,12 @@ export default function ExtractInteroperabilityRequirements({
             // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
             requirements.push(
                 ['ID', messageFlow.attributes.id.value],
+                ['Class', 'Interoperability'],
             );
 
             compactRequirements.push(
                 ['ID', messageFlow.attributes.id.value],
+                ['Class', 'Interoperability'],
             );
 
             var temporaryCompactInfos = {
