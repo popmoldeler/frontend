@@ -35,7 +35,7 @@ function getConstituentAux(tagName, poolId, origin) {
         const participant = participants.item(k);
         if (participant.attributes.processRef) {
             if (participant.attributes.processRef.value === poolId) {
-                return participant.attributes.name.value;
+                return participant.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -49,12 +49,12 @@ function getDataStoreAssociationInput(item, origin) {
     const dataStores = origin.getElementsByTagName("bpmn:dataStoreReference");
     for (var i = 0; i < dataInputAssociation.length; i++) {
         const targetRef = dataInputAssociation.item(i);
-        const repositoryElementIdTarget = targetRef.getElementsByTagName("bpmn:targetRef").item(0).textContent;
-        const repositoryElementIdSource = targetRef.getElementsByTagName("bpmn:sourceRef").item(0).textContent;
+        const repositoryElementIdTarget = targetRef.getElementsByTagName("bpmn:targetRef").item(0)?.textContent;
+        const repositoryElementIdSource = targetRef.getElementsByTagName("bpmn:sourceRef").item(0)?.textContent;
         for (var j = 0; j < dataStores.length; j++) {
             const dataStore = dataStores.item(j);
             if (dataStore.attributes.id.value === repositoryElementIdTarget || dataStore.attributes.id.value === repositoryElementIdSource) {
-                return dataStore.attributes.name.value;
+                return dataStore.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -71,12 +71,12 @@ function getDataStoreAssociationInputAux(item, origin, prefix) {
     const dataStores = origin.getElementsByTagName(`${prefix}dataStoreReference`);
     for (var i = 0; i < dataInputAssociation.length; i++) {
         const targetRef = dataInputAssociation.item(i);
-        const repositoryElementIdTarget = targetRef.getElementsByTagName(`${prefix}targetRef`).item(0).textContent;
-        const repositoryElementIdSource = targetRef.getElementsByTagName(`${prefix}sourceRef`).item(0).textContent;
+        const repositoryElementIdTarget = targetRef.getElementsByTagName(`${prefix}targetRef`).item(0)?.textContent;
+        const repositoryElementIdSource = targetRef.getElementsByTagName(`${prefix}sourceRef`).item(0)?.textContent;
         for (var j = 0; j < dataStores.length; j++) {
             const dataStore = dataStores.item(j);
             if (dataStore.attributes.id.value === repositoryElementIdTarget || dataStore.attributes.id.value === repositoryElementIdSource) {
-                return dataStore.attributes.name.value;
+                return dataStore.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -89,12 +89,12 @@ function getDataStoreAssociationOutput(item, origin) {
     const dataStores = origin.getElementsByTagName("bpmn:dataStoreReference");
     for (var i = 0; i < dataOutputAssociation.length; i++) {
         const targetRef = dataOutputAssociation.item(i);
-        const repositoryElementIdTarget = targetRef.getElementsByTagName("bpmn:targetRef").item(0).textContent;
-        const repositoryElementIdSource = targetRef.getElementsByTagName("bpmn:sourceRef").item(0).textContent;
+        const repositoryElementIdTarget = targetRef.getElementsByTagName("bpmn:targetRef").item(0)?.textContent;
+        const repositoryElementIdSource = targetRef.getElementsByTagName("bpmn:sourceRef").item(0)?.textContent;
         for (var j = 0; j < dataStores.length; j++) {
             const dataStore = dataStores.item(j);
             if (dataStore.attributes.id.value === repositoryElementIdTarget || dataStore.attributes.id.value === repositoryElementIdSource) {
-                return dataStore.attributes.name.value;
+                return dataStore.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -111,12 +111,12 @@ function getDataStoreAssociationOutputAux(item, origin, prefix) {
     const dataStores = origin.getElementsByTagName(`${prefix}dataStoreReference`);
     for (var i = 0; i < dataOutputAssociation.length; i++) {
         const targetRef = dataOutputAssociation.item(i);
-        const repositoryElementIdTarget = targetRef.getElementsByTagName(`${prefix}targetRef`).item(0).textContent;
-        const repositoryElementIdSource = targetRef.getElementsByTagName(`${prefix}sourceRef`).item(0).textContent;
+        const repositoryElementIdTarget = targetRef.getElementsByTagName(`${prefix}targetRef`).item(0)?.textContent;
+        const repositoryElementIdSource = targetRef.getElementsByTagName(`${prefix}sourceRef`).item(0)?.textContent;
         for (var j = 0; j < dataStores.length; j++) {
             const dataStore = dataStores.item(j);
             if (dataStore.attributes.id.value === repositoryElementIdTarget || dataStore.attributes.id.value === repositoryElementIdSource) {
-                return dataStore.attributes.name.value;
+                return dataStore.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -129,12 +129,12 @@ function getDataInput(item, origin) {
     const dataObjects = origin.getElementsByTagName("bpmn:dataObjectReference");
     for (var i = 0; i < dataAssociation.length; i++) {
         const targetRef = dataAssociation.item(i);
-        const repositoryElementIdSource = targetRef.getElementsByTagName("bpmn:sourceRef").item(0).textContent;
-        const repositoryElementIdTarget = targetRef.getElementsByTagName("bpmn:targetRef").item(0).textContent;
+        const repositoryElementIdSource = targetRef.getElementsByTagName("bpmn:sourceRef").item(0)?.textContent;
+        const repositoryElementIdTarget = targetRef.getElementsByTagName("bpmn:targetRef").item(0)?.textContent;
         for (var j = 0; j < dataObjects.length; j++) {
             const dataObject = dataObjects.item(j);
             if (dataObject.attributes.id.value === repositoryElementIdSource || dataObject.attributes.id.value === repositoryElementIdTarget) {
-                return dataObject.attributes.name.value;
+                return dataObject.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -151,12 +151,12 @@ function getDataInputAux(item, origin, prefix) {
     const dataObjects = origin.getElementsByTagName(`${prefix}dataObjectReference`);
     for (var i = 0; i < dataAssociation.length; i++) {
         const targetRef = dataAssociation.item(i);
-        const repositoryElementIdSource = targetRef.getElementsByTagName(`${prefix}sourceRef`).item(0).textContent;
-        const repositoryElementIdTarget = targetRef.getElementsByTagName(`${prefix}targetRef`).item(0).textContent;
+        const repositoryElementIdSource = targetRef.getElementsByTagName(`${prefix}sourceRef`).item(0)?.textContent;
+        const repositoryElementIdTarget = targetRef.getElementsByTagName(`${prefix}targetRef`).item(0)?.textContent;
         for (var j = 0; j < dataObjects.length; j++) {
             const dataObject = dataObjects.item(j);
             if (dataObject.attributes.id.value === repositoryElementIdSource || dataObject.attributes.id.value === repositoryElementIdTarget) {
-                return dataObject.attributes.name.value;
+                return dataObject.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -206,7 +206,7 @@ function getBoundaryTimerEvent(item, origin) {
         if (boundaryEvent.attributes.attachedToRef.value === item.attributes.id.value) {
             const getTimerEventDefinition = boundaryEvent.getElementsByTagName("bpmn:timerEventDefinition");
             if (getTimerEventDefinition.length === 1) {
-                return boundaryEvent.attributes.name.value;
+                return boundaryEvent.attributes?.name?.value ?? '-';
             }
         }
     }
@@ -225,7 +225,7 @@ function getBoundaryTimerEventAux(item, origin, prefix) {
         if (boundaryEvent.attributes.attachedToRef.value === item.attributes.id.value) {
             const getTimerEventDefinition = boundaryEvent.getElementsByTagName(`${prefix}timerEventDefinition`);
             if (getTimerEventDefinition.length === 1) {
-                return boundaryEvent.attributes.name.value;
+                return boundaryEvent.attributes?.name?.value ?? '-';
             }
         }
     }
