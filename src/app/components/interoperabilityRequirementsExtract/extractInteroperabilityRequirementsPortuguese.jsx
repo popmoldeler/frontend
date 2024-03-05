@@ -42,10 +42,12 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
             // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
             requirementsPortuguese.push(
                 ['ID', messageFlow.attributes.id.value],
+                ['Classe', 'Interoperabilidade'],
             );
 
             compactRequirementsPortuguese.push(
                 ['ID', messageFlow.attributes.id.value],
+                ['Classe', 'Interoperabilidade'],
             );
 
             var temporaryCompactInfos = {
@@ -100,7 +102,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                     // Verificar associação com dataObj
                     dataObjectName = getDataInput(originItem, origin);
                     switch (options) {
-                        case 'detailedPt':
+                        case 'detailed':
                             // Verificar a existencia de um acoplamento de um Evento de borda tempo
                             requirementsPortuguese.push(["Restrições de tempo para envio da mensagem", criarTextoRestricaoTempoEnvioMensagem(getBoundaryTimerEvent(originItem, origin))]);
                             // Verificar a existencia de um acoplamento de um Evento de borda erro
@@ -109,7 +111,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                             requirementsPortuguese.push(["Origem dos dados durante o envio da mensagem", criarTextoOrigemDadosDuranteEnvio(getDataStoreAssociationInput(originItem, origin))]);
                             // Impossível possuir fluxo privado para envio
                             requirementsPortuguese.push(["Fluxo de envio de mensagem de modo privado", "-"]);
-                        case 'compactPt':
+                        case 'compact':
                             // Verificar a existencia de um acoplamento de um Evento de borda tempo
                             if (getBoundaryTimerEvent(originItem, origin) !== "-") {
                                 temporaryCompactInfos["CONDICOES_ENVIO"].push(criarTextoRestricaoTempoEnvioMensagem(getBoundaryTimerEvent(originItem, origin)));
@@ -134,7 +136,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                     // Verificar associação com dataObj
                     dataObjectName = getDataInput(originItem, origin);
                     switch (options) {
-                        case 'detailedPt':
+                        case 'detailed':
                             // Verificar associação com dataStore
                             requirementsPortuguese.push(["Origem dos dados durante o envio da mensagem", criarTextoOrigemDadosDuranteEnvio(getDataStoreAssociationInput(originItem, origin))]);
                             // Impossível possuir evento de borda de tempo, então adiciona vazio
@@ -144,7 +146,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                             // Impossível possuir fluxo privado para envio
                             requirementsPortuguese.push(["Fluxo de envio de mensagem de modo privado", "-"]);
                             break;
-                        case 'compactPt':
+                        case 'compact':
                             // Verificar associação com dataStore
                             if (getDataStoreAssociationInput(originItem, origin) !== "-") {
                                 temporaryCompactInfos["CONDICOES_ENVIO"].push(criarTextoOrigemDadosDuranteEnvio(getDataStoreAssociationInput(originItem, origin)));
@@ -164,7 +166,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                     // Verificar multiplicidade no participante está em uma tag interna então basta fazer o get
                     quantityMessagesSent = getMultiplicity(originItem, true, false);
                     switch (options) {
-                        case 'detailedPt':
+                        case 'detailed':
                             // Verificar tipo de piscina, se existir processRef, a piscina tem um fluxo definido, se não, ela é privada
                             if (!originItem.attributes.processRef) {
                                 requirementsPortuguese.push(["Fluxo de envio de mensagem de modo privado", criarTextoFluxoEnvioMensagemPrivado()]);
@@ -176,7 +178,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                             // Impossível possuir evento de borda de erro, então adiciona vazio
                             requirementsPortuguese.push(["Falha durante o recebimento da mensagem", "-"]);
                             break;
-                        case 'compactPt':
+                        case 'compact':
                             if (!originItem.attributes.processRef) {
                                 temporaryCompactInfos["CONDICOES_ENVIO"].push(criarTextoFluxoEnvioMensagemPrivado());
                             }
@@ -220,7 +222,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                     // Verificar associação com dataObj
                     dataObjectName = getDataInput(destinyItem, origin);
                     switch (options) {
-                        case 'detailedPt':
+                        case 'detailed':
                             // Verificar a existencia de um acoplamento de um Evento de borda tempo
                             requirementsPortuguese.push(["Restrições de tempo para recebimento da mensagem", criarTextoRestricaoTempoRecebimentoMensagem(getBoundaryTimerEvent(destinyItem, origin))]);
                             // Verificar a existencia de um acoplamento de um Evento de borda erro
@@ -230,7 +232,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                             // Impossível possuir fluxo privado para recebimento
                             requirementsPortuguese.push(["Fluxo de recebimento de mensagem de modo privado", "-"]);
                             break;
-                        case 'compactPt':
+                        case 'compact':
                             // Verificar a existencia de um acoplamento de um Evento de borda tempo
                             if (getBoundaryTimerEvent(destinyItem, origin) !== "-") {
                                 temporaryCompactInfos["CONDICOES_RECEBIMENTO"].push(criarTextoRestricaoTempoRecebimentoMensagem(getBoundaryTimerEvent(destinyItem, origin)));
@@ -256,7 +258,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                     // Verificar associação com dataObj
                     dataObjectName = getDataInput(destinyItem, origin);
                     switch (options) {
-                        case 'detailedPt':
+                        case 'detailed':
                             // Verificar associação com dataStore
                             requirementsPortuguese.push(["Destino dos dados durante o recebimento da mensagem", criarTextoDestinoDadosDuranteRecebimento(getDataStoreAssociationOutput(destinyItem, origin))]);
                             // Impossível possuir evento de borda de tempo, então adiciona vazio
@@ -266,7 +268,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                             // Impossível possuir fluxo privado para recebimento
                             requirementsPortuguese.push(["Fluxo de recebimento de mensagem de modo privado", "-"]);
                             break;
-                        case 'compactPt':
+                        case 'compact':
                             // Verificar associação com dataStore
                             if (getDataStoreAssociationOutput(destinyItem, origin) !== "-") {
                                 temporaryCompactInfos["CONDICOES_RECEBIMENTO"].push(criarTextoDestinoDadosDuranteRecebimento(getDataStoreAssociationOutput(destinyItem, origin)));
@@ -283,7 +285,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                     // Verificar multiplicidade no participante está em uma tag interna então basta fazer o get
                     quantityMessagesReceive = getMultiplicity(destinyItem, true, false);
                     switch (options) {
-                        case 'detailedPt':
+                        case 'detailed':
                             // Verificar tipo de piscina, se existir processRef, a piscina tem um fluxo definido, se não, ela é privada
                             if (!destinyItem.attributes.processRef) {
                                 requirementsPortuguese.push(["Fluxo de recebimento de mensagem de modo privado", criarTextoFluxoRecebimentoMensagemPrivado()]);
@@ -295,7 +297,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                             // Impossível possuir evento de borda de erro, então adiciona vazio
                             requirementsPortuguese.push(["Falha durante o recebimento da mensagem", "-"]);
                             break;
-                        case 'compactPt':
+                        case 'compact':
                             if (!destinyItem.attributes.processRef) {
                                 temporaryCompactInfos["CONDICOES_RECEBIMENTO"].push(criarTextoFluxoRecebimentoMensagemPrivado());
                             }
@@ -309,7 +311,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
             }
             // Campos que necessitam informações de envio e recebimento para composição do texto
             switch (options) {
-                case 'detailedPt':
+                case 'detailed':
                     requirementsPortuguese.push(['Quantidade de mensagens enviadas', criarTextoQuantidadeMensagensEnviadas(originPoolConstituent, destinyPoolConstituent, quantityMessagesSent)]);
                     requirementsPortuguese.push(['Quantidade de mensagens recebidas por um mesmo constituinte', criarTextoQuantidadeMensagensRecebidas(originPoolConstituent, destinyPoolConstituent, quantityMessagesReceive)]);
                     requirementsPortuguese.push(['Ação', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, (isSendPool ? "envio de informações (processo de envio independente)" : originName))]);
@@ -319,7 +321,7 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
                     // Adiciona marcação para diferenciar visualmente o próximo requisito
                     requirementsPortuguese.push(['---------------', '---------------']);
                     break;
-                case 'compactPt':
+                case 'compact':
                     temporaryCompactInfos["CONDICOES_ENVIO"].push(criarTextoQuantidadeMensagensEnviadas(originPoolConstituent, destinyPoolConstituent, quantityMessagesSent));
                     temporaryCompactInfos["CONDICOES_RECEBIMENTO"].push(criarTextoQuantidadeMensagensRecebidas(originPoolConstituent, destinyPoolConstituent, quantityMessagesReceive));
                     compactRequirementsPortuguese.push(["Informação da mensagem relacionada à interoperabilidade", messageFlowName]);
@@ -351,9 +353,9 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
 
     // Retorna o array contendo todos dados para criação do CSV
     switch (options) {
-        case 'detailedPt':
+        case 'detailed':
             return requirementsPortuguese;
-        case 'compactPt':
+        case 'compact':
             return compactRequirementsPortuguese;
         default:
             return '';
