@@ -89,7 +89,10 @@ export default function ExtractRequirementsDialog({
                                 labelId="language-label"
                                 id="language"
                                 value={language}
-                                onChange={(e) => setLanguage(e.target.value)}
+                                onChange={(e) => {
+                                    setLanguage(e.target.value);
+                                    setCsvData(undefined);
+                                }}
                             >
                                 <MenuItem value="portuguese">Portuguese</MenuItem>
                                 <MenuItem value="english">English</MenuItem>
@@ -101,7 +104,10 @@ export default function ExtractRequirementsDialog({
                                 labelId="type-label"
                                 id="type"
                                 value={extractType}
-                                onChange={(e) => setExtractType(e.target.value)}
+                                onChange={(e) => {
+                                    setExtractType(e.target.value);
+                                    setCsvData(undefined);
+                                }}
                             >
                                 <MenuItem value="detailed">Detailed</MenuItem>
                                 <MenuItem value="compact">Compact</MenuItem>
