@@ -8,14 +8,13 @@ import {
     Box,
     FormControl,
     FormLabel,
-    RadioGroup,
-    Radio,
-    FormControlLabel
+    Select,
+    MenuItem
 } from "@mui/material";
 import { useFormik } from "formik";
 import ExtractInteroperabilityRequirements from "./extractInteroperabilityRequirements";
 import ExtractInteroperabilityRequirementsPortuguese from "./extractInteroperabilityRequirementsPortuguese";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 
 export default function ExtractRequirementsDialog({
   openRequirementsDialog,
@@ -24,9 +23,14 @@ export default function ExtractRequirementsDialog({
 }) {
     const [csvData, setCsvData] = useState(undefined);
     const [extractTypeText, setExtractTypeText] = useState(undefined);
+    const [language, setLanguage] = useState('portuguese');
+    const [extractType, setExtractType] = useState('detailed');
+
     const handleClose = () => {
         setOpenRequirementsDialog(false);
         setCsvData(undefined);
+        setLanguage('');
+        setExtractType('');
     };
 
     const formik = useFormik({
@@ -36,24 +40,22 @@ export default function ExtractRequirementsDialog({
             mission: mission
         },
         onSubmit: async (values) => {
-            switch (values.extractType){
-                case 'detailed':
-                case 'compact':
-                    const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: values.extractType });
+            switch (language){
+                case 'english':
+                    const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: extractType });
                     if (csvDataTemp !== '') {
                         setCsvData(csvDataTemp);
-                        setExtractTypeText(values.extractType);
+                        setExtractTypeText(extractType);
                     } else {
                         setCsvData(undefined);
                         setExtractTypeText(undefined);
                     }
                     break;
-                case 'detailedPt':
-                case 'compactPt':
-                    const csvDadosTemp = ExtractInteroperabilityRequirementsPortuguese({ mission: values.mission, options: values.extractType });
+                case 'portuguese':
+                    const csvDadosTemp = ExtractInteroperabilityRequirementsPortuguese({ mission: values.mission, options: extractType });
                     if (csvDadosTemp !== '') {
                         setCsvData(csvDadosTemp);
-                        setExtractTypeText(values.extractType);
+                        setExtractTypeText(extractType);
                     } else {
                         setCsvData(undefined);
                         setExtractTypeText(undefined);
@@ -80,20 +82,38 @@ export default function ExtractRequirementsDialog({
                     justifyContent="center"
                     alignItems="center"
                     >
-                        <FormControl>
-                            <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="detailed"
-                                name="extractType"
-                                value={formik.values.extractType ?? ""}
-                                onChange={formik.handleChange}
+                        <Box sx={{ display: "flex", flexDirection: "row" }}>
+                            <FormControl sx={{ m: 1, minWidth: 120 }}>
+                            <FormLabel id="language-label">Language:</FormLabel>
+                            <Select
+                                labelId="language-label"
+                                id="language"
+                                value={language}
+                                onChange={(e) => {
+                                    setLanguage(e.target.value);
+                                    setCsvData(undefined);
+                                }}
                             >
-                                <FormControlLabel value="detailed" control={<Radio />} label="Detailed" />
-                                <FormControlLabel value="compact" control={<Radio />} label="Compact" />
-                                <FormControlLabel value="detailedPt" control={<Radio />} label="Detailed (Portuguese)" />
-                                <FormControlLabel value="compactPt" control={<Radio />} label="Compact (Portuguese)" />
-                            </RadioGroup>
-                        </FormControl>
+                                <MenuItem value="portuguese">Portuguese</MenuItem>
+                                <MenuItem value="english">English</MenuItem>
+                            </Select>
+                            </FormControl>
+                            <FormControl sx={{ m: 1, minWidth: 120 }}>
+                            <FormLabel id="type-label">Type:</FormLabel>
+                            <Select
+                                labelId="type-label"
+                                id="type"
+                                value={extractType}
+                                onChange={(e) => {
+                                    setExtractType(e.target.value);
+                                    setCsvData(undefined);
+                                }}
+                            >
+                                <MenuItem value="detailed">Detailed</MenuItem>
+                                <MenuItem value="compact">Compact</MenuItem>
+                            </Select>
+                            </FormControl>
+                        </Box>
                         <Box
                             sx={{
                             paddingTop: "5px",
@@ -102,25 +122,41 @@ export default function ExtractRequirementsDialog({
                             }}
                         >
                             <Button
-                                sx={{ m: 1, width: "20ch" }}
-                                color="error"
-                                variant="outlined"
+                                sx={{
+                                m: 1,
+                                minWidth: "120px",
+                                backgroundColor: "blue",
+                                color: "white",
+                                "&:hover": {
+                                    backgroundColor: "darkblue",
+                                },
+                                }}
+                                variant="contained"
                                 fullWidth
                                 onClick={handleClose}
                                 >
                                 Close
                             </Button>
                             <Button
-                                sx={{ m: 1, width: "20ch" }}
-                                color="success"
-                                variant="outlined"
+                                sx={{
+                                    m: 1,
+                                    minWidth: "120px",
+                                    backgroundColor: "green",
+                                    color: "white",
+                                    "&:hover": {
+                                        backgroundColor: "darkgreen",
+                                    },
+                                }}
+                                variant="contained"                
                                 fullWidth
                                 type="submit"
                                 >
                                 Extract Requirements
                             </Button>
                         </Box>
-                            {csvData ?<CSVLink
+                            {
+                            csvData ? 
+                            <CSVLink
                                 data={csvData}
                                 separator={";"}
                                 filename={`${extractTypeText}_${mission.tittle}_interoperability_requirements`}
@@ -134,7 +170,8 @@ export default function ExtractRequirementsDialog({
                                     "textDecoration": "none",
                                     "display": "inline-block"
                                 }}
-                            >Download CSV File</CSVLink> : ''}
+                            >Download CSV File</CSVLink> : ''
+                            }
                     </Grid>
                 </form> 
             </DialogContent>
