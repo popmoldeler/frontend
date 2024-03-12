@@ -1,8 +1,8 @@
-import {criarTextoAcao,
-} from "./reliabilityInfosToText";
+import {criarTextoAcaoEnglish,
+} from "./reliabilityInfosToTextEnglish";
 
 
-export default function ExtractReabilityRequirements({
+export default function ExtractReabilityRequirementsEnglishCompact({
     mission,
     options
 }) {
@@ -112,7 +112,7 @@ const getSolutions = (falhas, flows, origin) => {
     let msg = getMessageFlowByName(flows, v);   
     if(msg){ 
     let isFinal = false;
-    let solution = "Para " + v;
+    let solution = "To " + v;
     let count = 0;
     let target = "";
     let solutionsArray = []; // Array para armazenar as soluções
@@ -142,7 +142,7 @@ const getSolutions = (falhas, flows, origin) => {
       }
       
       // Formata as soluções
-      solution += ", então " + solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " e " : "") + solutionsArray[solutionsArray.length - 1];
+      solution += ", then " + solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " and " : "") + solutionsArray[solutionsArray.length - 1];
       
       solutions.push(solution);
     }
@@ -188,7 +188,7 @@ const getResolutionsForProblems = (falhas, flows, origin) => {
     }      
     
     // Formata as soluções
-    solution = solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " e " : "") + solutionsArray[solutionsArray.length - 1];
+    solution = solutionsArray.slice(0, -1).join(", ") + (solutionsArray.length > 1 ? " and " : "") + solutionsArray[solutionsArray.length - 1];
     
     SolutionsForFailures.push(solution);
    }
@@ -215,100 +215,6 @@ const getBoundaryErrorEvent = (item, origin) => {
         taskNames.push(taskName);
       }
     }
-  
-    return taskNames;
-  };
-  
-  console.log(mission)
-  // Consulta string do arquivo bpmn da visão detalhada da missão
-  const xmlString = mission.detailed_view.file_text;
-      
-  // Realiza o parser do texto do arquivo para um htmlcollection
-  const origin = new DOMParser().parseFromString(xmlString, "text/xml");
-
-  // Regra para BPMN.IO - Consulta todos messageFlow (pontos de interoperabilidade)
-  const messageFlows = origin.getElementsByTagName("bpmn:messageFlow");
-  
-  // Consulta todo conteúdo interno de uma pool // todas pools que possuem conteúdo são retornadas aqui
-  const process = origin.getElementsByTagName("bpmn:process");
-
-  const boundaryEvents = origin.getElementsByTagName("bpmn:boundaryEvent");
-
-  const sequenceFlows= origin.getElementsByTagName("bpmn:sequenceFlow");
-  const subProcess = origin.getElementsByTagName("bpmn:subProcess");
-  
-  // ================================================== v
-  // Variável que irá armazenar o texto de todos requisitos de confiabilidade
-  const requirements = [];
-
-
-  for (let boundaryEvent of boundaryEvents) {
-    let failMoment = '';
-    let messageFlowId = '';
-    let confiabilityId = '';
-    let destinyPoolConstituent = ''
-    let originPoolConstituent = ''
-    let fails = [];
-    let solution = "";
-
-    const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
-    if (errorEventDefinition.length > 0) {      
-        const originRef = boundaryEvent.getAttribute("attachedToRef");
-        const eventId = boundaryEvent.getAttribute("id");
-        const errorId = errorEventDefinition[0].getAttribute("id");
-        
-        // Recupera o elemento
-        const originItem = origin.getElementById(originRef);
-        let originName = originItem.attributes.name.value;   
-        
-        for (let messageFlow of messageFlows) {
-          const targetRef = messageFlow.getAttribute("targetRef");
-						const sourceRef = messageFlow.getAttribute("sourceRef");
-        		if(sourceRef === originRef || targetRef === originRef){							
-              messageFlowId = messageFlow.getAttribute("id");
-
-              if(messageFlow.getAttribute("sourceRef") === originRef){
-                originPoolConstituent = getConstituent(originItem, originRef, origin, process);                
-                const itemDestinyName = messageFlow.getAttribute("targetRef");
-                const itemDestiny = origin.getElementById(itemDestinyName);
-                destinyPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
-              } else {              
-                const itemDestinyName = messageFlow.getAttribute("sourceRef");
-                const itemDestiny = origin.getElementById(itemDestinyName);
-                originPoolConstituent = itemDestinyName.includes("Activity") ? getConstituent(itemDestiny, itemDestinyName, origin, process) : itemDestiny.attributes.name.value;
-                destinyPoolConstituent = getConstituent(originItem, originRef, origin, process);
-              	
-              }
-						}
-        }
-
-        confiabilityId = `${eventId} - ${errorId} - ${originRef}`;
-        failMoment = `${originName}`;// (${originRef})`; //com o ${eventId} do tipo ${errorId}`;               
-        fails = getNameSequenceByGateWay(sequenceFlows, getGatwayIdByEventStartId(sequenceFlows, getEventStartIdByActivity(subProcess, getActivityByEvent(sequenceFlows, eventId))));
-        solution = getSolutions(fails, sequenceFlows, origin);
-        let rastreability = ''
-        if(originPoolConstituent && destinyPoolConstituent){
-          rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} ao ${originName}`
-        }
-        // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
-        requirements.push(
-          ['ID da Interoperabilidade', messageFlowId],
-          ['ID da Tolerância a Falha', confiabilityId],
-          //['Classe', 'SoS_NFR'],
-          //['Sujeito', 'SoS'],
-          ['Constituinte de Origem', originPoolConstituent], 
-          ['Constituinte de Destino', destinyPoolConstituent],          
-          ['Momento da Falha', failMoment],
-          ['Falha(s)', fails.join(",")],
-          ['Solução da(s) Falha(s)', solution.join(". ")],
-          ['Ação textual', criarTextoAcaoEnvio(originPoolConstituent, destinyPoolConstituent, failMoment, fails, solution)],
-          ['Rastreabilidadede', rastreability],
-        );
-
-      // Adiciona marcação para diferenciar visualmente o próximo requisito
-      requirements.push(['---------------', '---------------'])  
-  
-    }  
   }
 
   return taskNames;
@@ -410,7 +316,7 @@ for (let boundaryEvent of boundaryEvents) {
       const eventId = boundaryEvent.getAttribute("id");
       const errorId = errorEventDefinition[0].getAttribute("id");
 
-      const tipo_interacao = isSendTask(attachedToElement) ? 'envio' : 'recebimento';
+      const tipo_interacao = isSendTask(attachedToElement) ? 'sending' : 'receiving';
 
       // Função auxiliar para verificar se o elemento é um 'sendTask'
       // Se for diferente, será recebimento
@@ -479,7 +385,7 @@ for (let boundaryEvent of boundaryEvents) {
       solutionForFailures = getResolutionsForProblems(fails, sequenceFlows, origin);
       let rastreability = ''
       if(originPoolConstituent && destinyPoolConstituent){
-        rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} ao ${originName}`
+        rastreability = `From ${originPoolConstituent} to ${destinyPoolConstituent} when ${originName}`
       }
 
       // Verifica se há falhas e soluções disponíveis
@@ -489,14 +395,14 @@ for (let boundaryEvent of boundaryEvents) {
        // Adiciona apenas se houver falhas ou soluções
        if (fails.length > 0 || solution.length > 0) {
         // Organiza os requisitos com base no tipo de interação (envio ou recebimento)
-        const momentoFalha = `Momento para ocorrência da falha durante o ${tipo_interacao} de mensagem`;
-        const falhas = `Quais falhas que ocorrem durante o ${tipo_interacao} de mensagem`;
-        const solucaoFalhas = `Como resolver as falhas durante o ${tipo_interacao} de mensagem`;
-        const rastreabilidade = `Rastreabilidade`;
+        const momentoFalha = `Moment for failure occurrence during the ${tipo_interacao} message`;
+        const falhas = `Which failures occur during the ${tipo_interacao} message`;
+        const solucaoFalhas = `How to resolve failures during the ${tipo_interacao} message`;
+        const rastreabilidade = `Traceability`;
 
         const formatarListaDeFalhas = (fails) => {
           if (fails.length === 0) {
-            return "Nenhuma falha identificada";
+            return "No faults identified";
           } else if (fails.length === 1) {
             return fails[0];
           } else {
@@ -507,7 +413,7 @@ for (let boundaryEvent of boundaryEvents) {
 
         const formatarListaDeSolucoes = (solutions) => {
         if (solutions.length === 0) {
-          return "Nenhuma solução identificada";
+          return "No solution identified";
         } else if (solutions.length === 1) {
           return solutions[0];
         } else {
@@ -520,14 +426,14 @@ for (let boundaryEvent of boundaryEvents) {
       // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
       requirements.push(
         ['ID', '---'],
-        ['Classe', 'Tolerância a falhas'],
-        ['Sujeito', '---'],
-        ['Constituinte de Origem', originPoolConstituent], 
-        ['Constituinte de Destino', destinyPoolConstituent], 
-        [momentoFalha, failMoment],
-        [falhas, formatarListaDeFalhas(fails)],
-        [solucaoFalhas, formatarListaDeSolucoes (solution)],
-        ['Ação', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solutionForFailures)],         
+        ['Class', 'Fault Tolerance'],
+        ['Subject', '---'],
+         // ['Source Constituent', originPoolConstituent], 
+         // ['Target Constituent', destinyPoolConstituent],   
+         //  [momentoFalha, failMoment],
+         //  [falhas, formatarListaDeFalhas(fails)],
+         // [solucaoFalhas, formatarListaDeSolucoes (solution)],
+        ['Action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solutionForFailures)],         
         [rastreabilidade, rastreability],
       );
 
