@@ -399,6 +399,7 @@ for (let boundaryEvent of boundaryEvents) {
         const falhas = `Which failures occur during the ${tipo_interacao} message`;
         const solucaoFalhas = `How to resolve failures during the ${tipo_interacao} message`;
         const rastreabilidade = `Traceability`;
+        const momentoFalhaConteudo = `When ${failMoment}`;
 
         const formatarListaDeFalhas = (fails) => {
           if (fails.length === 0) {
@@ -406,7 +407,7 @@ for (let boundaryEvent of boundaryEvents) {
           } else if (fails.length === 1) {
             return fails[0];
           } else {
-            const listaDeFalhas = fails.slice(0, -1).join(", ") + " e " + fails.slice(-1);
+            const listaDeFalhas = fails.slice(0, -1).join(", ") + " and " + fails.slice(-1);
             return listaDeFalhas;
           }
         };
@@ -430,7 +431,7 @@ for (let boundaryEvent of boundaryEvents) {
         ['Subject', '---'],
         ['Source Constituent', originPoolConstituent], 
         ['Target Constituent', destinyPoolConstituent],   
-        [momentoFalha, failMoment],
+        [momentoFalha, momentoFalhaConteudo],
         [falhas, formatarListaDeFalhas(fails)],
         [solucaoFalhas, formatarListaDeSolucoes (solution)],
         ['Action', criarTextoAcaoEnglish(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solutionForFailures)],         

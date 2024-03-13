@@ -400,6 +400,7 @@ for (let boundaryEvent of boundaryEvents) {
         const falhas = `Quais falhas que ocorrem durante o ${tipo_interacao} de mensagem`;
         const solucaoFalhas = `Como resolver as falhas durante o ${tipo_interacao} de mensagem`;
         const rastreabilidade = `Rastreabilidade`;
+        const momentoFalhaConteudo = `Ao ${failMoment}`;
 
         const formatarListaDeFalhas = (fails) => {
           if (fails.length === 0) {
@@ -431,7 +432,7 @@ for (let boundaryEvent of boundaryEvents) {
         ['Sujeito', '---'],
         ['Constituinte de Origem', originPoolConstituent], 
         ['Constituinte de Destino', destinyPoolConstituent], 
-        [momentoFalha, failMoment],
+        [momentoFalha, momentoFalhaConteudo],
         [falhas, formatarListaDeFalhas(fails)],
         [solucaoFalhas, formatarListaDeSolucoes (solution)],
         ['Ação', criarTextoAcao(originPoolConstituent, destinyPoolConstituent, failMoment, tipo_interacao, fails, solutionForFailures)],         
