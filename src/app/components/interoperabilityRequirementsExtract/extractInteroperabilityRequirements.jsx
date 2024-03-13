@@ -321,7 +321,7 @@ export default function ExtractInteroperabilityRequirements({
                     compactRequirements.push(
                         ["Interoperability-related message information", messageFlowName],
                         ["Interoperability condition", createTextConditionInteroperability(dataObjectName)],
-                        ['Descrição textual detalhada', createTextDetailedRequirement(createTextAction(originPoolConstituent, destinyPoolConstituent, (isSendPool ? "information submission (independent submission process)" : originName)), temporaryCompactInfos)],
+                        ['Detailed textual description', createTextDetailedRequirement(createTextAction(originPoolConstituent, destinyPoolConstituent, (isSendPool ? "information submission (independent submission process)" : originName)), temporaryCompactInfos)],
                         ['Traceability', createTextTraceability(originSplit[0], originName, destinySplit[0], destinyName)],
                         ['---------------', '---------------']
                     );
