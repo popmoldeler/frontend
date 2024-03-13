@@ -160,7 +160,7 @@ export default function ExtractRequirementsDialog({
                                 data={csvData}
                                 separator={";"}
                                 filename={`${extractTypeText}_${mission.tittle}_interoperability_requirements`}
-                                headers={['Campo', 'Descricao']}
+                                headers={ extractType == 'english' ? ['Field', 'Description']: ['Campo', 'Descricao']}
                                 style={{
                                     "backgroundColor": "blue",
                                     "color": "white",

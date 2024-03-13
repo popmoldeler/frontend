@@ -138,7 +138,7 @@ function AddBusinesProcessModel({
             allowMultiple={false}
             instantUpload={false}
             server={{
-              url: "http://popmodeler.ledes.net/api/store",
+              url: "https://popmodeler.ledes.net/api/store",
               headers: {
                 Authorization: "Bearer " + token,
               },

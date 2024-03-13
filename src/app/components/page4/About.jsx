@@ -34,8 +34,8 @@ export default function About() {
         <Typography variant="h6" gutterBottom>
           For the Documentation acess:{" "}
           {
-            <Link to="http://popmodelerdoc.ledes.net/">
-              http://popmodelerdoc.ledes.net/
+            <Link to="https://popmodelerdoc.ledes.net/">
+              https://popmodelerdoc.ledes.net/
             </Link>
           }
         </Typography>
