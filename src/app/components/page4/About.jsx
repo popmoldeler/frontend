@@ -31,6 +31,9 @@ export default function About() {
         <Typography variant="h5" gutterBottom>
           Igor Cassio Toledo Franco
         </Typography>
+        <Typography variant="h5" gutterBottom>
+          Sidny de Almeida Molina Pereira
+        </Typography>
         <Typography variant="h6" gutterBottom>
           For the Documentation acess:{" "}
           {
