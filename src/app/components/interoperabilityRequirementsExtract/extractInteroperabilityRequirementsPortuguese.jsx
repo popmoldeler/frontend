@@ -27,7 +27,8 @@ import {
 
 export default function ExtractInteroperabilityRequirementsPortuguesePortuguese({
     mission,
-    options
+    options,
+    popName
 }) {
     //Método que executa a extração de requisitos de acordo com o prefixo definido e o tipo de extração
     const runExtract = (origin, prefix) => {
@@ -43,11 +44,13 @@ export default function ExtractInteroperabilityRequirementsPortuguesePortuguese(
             requirementsPortuguese.push(
                 ['ID', messageFlow.attributes.id.value],
                 ['Classe', 'Interoperabilidade'],
+                ['Sujeito', `SoS - ${popName}`],
             );
 
             compactRequirementsPortuguese.push(
                 ['ID', messageFlow.attributes.id.value],
                 ['Classe', 'Interoperabilidade'],
+                ['Sujeito', `SoS - ${popName}`],
             );
 
             var temporaryCompactInfos = {
