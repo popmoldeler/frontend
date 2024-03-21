@@ -19,7 +19,8 @@ import { CSVLink } from "react-csv";
 export default function ExtractRequirementsDialog({
   openRequirementsDialog,
   setOpenRequirementsDialog,
-  mission
+  mission,
+  popOverall
 }) {
     const [csvData, setCsvData] = useState(undefined);
     const [extractTypeText, setExtractTypeText] = useState(undefined);
@@ -37,12 +38,13 @@ export default function ExtractRequirementsDialog({
         initialValues: {
             extractType: '',
             pop_mission_id: mission.id,
-            mission: mission
+            mission: mission,
+            popOverall: popOverall,
         },
         onSubmit: async (values) => {
             switch (language){
                 case 'english':
-                    const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: extractType });
+                    const csvDataTemp = ExtractInteroperabilityRequirements({ mission: values.mission, options: extractType, popName: values.popOverall.name });
                     if (csvDataTemp !== '') {
                         setCsvData(csvDataTemp);
                         setExtractTypeText(extractType);
@@ -52,7 +54,7 @@ export default function ExtractRequirementsDialog({
                     }
                     break;
                 case 'portuguese':
-                    const csvDadosTemp = ExtractInteroperabilityRequirementsPortuguese({ mission: values.mission, options: extractType });
+                    const csvDadosTemp = ExtractInteroperabilityRequirementsPortuguese({ mission: values.mission, options: extractType, popName: values.popOverall.name });
                     if (csvDadosTemp !== '') {
                         setCsvData(csvDadosTemp);
                         setExtractTypeText(extractType);

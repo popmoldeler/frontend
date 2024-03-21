@@ -156,6 +156,7 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
           setOpenRequirementsDialog
         }
         mission={mission}
+        popOverall={popOverall}
       />
 
       <ExtractReliabilityDialog
