@@ -1,11 +1,14 @@
-import {criarTextoAcao,
+import {criarTextoAcao, 
 } from "./reliabilityInfosToText";
 
 
 export default function ExtractReabilityRequirements({
     mission,
-    options
+    options,
+    popName
 }) {
+  
+
 
  // ================================================== v
 
@@ -252,6 +255,7 @@ for (let boundaryEvent of boundaryEvents) {
   let fails = [];
   let solution = "";
   let solutionForFailures = "";
+  let taskIDWithErrorEvent = '';
 
   const attachedToRef = boundaryEvent.attributes.attachedToRef.value;
   const attachedToElement = origin.getElementById(attachedToRef);
@@ -312,11 +316,16 @@ for (let boundaryEvent of boundaryEvents) {
 
   const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
   if (errorEventDefinition.length > 0) {      
+    // Se houver, recuperar o ID da sendTask ou receiveTask
+    taskIDWithErrorEvent = attachedToRef;
+
       const originRef = boundaryEvent.getAttribute("attachedToRef");
       const eventId = boundaryEvent.getAttribute("id");
       const errorId = errorEventDefinition[0].getAttribute("id");
 
       const tipo_interacao = isSendTask(attachedToElement) ? 'envio' : 'recebimento';
+      const tipo_tarefa = isSendTask(attachedToElement) ? 'SendTask' : 'ReceiveTask';
+
 
       // Função auxiliar para verificar se o elemento é um 'sendTask'
       // Se for diferente, será recebimento
@@ -385,7 +394,7 @@ for (let boundaryEvent of boundaryEvents) {
       solutionForFailures = getResolutionsForProblems(fails, sequenceFlows, origin);
       let rastreability = ''
       if(originPoolConstituent && destinyPoolConstituent){
-        rastreability = `Do ${originPoolConstituent} para ${destinyPoolConstituent} ao ${originName}`
+        rastreability = `Participant ${originPoolConstituent} para Participant ${destinyPoolConstituent} na ${tipo_tarefa} ${originName}`
       }
 
       // Verifica se há falhas e soluções disponíveis
@@ -425,9 +434,9 @@ for (let boundaryEvent of boundaryEvents) {
 
       // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
       requirements.push(
-        ['ID', '---'],
+        ['ID', taskIDWithErrorEvent],
         ['Classe', 'Tolerância a falhas'],
-        ['Sujeito', '---'],
+        ['Sujeito', `SoS - ${popName}`],
         ['Constituinte de Origem', originPoolConstituent], 
         ['Constituinte de Destino', destinyPoolConstituent], 
         [momentoFalha, failMoment],

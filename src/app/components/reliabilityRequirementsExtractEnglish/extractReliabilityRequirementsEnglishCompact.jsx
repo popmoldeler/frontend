@@ -4,7 +4,8 @@ import {criarTextoAcaoEnglish,
 
 export default function ExtractReabilityRequirementsEnglishCompact({
     mission,
-    options
+    options,
+    popName
 }) {
 
  // ================================================== v
@@ -252,6 +253,7 @@ for (let boundaryEvent of boundaryEvents) {
   let fails = [];
   let solution = "";
   let solutionForFailures = "";
+  let taskIDWithErrorEvent = '';
 
   const attachedToRef = boundaryEvent.attributes.attachedToRef.value;
   const attachedToElement = origin.getElementById(attachedToRef);
@@ -311,12 +313,15 @@ for (let boundaryEvent of boundaryEvents) {
   }
 
   const errorEventDefinition = boundaryEvent.getElementsByTagName("bpmn:errorEventDefinition");
-  if (errorEventDefinition.length > 0) {      
+  if (errorEventDefinition.length > 0) { 
+    // Se houver, recuperar o ID da sendTask ou receiveTask
+    taskIDWithErrorEvent = attachedToRef;     
       const originRef = boundaryEvent.getAttribute("attachedToRef");
       const eventId = boundaryEvent.getAttribute("id");
       const errorId = errorEventDefinition[0].getAttribute("id");
 
       const tipo_interacao = isSendTask(attachedToElement) ? 'sending' : 'receiving';
+      const tipo_tarefa = isSendTask(attachedToElement) ? 'SendTask' : 'ReceiveTask';
 
       // Função auxiliar para verificar se o elemento é um 'sendTask'
       // Se for diferente, será recebimento
@@ -385,7 +390,7 @@ for (let boundaryEvent of boundaryEvents) {
       solutionForFailures = getResolutionsForProblems(fails, sequenceFlows, origin);
       let rastreability = ''
       if(originPoolConstituent && destinyPoolConstituent){
-        rastreability = `From ${originPoolConstituent} to ${destinyPoolConstituent} when ${originName}`
+        rastreability = `Participant ${originPoolConstituent} to Participant ${destinyPoolConstituent} in ${tipo_tarefa} ${originName}`
       }
 
       // Verifica se há falhas e soluções disponíveis
@@ -425,9 +430,9 @@ for (let boundaryEvent of boundaryEvents) {
 
       // Variável que irá armazenar todas infos textuais do requisito específico do messageFlow, inicializada com campos Defaults
       requirements.push(
-        ['ID', '---'],
+        ['ID', taskIDWithErrorEvent],
         ['Class', 'Fault Tolerance'],
-        ['Subject', '---'],
+        ['Subject', `SoS - ${popName}`],
          // ['Source Constituent', originPoolConstituent], 
          // ['Target Constituent', destinyPoolConstituent],   
          //  [momentoFalha, failMoment],

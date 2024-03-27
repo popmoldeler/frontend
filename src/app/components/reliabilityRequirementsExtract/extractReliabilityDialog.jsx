@@ -22,6 +22,7 @@ export default function ExtractReliabilityDialog({
   openReliabilityDialog,
   setOpenReliabilityDialog,
   mission,
+  popOverall
 }) {
   const handleClose = () => {
     setOpenReliabilityDialog(false);
@@ -35,19 +36,20 @@ export default function ExtractReliabilityDialog({
     initialValues: {
       pop_mission_id: mission.id,
       mission: mission,
+      popOverall: popOverall
     },
     onSubmit: async () => {
       let extractedData;
       let headers;
       if (language === "Portuguese") {
         extractedData = type === "Detailed" ?
-          ExtractReliabilityRequirements({ mission }) :
-          ExtractReliabilityRequirementsCompact({ mission });
+          ExtractReliabilityRequirements({ mission,  popName: popOverall.name}) :
+          ExtractReliabilityRequirementsCompact({ mission, popName: popOverall.name });
         headers = ["Campo", "Conteúdo"];
       } else if (language === "English") {
         extractedData = type === "Detailed" ?
-          ExtractReliabilityRequirementsEnglish({ mission }) :
-          ExtractReliabilityRequirementsEnglishCompact({ mission });
+          ExtractReliabilityRequirementsEnglish({ mission, popName: popOverall.name }) :
+          ExtractReliabilityRequirementsEnglishCompact({ mission, popName: popOverall.name });
         headers = ["Field", "Content"];
       }
       setCsvData(extractedData);
@@ -140,7 +142,7 @@ export default function ExtractReliabilityDialog({
                 <CSVLink
                   data={csvData}
                   separator={";"}
-                  filename={`${mission.tittle} - Fault Tolerance Requirements`}
+                  filename={`${mission.tittle} - Fault_Tolerance_Requirements_${type}_${language === "Portuguese" ? "PT" : "EN"}`}
                   headers={formik.values.headers || ["Campo", "Descrição"]}
                   style={{
                     backgroundColor: "blue",
