@@ -164,6 +164,7 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
           setOpenReliabilityDialog
         }
         mission={mission}
+        popOverall={popOverall}
       />
 
     <ExtractReliabilityDialogEnglish
@@ -172,6 +173,7 @@ export default function Mission({ mission, allianceMembers, pop_id, pop,popExter
               setOpenReliabilityDialogEnglish
             }
             mission={mission}
+            popOverall={popOverall}
           />
 
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
