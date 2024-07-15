@@ -1,4 +1,4 @@
-# pop-front
+# PoP Modeler Front-end
 
 ## Installation
 
