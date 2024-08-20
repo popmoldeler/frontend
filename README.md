@@ -21,8 +21,9 @@ But this repository is referring only to the Frontend part. Frontend need the Ba
 ### Pre-requisites
 
 Before you begin, you will need to have the following tools installed on your machine:
-[Git] (https://git-scm.com), [Node.js] (https://nodejs.org/en/).
-In addition, it is good to have an editor to work with the code like [VSCode] (https://code.visualstudio.com/)
+[Git](https://git-scm.com), [Node.js](https://nodejs.org/en/).
+
+In addition, it is good to have an editor to work with the code like [VSCode](https://code.visualstudio.com/)
 
 #### Running the web application (Frontend)
 
@@ -50,7 +51,7 @@ $ npm run dev
 
 The following tools were used in the construction of the project:
 
-##### **Platform** ([React](https://reactjs.org/))
+#### **Platform** ([React](https://reactjs.org/))
 
 #### See the file [package.json](https://github.com/evelinsteiger/README-template/blob/master/package.json) to complete list of dependencies
 
