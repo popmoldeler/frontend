@@ -68,3 +68,5 @@ This project is Open Source, registered by UFMS, see the [License File](https://
 We have developed documentation intended to explain the usage of the features and the requirements of the tool, available at: https://popmodelerdoc.ledes.net/
 
 The current version of the tool is available for use at: https://popmodeler.ledes.net/
+
+Article associated with the artifact: DOI https://doi.org/10.6084/m9.figshare.27037474
